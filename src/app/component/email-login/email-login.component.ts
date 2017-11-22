@@ -26,8 +26,8 @@ export class EmailLoginComponent implements OnInit {
       );
   }
 
-  sendMeHome() {
-    this.router.navigate(['']);
+  goPasswordReset(){
+    this.router.navigateByUrl('/reset-password');    
   }
 
   ngOnInit() {

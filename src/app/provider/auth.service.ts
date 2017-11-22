@@ -15,6 +15,7 @@ export class AuthService {
   constructor(private firebaseAuth: AngularFireAuth, private router:Router) {
     this.user = firebaseAuth.authState;
   }
+  /*
   fromFirebaseAuthPromise(promise):Observable<any> {
     const subject = new Subject<any>();
     promise
@@ -32,7 +33,7 @@ export class AuthService {
 
     return subject.asObservable();
   }
-    
+  */  
     // Returns true if user is logged in
     get authenticated(): boolean {
       return this.firebaseAuth.authState !== null;
@@ -83,13 +84,13 @@ export class AuthService {
 
   resetPassword(email: string) {
     return this.firebaseAuth.
-     auth.sendPasswordResetEmail(email)
-      .then(
-        () => {console.log("email sent");
-        this.router.navigateByUrl('/email-login');
-        }
-      )
-      .catch((error) => console.log(error))
+     auth.sendPasswordResetEmail(email);
+      //.then(
+      //  () => {console.log("email sent");
+      //  this.router.navigateByUrl('/email-login');
+      //  }
+      //)
+      //.catch((error) => console.log(error))
   }
 
   //// Social Auth ////
