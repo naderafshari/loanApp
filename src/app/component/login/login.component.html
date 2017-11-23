@@ -1,7 +1,7 @@
 <div class="form-container">
-  <h3>Natural Healthcare Chiro</h3>
-  <h2>Login Page</h2>
-  <!--<img src="assets/images/lock.svg" id="lock">-->
+  <h2 class="alc"><strong>Secure Website</strong></h2>
+  <h3 class="alc">Login Page</h3>
+  <img src="assets/images/lock.svg" id="lock">
   
     <span class="error" *ngIf="error">{{ error }}</span>
 
@@ -10,4 +10,6 @@
   <button routerLink="/email-login" id="email">Email</button>
 
   <a routerLink="/signup" routerLinkActive="active" class="alc">No account? <strong>Create one here</strong></a>
+  <a routerLink="/reset-password" routerLinkActive="active" class="alc">Forgot password? <strong>Reset here</strong></a>
+  
 </div>
