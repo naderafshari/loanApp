@@ -9,19 +9,20 @@ import * as firebase from 'firebase';
   styleUrls: ['./reset-password.component.css']
 })
 export class ResetPasswordComponent implements OnInit {
-  email: string;
-  
+
   constructor(public authService: AuthService, private router:Router) { }
   
-  resetPassword(){
-    this.authService.resetPassword(this.email)
-    .then(
-      () => {
-        console.log("email sent");
-        this.router.navigateByUrl('/email-login');
+  resetPassword(formData){
+    if(formData.valid) {
+        this.authService.resetPassword(formData.value.email)
+        .then(
+          () => {
+            alert("email sent");
+            this.router.navigateByUrl('/email-login');
+          }
+        ),
+        err => alert(err)
       }
-    ),
-    err => alert(err)
   }
 
   ngOnInit() {

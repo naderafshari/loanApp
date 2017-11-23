@@ -9,30 +9,32 @@ import * as firebase from 'firebase';
   styleUrls: ['./signup.component.css']
 })
 export class SignupComponent implements OnInit {
-  email: string;
-  password: string;
-  password2: string;
+  error: any;
+  user: any;
   
   constructor(public authService: AuthService, private router:Router) { 
+    //this.user = this.authService.user;
   }
   
-  signup(){
-    if (this.password == this.password2) {
-      this.authService.signup(this.email, this.password).then(
-        () => {
-          //alert('User logged in successfully !');
-          this.router.navigateByUrl('/user-profile');
-        },
-        err => alert(err)
-      );
+  signup(formData){
+    if(formData.valid) {
+      if (formData.value.password == formData.value.password2) {
+        this.authService.signup(formData.value.email, formData.value.password).then(
+          () => {
+            //alert('User logged in successfully !');
+            this.router.navigateByUrl('/user-profile');
+            //this.user = this.authService.user;
+          },
+          error => alert(error)
+        );
+      }
+      else
+      {
+        alert("passwords do not match");
+      }
     }
-    else
-    {
-      alert("passwords do not match");
-    }
-}
+  }
 
   ngOnInit() {
   }
-
 }

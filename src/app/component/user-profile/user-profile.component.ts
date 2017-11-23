@@ -5,17 +5,20 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
-  styleUrls: ['./user-profile.component.css']
+  styleUrls: ['./user-profile.component.css'],
 })
 export class UserProfileComponent implements OnInit {
 
-  constructor(public authService: AuthService, private router:Router) { }
+  constructor(public authService: AuthService, private router:Router) { 
+    console.log(authService.user);
+  }
 
   ngOnInit() {
   }
   
   logout() {
-    this.authService.logout().then(
+    this.authService.logout()
+    .then(
       () => {
               //alert('User logged out successfully!');
               this.router.navigateByUrl('/email-login');

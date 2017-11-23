@@ -1,4 +1,4 @@
-<div *ngIf="!(authService.user | async)">
+<!--<div *ngIf="!(authService.user | async)">
   <input type="text" [(ngModel)]="email" placeholder="email">
   <input type="password" [(ngModel)]="password" placeholder="password">
   <input type="password" [(ngModel)]="password2" placeholder="repeat password">
@@ -7,21 +7,21 @@
     Signup
   </button>
 </div>
+-->
 
-<!--
 <div class="form-container">
   <a routerLink="/login" id="goback">Go back</a>
 
   <h2>Join now</h2>
 
-  <span class="error" *ngIf="error" [@fallIn]='state'>{{ error }}</span>
+  <span class="error" *ngIf="error">{{ error }}</span>
     
   <form #formData='ngForm' (ngSubmit)="signup(formData)">
 
     <input type="text" placeholder="Email address.." (ngModel)="email" name="email" class="txt" required>
     <input type="password" placeholder="Password" (ngModel)="password" name="password" class="txt" required>
-
-    <button type="submit" [disabled]="!formData.valid" class="basic-btn">Create my account</button>
+    <input type="password" placeholder="Repeat Password" (ngModel)="password2" name="password2" class="txt" required>
+    
+    <button type="submit" class="basic-btn">Create my account</button>
   </form>
 </div>
--->

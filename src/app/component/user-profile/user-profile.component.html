@@ -1,5 +1,33 @@
-<h1 *ngIf="authService.user | async">Welcome {{ (authService.user | async)?.email }}!</h1>
+<!--<h1 *ngIf="authService.user | async">Welcome {{ (authService.user | async)?.email }}!</h1>
+<button (click)="logout()" *ngIf="authService.user | async">Logout</button>
+<h2>Hey {{ name.auth.displayName }}!</h2>-->
+<div class="form-container" id="toolbar">
+  <header>
+    <button (click)="logout()" class="basic-btn" *ngIf="authService.user | async">Logout</button>
+  </header>
+  <div id="page">
+    <h3>Welcome {{ (authService.user | async)?.email }}!</h3>
+    
+  </div>
 
-<button (click)="logout()" *ngIf="authService.user | async">
-  Logout
-</button>
+  <div class="user">
+    <form id="userForm">
+      <p>
+        <label>First Name</label>
+        <input type="text" [(ngModel)]="firstName" name="firstName" placeholder="First Name..">
+      </p>
+      <p>
+        <label>Last Name</label>
+        <input type="text" [(ngModel)]="lastName" name="lastName" placeholder="Last Name..">
+      </p>
+      <p>
+        <label>Email</label>
+        <input type="text" [(ngModel)]="email" name="email" placeholder="Email..">
+      </p>
+      <p>
+        <input type="submit" value="Submit" (click)="updateMember()">
+      </p>
+    </form>
+  </div>
+  
+</div>

@@ -15,19 +15,18 @@ export class EmailLoginComponent implements OnInit {
   constructor(public authService: AuthService, private router:Router) { 
   }
   
-  login() {
-    this.authService.login(this.email, this.password).then(
+  login(formData) {
+    if(formData.valid) {
+      this.authService.login(formData.value.email,formData.value.password)
+      .then(
         () => {
             //alert('User logged in successfully !');
             this.router.navigateByUrl('/user-profile');
         },
   //    this.email = this.password = '',
         err => alert(err)
-      );
-  }
-
-  goPasswordReset(){
-    this.router.navigateByUrl('/reset-password');    
+     );
+    }
   }
 
   ngOnInit() {

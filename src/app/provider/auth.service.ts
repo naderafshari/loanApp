@@ -116,8 +116,18 @@ export class AuthService {
 
   private socialSignIn(provider) {
     return this.firebaseAuth.auth.signInWithPopup(provider)
-    .then(() => console.log("login success"))
-    .catch((error) => console.log(error))
+    .then(
+      () => {
+        console.log("login success")
+        this.user = this.firebaseAuth.authState;
+        this.router.navigateByUrl('/user-profile');        
+      }
+    )
+    .catch((error) => {
+        console.log(error)
+        error => alert(error)
+      }
+    )
   }
 
 }

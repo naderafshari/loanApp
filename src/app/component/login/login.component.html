@@ -1,3 +1,13 @@
-<p>
-  login works!
-</p>
+<div class="form-container">
+  <h3>Natural Healthcare Chiro</h3>
+  <h2>Login Page</h2>
+  <!--<img src="assets/images/lock.svg" id="lock">-->
+  
+    <span class="error" *ngIf="error">{{ error }}</span>
+
+  <button (click)="facebookLogin()" id="fb">Login With Facebook</button><br>
+  <button (click)="googleLogin()" id="google">Login With Google</button>
+  <button routerLink="/email-login" id="email">Email</button>
+
+  <a routerLink="/signup" routerLinkActive="active" class="alc">No account? <strong>Create one here</strong></a>
+</div>

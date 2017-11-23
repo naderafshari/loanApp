@@ -1,3 +1,5 @@
+
+<!--
 <h1 *ngIf="authService.user | async">Welcome {{ (authService.user | async)?.email }}!</h1>
 <div *ngIf="!(authService.user | async)">
   <input type="text" [(ngModel)]="email" placeholder="email">
@@ -6,4 +8,22 @@
   <p> 
   <button (click)="goPasswordReset()">Reset Password</button>
   </p>
+</div>
+-->
+
+<div class="form-container">
+  <a routerLink="/login" id="goback">Go back</a>
+  <h2>Email Login</h2>
+
+  <span class="error" *ngIf="error" [@fallIn]='state'>{{ error }}</span>
+
+  <form #formData='ngForm' (ngSubmit)="login(formData)">
+
+    <input type="text" placeholder="Email address.." (ngModel)="email" name="email" class="txt" required>
+    <input type="password" placeholder="Password" (ngModel)="password" name="password" class="txt" required>
+
+    <button type="submit" [disabled]="!formData.valid" class="basic-btn">Log in</button>
+    <a routerLink="/signup" class="alc">Don't have an account?</a>
+    <a routerLink="/reset-password" class="alc">Forgot password?</a>
+  </form>
 </div>
