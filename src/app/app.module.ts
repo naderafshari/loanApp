@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { AngularFireModule } from 'angularfire2';
 import { environment } from '../environments/environment';
 import { AngularFireAuthModule } from 'angularfire2/auth';
+import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { Routes, RouterModule } from "@angular/router";
@@ -38,6 +39,7 @@ import { UserManageComponent } from './component/user-manage/user-manage.compone
     RouterModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
+    AngularFirestoreModule,
     RouterModule.forRoot(router)
   ],
   providers: [AuthService, AuthGuard],

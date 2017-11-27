@@ -43,6 +43,11 @@ export class AuthService {
     get currentUser(): any {
       return this.authenticated ? this.firebaseAuth.authState : null;
     }
+
+    // Returns current user data
+    get currentUserInfo(): any {
+      return this.authenticated ? this.firebaseAuth.auth.currentUser : null;
+    }    
   
     // Returns
     get currentUserObservable(): any {
@@ -52,6 +57,16 @@ export class AuthService {
     // Returns current user UID
     get currentUserId(): string {
       return this.authenticated ? this.firebaseAuth.auth.currentUser.uid : '';
+    }
+
+    // Returns current user displayName
+    get currentUserDisplayName(): string {
+      return this.authenticated ? this.firebaseAuth.auth.currentUser.displayName : '';
+    }
+    
+    // Returns current user UID
+    get currentUserEmail(): string {
+      return this.authenticated ? this.firebaseAuth.auth.currentUser.email : '';
     }
     
     signup(email: string, password: string) {

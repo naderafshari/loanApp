@@ -14,7 +14,7 @@
     <form id="userForm">
       <p>
         <label>First Name</label>
-        <input type="text" [(ngModel)]="firstName" name="firstName" placeholder="First Name..">
+        <input type="text" [(ngModel)]="firstname" name="firstName" placeholder="First Name.."> 
       </p>
       <p>
         <label>Last Name</label>
@@ -22,10 +22,10 @@
       </p>
       <p>
         <label>Email</label>
-        <input type="text" [(ngModel)]="email" name="email" placeholder="Email..">
+        <input type="text" [(ngModel)]="user.email" name="email" placeholder="Email..">
       </p>
       <p>
-        <input type="submit" value="Submit" (click)="updateMember()">
+        <input type="submit" value="Submit" (click)="updateUser()">
       </p>
     </form>
   </div>
