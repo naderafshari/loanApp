@@ -4,12 +4,13 @@ import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument 
 import { AuthService } from '../../provider/auth.service';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
+import { userInfo } from 'os';
 
 interface UserInfo {
-  displayName: string;
-  email: string;
-  firstName: string;
-  lastName: string;
+  displayName: string,
+  email: string,
+  firstName: string,
+  lastName: string
 }
 
 @Component({
@@ -21,8 +22,9 @@ interface UserInfo {
 export class UserProfileComponent implements OnInit {
   usersCol: AngularFirestoreCollection<UserInfo>;
   usersDoc: Observable<UserInfo[]>;
+  userDoc: Observable<{}>;
   user: any;
-  firstName: string;
+  userInfo: UserInfo;
 
   constructor(private afs: AngularFirestore, public authService: AuthService, private router:Router) { 
     this.user = authService.user.subscribe(
@@ -30,22 +32,29 @@ export class UserProfileComponent implements OnInit {
       //when subscribing to the user is updated when observer is fired 
       () => {
         this.user = this.authService.currentUserInfo
-      }
-    );
-  }
+        if (this.user)
+        {
+          this.usersCol = this.afs.collection('users');
+          this.usersDoc = this.usersCol.valueChanges();
+          this.userDoc = this.usersCol.doc(this.user.uid).valueChanges();
+          this.userDoc.subscribe((data: UserInfo) => {
+            this.userInfo = data;
+          });//doc observer
+        }//if user
+      });//user observer
+}
 
   ngOnInit() {
-    this.usersCol = this.afs.collection('users');
-    this.usersDoc = this.usersCol.valueChanges();
 }
   
   updateUser() {
-    if (this.user != null) {
+    if (this.user != null && this.userInfo != null) {
       console.log('User:', this.user.uid);
       this.afs.collection('users').doc(this.user.uid).set({ 
         'displayName': this.user.displayName, 
         'email': this.user.email,
-        'firstname': this.firstName
+        'firstName': this.userInfo.firstName,
+        'lastName': this.userInfo.lastName
       });  
     }
     else{
