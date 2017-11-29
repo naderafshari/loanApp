@@ -3,11 +3,11 @@
 <h2>Hey {{ name.auth.displayName }}!</h2>-->
 <div class="form-container" id="toolbar">
   <header>
-    <button (click)="logout()" class="basic-btn" *ngIf="authService.user | async">Logout</button>
+    <button class="alc" (click)="logout()" class="basic-btn" *ngIf="authService.user | async">Logout</button>
   </header>
   <div id="page">
-    <h3>Welcome {{ (authService.user | async)?.email }}!</h3>
-    
+    <h3 class="alc">Welcome {{ (authService.user | async)?.displayName }}!</h3>
+    <h4 class="alc">{{ (authService.user | async)?.email }}</h4>
   </div>
 
   <div class="user">
@@ -20,10 +20,11 @@
         <label>Last Name</label>
         <input type="text" *ngIf="userInfo" [(ngModel)]="userInfo.lastName" name="lastName" placeholder="Last Name..">  
       </p>
-      <p>
+<!--      <p>
         <label>Email</label>
         <input type="text" [(ngModel)]="user.email" name="email" placeholder="Email..">
       </p>
+-->
       <p>
         <input type="submit" value="Submit" (click)="updateUser()">
       </p>
