@@ -4,14 +4,7 @@ import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument 
 import { AuthService } from '../../provider/auth.service';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
-import { userInfo } from 'os';
-
-interface UserInfo {
-  displayName: string,
-  email: string,
-  firstName: string,
-  lastName: string
-}
+import { UserInfo } from '../../provider/user-info';
 
 @Component({
   selector: 'app-user-profile',
@@ -25,8 +18,11 @@ export class UserProfileComponent implements OnInit {
   userDoc: Observable<{}>;
   user: any;
   userInfo: UserInfo;
+  
+  constructor(private afs: AngularFirestore, 
+              public authService: AuthService, 
+              private router:Router) { 
 
-  constructor(private afs: AngularFirestore, public authService: AuthService, private router:Router) { 
     this.user = authService.user.subscribe(
       //google login would not have the user updated when redirected to this page
       //when subscribing to the user is updated when observer is fired 
