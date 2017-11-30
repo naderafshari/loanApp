@@ -46,12 +46,7 @@ export class UserProfileComponent implements OnInit {
   updateUser() {
     if (this.user != null && this.userInfo != null) {
       console.log('User:', this.user.uid);
-      this.afs.collection('users').doc(this.user.uid).set({ 
-        'displayName': this.user.displayName, 
-        'email': this.user.email,
-        'firstName': this.userInfo.firstName,
-        'lastName': this.userInfo.lastName
-      });  
+      this.afs.collection('users').doc(this.user.uid).update(this.userInfo);
     }
     else{
       console.log('Cannot Update, user not logged in!');
@@ -63,7 +58,6 @@ export class UserProfileComponent implements OnInit {
     this.authService.logout()
     .then(
       () => {
-              //alert('User logged out successfully!');
               this.router.navigateByUrl('/login');
       },
       err => alert(err)

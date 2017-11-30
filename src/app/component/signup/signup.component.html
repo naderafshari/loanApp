@@ -18,6 +18,7 @@
     
   <form #formData='ngForm' (ngSubmit)="signup(formData)">
 
+    <input type="text" placeholder="Full Name.." (ngModel)="displayName" name="displayName" class="txt" required>
     <input type="text" placeholder="Email address.." (ngModel)="email" name="email" class="txt" required>
     <input type="password" placeholder="Password" (ngModel)="password" name="password" class="txt" required>
     <input type="password" placeholder="Confirm Password" (ngModel)="password2" name="password2" class="txt" required>
