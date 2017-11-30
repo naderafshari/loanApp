@@ -5,6 +5,7 @@ import { AuthInfo } from "./auth-info";
 import * as firebase from 'firebase/app';
 import { Observable, Subject, BehaviorSubject } from 'rxjs/Rx';
 import {Router} from "@angular/router";
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 
 @Injectable()
 export class AuthService {
@@ -12,7 +13,7 @@ export class AuthService {
   static UNKNOWN_USER = new AuthInfo(null);
   authInfo$: BehaviorSubject<AuthInfo> = new BehaviorSubject<AuthInfo>(AuthService.UNKNOWN_USER);
   
-  constructor(private firebaseAuth: AngularFireAuth, private router:Router) {
+  constructor(private firebaseAuth: AngularFireAuth, private router:Router, private afs: AngularFirestore) {
     this.user = firebaseAuth.authState;
   }
   /*
@@ -55,7 +56,7 @@ export class AuthService {
     }
   
     // Returns current user UID
-    get currentUserId(): string {
+    get currentUserId(): any {
       return this.authenticated ? this.firebaseAuth.auth.currentUser.uid : '';
     }
 
@@ -134,10 +135,19 @@ export class AuthService {
     .then(
       () => {
         console.log("login success")
-        this.user = this.firebaseAuth.authState;
-        this.router.navigateByUrl('/user-profile');        
-      }
-    )
+        let userDoc = this.afs.collection('users').doc(this.currentUserId).valueChanges();
+        if (userDoc) {
+          this.afs.collection('users').doc(this.currentUserId).set({
+            'displayName': this.currentUserDisplayName,
+            'email': this.currentUserEmail
+         }).then( () => {
+           this.router.navigateByUrl('/user-profile');
+          })
+        }
+        else {
+          this.router.navigateByUrl('/user-profile');
+        }
+    })
     .catch((error) => {
         console.log(error)
         error => alert(error)
