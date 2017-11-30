@@ -132,21 +132,24 @@ export class AuthService {
 
   private socialSignIn(provider) {
     return this.firebaseAuth.auth.signInWithPopup(provider)
-    .then(
-      () => {
+    .then( () => {
         console.log("login success")
-        let userDoc = this.afs.collection('users').doc(this.currentUserId).valueChanges();
-        if (userDoc) {
+        this.afs.collection('users').doc(this.currentUserId).update({
+            'displayName': this.currentUserDisplayName
+        })
+        .then( () => {
+          this.router.navigateByUrl('/user-profile');
+        })
+        .catch ( () => {
           this.afs.collection('users').doc(this.currentUserId).set({
             'displayName': this.currentUserDisplayName,
             'email': this.currentUserEmail
-         }).then( () => {
-           this.router.navigateByUrl('/user-profile');
-          })
-        }
-        else {
-          this.router.navigateByUrl('/user-profile');
-        }
+            })
+            .then( () => {
+              alert('Your password was not set correctly! To use email/password login in the future, please logout and reset your password')
+              this.router.navigateByUrl('/user-profile');
+            })
+        })
     })
     .catch((error) => {
         console.log(error)
