@@ -1,8 +1,8 @@
 export interface UserInfo {
-    displayName: string,
     email: string,
-    firstName: string,
-    lastName: string
+    displayName?: string,
+    firstName?: string,
+    lastName?: string
   }
 
 export interface Roles {

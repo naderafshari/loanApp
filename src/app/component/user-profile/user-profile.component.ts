@@ -55,12 +55,12 @@ export class UserProfileComponent implements OnInit {
   }
 
   logout() {
-    this.authService.logout()
-    .then(
+    this.authService.logout();
+    /*.then(
       () => {
               this.router.navigateByUrl('/login');
       },
       err => alert(err)
-    );
+    );*/
   }
 }
