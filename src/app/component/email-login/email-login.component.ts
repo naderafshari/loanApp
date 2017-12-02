@@ -17,15 +17,15 @@ export class EmailLoginComponent implements OnInit {
   
   login(formData) {
     if(formData.valid) {
-      this.authService.login(formData.value.email,formData.value.password)
-      .then(
+      this.authService.login(formData.value.email,formData.value.password);
+/*      .then(
         () => {
-            //alert('User logged in successfully !');
+            alert('User logged in successfully !');
             this.router.navigateByUrl('/user-profile');
         },
-  //    this.email = this.password = '',
         err => alert(err)
      );
+    */
     }
   }
 

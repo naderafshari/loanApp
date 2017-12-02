@@ -1,22 +1,18 @@
+import { userInfo } from 'os';
 import { async } from '@angular/core/testing';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AuthInfo } from "./auth-info";
 import * as firebase from 'firebase/app';
 import { Observable, Subject, BehaviorSubject } from 'rxjs/Rx';
-import {Router} from "@angular/router";
+import { Router } from "@angular/router";
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
-
+import { UserAuth, UserAuthInfo } from './user-info'
 @Injectable()
 export class AuthService {
-  user: Observable<firebase.User>;
+  /*user: Observable<firebase.User>;
   static UNKNOWN_USER = new AuthInfo(null);
   authInfo$: BehaviorSubject<AuthInfo> = new BehaviorSubject<AuthInfo>(AuthService.UNKNOWN_USER);
-  
-  constructor(private firebaseAuth: AngularFireAuth, private router:Router, private afs: AngularFirestore) {
-    this.user = firebaseAuth.authState;
-  }
-  /*
   fromFirebaseAuthPromise(promise):Observable<any> {
     const subject = new Subject<any>();
     promise
@@ -35,7 +31,33 @@ export class AuthService {
     return subject.asObservable();
   }
   */  
-    // Returns true if user is logged in
+  
+  user: Observable<UserAuthInfo>;
+  constructor(private firebaseAuth: AngularFireAuth, private router:Router, private afs: AngularFirestore) {
+    //this.user = firebaseAuth.authState;
+    
+    this.user = this.firebaseAuth.authState
+    .switchMap(user => {
+      if (user) {
+        return this.afs.doc<UserAuthInfo>(`users-auth/${user.uid}`).valueChanges()
+      } else {
+        return Observable.of(null)
+      }
+    })
+  }
+  private updateAuthUserData(user) {
+    // Sets user data to firestore on login
+    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users-auth/${user.uid}`);
+    const data: UserAuthInfo = {
+      uid: user.uid,
+      email: user.email,
+      displayName: user.displayName,
+      photoURL: user.photoURL
+    }
+    return userRef.set(data)
+  }
+
+  // Returns true if user is logged in
     get authenticated(): boolean {
       return this.firebaseAuth.authState !== null;
     }
@@ -73,25 +95,31 @@ export class AuthService {
     signup(email: string, password: string) {
     return this.firebaseAuth
       .auth
-      .createUserWithEmailAndPassword(email, password);
-      /*.then(value => {
-        console.log('Success!', value);
+      .createUserWithEmailAndPassword(email, password)
+      .then( (value) => {
+        console.log('Nice, it worked! value is: ', value);
+        this.updateAuthUserData(value);
+        this.router.navigateByUrl('/user-profile');
       })
       .catch(err => {
         console.log('Something went wrong:',err.message);
-      });*/    
+        this.router.navigateByUrl('/login');
+      });
   }
 
   login(email: string, password: string) {
     return this.firebaseAuth
       .auth
-      .signInWithEmailAndPassword(email, password);
-      //.then(value => {
-      //  console.log('Nice, it worked!');
-      //})
-      //.catch(err => {
-      //  console.log('Something went wrong:',err.message);
-      //});
+      .signInWithEmailAndPassword(email, password)
+      .then( (value) => {
+        console.log('Nice, it worked! value is: ', value);
+        this.updateAuthUserData(value);
+        this.router.navigateByUrl('/user-profile');
+      })
+      .catch(err => {
+        console.log('Something went wrong:',err.message);
+        this.router.navigateByUrl('/login');
+      });
   }
   
   logout() {
@@ -132,21 +160,22 @@ export class AuthService {
 
   private socialSignIn(provider) {
     return this.firebaseAuth.auth.signInWithPopup(provider)
-    .then( () => {
-        console.log("login success")
+    .then( (value) => {
+        console.log("login success");
+        this.updateAuthUserData(value.user);        
         this.afs.collection('users').doc(this.currentUserId).update({
-            'displayName': this.currentUserDisplayName
+            'displayName': value.user.displayName
         })
         .then( () => {
           this.router.navigateByUrl('/user-profile');
         })
         .catch ( () => {
           this.afs.collection('users').doc(this.currentUserId).set({
-            'displayName': this.currentUserDisplayName,
-            'email': this.currentUserEmail
+            'displayName': value.user.displayName,
+            'email': value.user.email
             })
             .then( () => {
-              alert('Your password was not set correctly! To use email/password login in the future, please logout and reset your password')
+              alert('Your password may not have been set correctly! To use email/password login method in the future, password reset may be needed')
               this.router.navigateByUrl('/user-profile');
             })
         })

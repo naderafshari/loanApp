@@ -20,8 +20,8 @@ export class SignupComponent implements OnInit {
   signup(formData){
     if(formData.valid) {
       if (formData.value.password == formData.value.password2) {
-        this.authService.signup(formData.value.email, formData.value.password).then(
-          () => {
+        this.authService.signup(formData.value.email, formData.value.password);
+/*        .then( () => {
             //create a user document in firestore with only some info
             this.afs.collection('users').doc(this.authService.currentUserId).set({ 
               'displayName': formData.value.displayName, 
@@ -30,8 +30,9 @@ export class SignupComponent implements OnInit {
 
             this.router.navigateByUrl('/user-profile');
           },
-          error => alert(error)
-        );
+          error => alert(error)        
+      );
+*/
       }
       else
       {
