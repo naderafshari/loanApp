@@ -1,5 +1,4 @@
 import { subscribeOn } from 'rxjs/operator/subscribeOn';
-import { userInfo } from 'os';
 import { async } from '@angular/core/testing';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
@@ -7,23 +6,26 @@ import * as firebase from 'firebase/app';
 import { Observable, Subject, BehaviorSubject } from 'rxjs/Rx';
 import { Router } from "@angular/router";
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
-import { UserAuth, UserAuthInfo, UserInfo } from './user-info'
+import { UserAuth, UserAuthInfo, Roles } from './user-info'
 
 @Injectable()
 export class AuthService {
 
   user: Observable<UserAuthInfo>;
   userDoc: Observable<{}>;
-  userInfo: UserInfo;
-
+  //userRoles: Array<string>; // roles of currently logged in uer
+  userRoles: Roles;
+  userAuthInfo: UserAuthInfo;
+  
   constructor(private firebaseAuth: AngularFireAuth, private router:Router, private afs: AngularFirestore) {
     
     this.user = this.firebaseAuth.authState
     .switchMap(user => {
       if (user) {
           this.userDoc = this.afs.doc(`users-auth/${user.uid}`).valueChanges();
-          this.userDoc.subscribe((data: UserInfo) => {
-            this.userInfo = data;
+          this.userDoc.subscribe((data: UserAuthInfo) => {
+            this.userAuthInfo = data;
+            console.log('Role is: ',this.userAuthInfo.roles);
           });
           return this.afs.doc<UserAuthInfo>(`users-auth/${user.uid}`).valueChanges()
       } else {
@@ -31,6 +33,7 @@ export class AuthService {
       }
     })
   }
+
   private updateUserAuthData(userAuth) {
     // Sets user data to firestore on login
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users-auth/${userAuth.uid}`);
@@ -38,7 +41,8 @@ export class AuthService {
       uid: userAuth.uid,
       email: userAuth.email,
       displayName: userAuth.displayName,
-      photoURL: userAuth.photoURL
+      photoURL: userAuth.photoURL,
+      roles: { author: true, reader: false, admin: false }
     }
     return userRef.snapshotChanges()
     .map(action => action.payload.exists)
@@ -67,7 +71,13 @@ export class AuthService {
     get authenticated(): boolean {
 //      return this.firebaseAuth.authState !== null;
       return this.user !== null;
-}
+    }
+
+    //get userAuthRoles(): Roles {
+    //  const userRoles = this.user
+    //  .map( (user) => this.userRoles = user.roles);
+    //  return this.userRoles;
+    //}
   
     // Returns current user data
     get currentUser(): any {

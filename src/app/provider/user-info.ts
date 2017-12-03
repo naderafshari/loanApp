@@ -16,7 +16,7 @@ export interface Roles {
     email: string;
     photoURL?: string;
     displayName?: string;
-    role?: Roles;
+    roles?: Roles;
   }
   
   export class UserAuth {

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/take';
+import * as _ from 'lodash'
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -32,4 +33,12 @@ export class AuthGuard implements CanActivate {
     }  
     return true;
   }*/ 
+  get ifAdmin(): boolean {
+    const allowed = ['admin']
+    return this.matchingRole(allowed)
+  }
+
+  private matchingRole(allowedRoles): boolean {
+    return !_.isEmpty(_.intersection(allowedRoles, this.authService.userRoles))
+  }
 }
