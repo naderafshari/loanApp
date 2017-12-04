@@ -106,7 +106,7 @@ export class AuthService {
         this.setUserAuthDoc(value);
         this.setUserDoc(value);
         this.user.subscribe( () =>
-          this.router.navigateByUrl('/user-profile'));
+          this.router.navigate(['/user-profile',0]));
       })
       .catch(err => {
         alert('Something went wrong: ' + err.message);
@@ -124,7 +124,7 @@ export class AuthService {
           if (data){
             this.userAuthInfo = data;
             console.log("Role of logged in user: ", this.userAuthInfo.role);
-            this.router.navigateByUrl('/user-profile')
+            this.router.navigate(['/user-profile',0])
           }
         });
     })
@@ -189,7 +189,7 @@ export class AuthService {
         })
         .then( () => {
           this.firebaseAuth.authState.subscribe( () =>
-            this.router.navigateByUrl('/user-profile'))
+            this.router.navigate(['/user-profile',0]))
         })
         .catch ( () => {
           this.afs.collection('users').doc(this.currentUserId).set({
@@ -198,7 +198,7 @@ export class AuthService {
             })
             .then( () => {
               alert('Your password may not have been set correctly! To use email/password login method in the future, password reset may be needed')
-              this.router.navigateByUrl('/user-profile');
+              this.router.navigate(['/user-profile',null]);
             })
         })
     })

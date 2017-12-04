@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';   
+import { Router, ActivatedRoute } from '@angular/router';   
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { AuthService } from '../../provider/auth.service';
 import { Observable } from 'rxjs/Observable';
@@ -18,21 +18,33 @@ export class UserProfileComponent implements OnInit {
   userDoc: Observable<{}>;
   user: any;
   userInfo: UserInfo;
-  
+  uid: string;
+  private sub: any;
+
   constructor(private afs: AngularFirestore, 
               public authService: AuthService, 
-              private router:Router) { 
-
-    this.user = authService.user
-    .subscribe((user) => {
-      this.user = user;
-      if (user) {
-        this.userDoc = this.afs.doc(`users/${user.uid}`).valueChanges();
-        this.userDoc.subscribe((data: UserInfo) => {
-          this.userInfo = data;
+              private router:Router,
+              private route: ActivatedRoute) { 
+    let uid: string;
+    this.sub = this.route.queryParams.subscribe(params => {
+        this.uid = params['uid'] || 0;
+        this.user = authService.user
+        .subscribe((user) => {
+          this.user = user;
+          if (user) {
+            if (this.uid) {
+              uid = this.uid;
+            }
+            else {
+              uid = this.user.uid;
+            }
+            this.userDoc = this.afs.doc(`users/${uid}`).valueChanges();
+            this.userDoc.subscribe((data: UserInfo) => {
+              this.userInfo = data;
+            });
+          }
         });
-      }
-    });
+      });
   }
 
   ngOnInit() {
