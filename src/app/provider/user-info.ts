@@ -5,29 +5,10 @@ export interface UserInfo {
     lastName?: string
   }
 
-export interface Roles {
-    reader: boolean;
-    author?: boolean;
-    admin?:  boolean;
-  }
-
   export  interface UserAuthInfo {
     uid: string;
     email: string;
+    role: string;
     photoURL?: string;
     displayName?: string;
-    roles?: Roles;
-  }
-  
-  export class UserAuth {
-    email:    string;
-    photoURL: string;
-    displayName: string;
-    roles:    Roles;
-    constructor(authData) {
-      this.email    = authData.email
-      this.photoURL = authData.photoURL
-      this.displayName = authData.displayName1
-      this.roles    = { reader: true }
-    }
   }

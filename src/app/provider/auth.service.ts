@@ -6,15 +6,13 @@ import * as firebase from 'firebase/app';
 import { Observable, Subject, BehaviorSubject } from 'rxjs/Rx';
 import { Router } from "@angular/router";
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
-import { UserAuth, UserAuthInfo, Roles } from './user-info'
+import { UserAuthInfo } from './user-info'
 
 @Injectable()
 export class AuthService {
 
   user: Observable<UserAuthInfo>;
   userDoc: Observable<{}>;
-  //userRoles: Array<string>; // roles of currently logged in uer
-  userRoles: Roles;
   userAuthInfo: UserAuthInfo;
   
   constructor(private firebaseAuth: AngularFireAuth, private router:Router, private afs: AngularFirestore) {
@@ -25,7 +23,6 @@ export class AuthService {
           this.userDoc = this.afs.doc(`users-auth/${user.uid}`).valueChanges();
           this.userDoc.subscribe((data: UserAuthInfo) => {
             this.userAuthInfo = data;
-            console.log('Role is: ',this.userAuthInfo.roles);
           });
           return this.afs.doc<UserAuthInfo>(`users-auth/${user.uid}`).valueChanges()
       } else {
@@ -34,33 +31,25 @@ export class AuthService {
     })
   }
 
-  private updateUserAuthData(userAuth) {
-    // Sets user data to firestore on login
+  private setUserAuthDoc(userAuth) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users-auth/${userAuth.uid}`);
-    const data: UserAuthInfo = {
-      uid: userAuth.uid,
-      email: userAuth.email,
-      displayName: userAuth.displayName,
-      photoURL: userAuth.photoURL,
-      roles: { author: true, reader: false, admin: false }
+    const AuthData: UserAuthInfo = {
+        uid: userAuth.uid,
+        email: userAuth.email,
+        displayName: userAuth.displayName,
+        photoURL: userAuth.photoURL,
+        role: 'super-user'
     }
-    return userRef.snapshotChanges()
-    .map(action => action.payload.exists)
-    .subscribe(exists => exists ? userRef.update(data) : userRef.set(data));
+    userRef.set(AuthData)
+    .catch ( (err) => alert(err));
   }
 
-  private updateUserData(user) {
+  private setUserDoc(user) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
     const userData = {email: user.email, displayName: user.displayName};
-    userRef.update(userData)
-    .then( () => {
-      this.firebaseAuth.authState.subscribe( () =>
-        this.router.navigateByUrl('/user-profile'))
-    })
-    .catch ( () => {
-      userRef.set(userData).then( () => {
-        this.router.navigateByUrl('/user-profile');
-      })
+    userRef.set(userData)
+    .catch ( (err) => {
+      alert(err);
     })
     //return userRef.snapshotChanges()
     //.map(action => action.payload.exists)
@@ -68,16 +57,14 @@ export class AuthService {
   }
 
   // Returns true if user is logged in
-    get authenticated(): boolean {
+  get authenticated(): boolean {
 //      return this.firebaseAuth.authState !== null;
       return this.user !== null;
-    }
+  }
 
-    //get userAuthRoles(): Roles {
-    //  const userRoles = this.user
-    //  .map( (user) => this.userRoles = user.roles);
-    //  return this.userRoles;
-    //}
+  get userAuthRole(): string {
+    return this.authenticated ? this.userAuthInfo.role: null;
+  }
   
     // Returns current user data
     get currentUser(): any {
@@ -115,9 +102,9 @@ export class AuthService {
       .auth
       .createUserWithEmailAndPassword(email, password)
       .then( (value) => {
-        console.log('Nice, it worked! value is: ', value);
-        this.updateUserAuthData(value);
-        this.updateUserData(value);
+        console.log("signup success");
+        this.setUserAuthDoc(value);
+        this.setUserDoc(value);
         this.user.subscribe( () =>
           this.router.navigateByUrl('/user-profile'));
       })
@@ -133,12 +120,17 @@ export class AuthService {
       .signInWithEmailAndPassword(email, password)
       .then( (value) => {
         console.log("login success");
-        this.user.subscribe( () =>
-          this.router.navigateByUrl('/user-profile'));
+        this.user.subscribe( (data) => {
+          if (data){
+            this.userAuthInfo = data;
+            console.log("Role of logged in user: ", this.userAuthInfo.role);
+            this.router.navigateByUrl('/user-profile')
+          }
+        });
     })
-      .catch((error) => {
-        console.log(error)
-        alert(error);
+      .catch(err => {
+        console.log(err)
+        alert(err);
       }
     );
   }
@@ -150,8 +142,7 @@ export class AuthService {
         this.firebaseAuth.authState.subscribe(() =>     
           this.router.navigateByUrl('/login'))
       })
-      .catch(
-        err => {
+      .catch(err => {
           alert('logout failed: ' + err);
       });
   }
@@ -192,7 +183,7 @@ export class AuthService {
     return this.firebaseAuth.auth.signInWithPopup(provider)
     .then( (value) => {
         console.log("login success");
-        this.updateUserAuthData(value.user);        
+        this.setUserAuthDoc(value.user);        
         this.afs.collection('users').doc(this.currentUserId).update({
             'displayName': value.user.displayName
         })
@@ -211,9 +202,9 @@ export class AuthService {
             })
         })
     })
-    .catch((error) => {
-        console.log(error)
-        error => alert(error)
+    .catch((err) => {
+        console.log(err)
+        alert(err)
       }
     )
   }

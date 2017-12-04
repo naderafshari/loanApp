@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { AuthGuard } from './guard/auth.guard';
+import { AdminGuard } from './guard/admin.guard';
 import { LoginComponent } from './component/login/login.component';
 import { EmailLoginComponent } from './component/email-login/email-login.component';
 import { SignupComponent } from './component/signup/signup.component';
@@ -16,7 +17,8 @@ export const router: Routes = [
     { path: 'signup', component: SignupComponent },
     { path: 'email-login', component: EmailLoginComponent },
     { path: 'reset-password', component: ResetPasswordComponent },
-    { path: 'user-profile', component: UserProfileComponent, canActivate: [AuthGuard] }
+    { path: 'user-profile', component: UserProfileComponent, canActivate: [AuthGuard] },
+    { path: 'user-manage', component: UserManageComponent, canActivate: [AdminGuard] }
 ]
 
 export const routes: ModuleWithProviders = RouterModule.forRoot(router);

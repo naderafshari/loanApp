@@ -9,12 +9,12 @@ import * as _ from 'lodash'
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private authService: AuthService,  private router: Router) {
-  }
- 
+ constructor(private authService: AuthService,  private router: Router) {
+ }
+
   canActivate(
     next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean> | boolean {
+    state: RouterStateSnapshot): Observable<boolean> | boolean {    
       return this.authService.currentUser
            .take(1)
            .map(user => !!user)
@@ -33,12 +33,5 @@ export class AuthGuard implements CanActivate {
     }  
     return true;
   }*/ 
-  get ifAdmin(): boolean {
-    const allowed = ['admin']
-    return this.matchingRole(allowed)
-  }
-
-  private matchingRole(allowedRoles): boolean {
-    return !_.isEmpty(_.intersection(allowedRoles, this.authService.userRoles))
-  }
 }
+ 
