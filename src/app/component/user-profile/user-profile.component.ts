@@ -23,25 +23,20 @@ export class UserProfileComponent implements OnInit {
               public authService: AuthService, 
               private router:Router) { 
 
-    this.user = authService.user.subscribe(
-      //google login would not have the user updated when redirected to this page
-      //when subscribing to the user is updated when observer is fired 
-      () => {
-        this.user = this.authService.currentUserInfo
-        if (this.user)
-        {
-          this.usersCol = this.afs.collection('users');
-          this.usersDoc = this.usersCol.valueChanges();
-          this.userDoc = this.usersCol.doc(this.user.uid).valueChanges();
-          this.userDoc.subscribe((data: UserInfo) => {
-            this.userInfo = data;
-          });//doc observer
-        }//if user
-      });//user observer
-}
+    this.user = authService.user
+    .subscribe((user) => {
+      this.user = user;
+      if (user) {
+        this.userDoc = this.afs.doc(`users/${user.uid}`).valueChanges();
+        this.userDoc.subscribe((data: UserInfo) => {
+          this.userInfo = data;
+        });
+      }
+    });
+  }
 
   ngOnInit() {
-}
+  }
   
   updateUser() {
     if (this.user != null && this.userInfo != null) {
