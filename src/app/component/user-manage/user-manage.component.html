@@ -1,3 +1,3 @@
-<p>
-  user-manage works!
-</p>
+<div *ngFor="let user of users | async">
+  <h5> {{ user.firstName }}</h5>
+</div>
