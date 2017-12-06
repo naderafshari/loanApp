@@ -37,6 +37,11 @@ export class UserManageComponent implements OnInit {
     this.userDoc.delete();
   }
 
+  linkClick(uid) {
+    console.log(uid);
+    this.router.navigate(['/user-profile', uid]);
+  }
+
   ngOnInit() {
   }
 

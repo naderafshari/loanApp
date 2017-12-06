@@ -185,7 +185,7 @@ export class AuthService {
             })
             .then( () => {
               alert('Your password may not have been set correctly! To use email/password login method in the future, password reset may be needed')
-              this.router.navigate(['/user-profile',null]);
+              this.router.navigate(['/user-profile',0]);
             })
         })
     })

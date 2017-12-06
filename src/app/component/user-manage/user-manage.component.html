@@ -1,3 +1,21 @@
-<div *ngFor="let user of users | async">
+<!--<div *ngFor="let user of users | async">
   <h5> {{ user.firstName }}</h5>
 </div>
+-->
+<!--<div *ngIf="users?.length > 0;else noItems">-->
+<div>
+    <ul *ngFor="let user of users | async" class="collection">
+    <li class="collection-item"><strong>{{user.firstName}} </strong> {{user.lastName}} <a (click)="linkClick(user.uid);" class="secondary-content">
+<!--      <i (click)="linkClick();" class="fa fa-pencil"></i>  
+      <i (click)="editItem($event, item)" class="fa fa-pencil"></i>  
+      <i *ngIf="editState && itemToEdit.id == item.id" (click)="clearState()" class="fa fa-compress"></i>  
+-->
+    Edit</a>
+    </li>
+  </ul>
+</div>
+
+<ng-template #noItems>
+  <hr>
+  <h5>There are no user</h5>
+</ng-template>

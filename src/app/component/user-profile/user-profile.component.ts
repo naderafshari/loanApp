@@ -27,24 +27,26 @@ export class UserProfileComponent implements OnInit {
               private route: ActivatedRoute) { 
     let uid: string;
     this.sub = this.route.queryParams.subscribe(params => {
-        this.uid = params['uid'] || 0;
-        this.user = authService.user
-        .subscribe((user) => {
-          this.user = user;
-          if (user) {
-            if (this.uid) {
-              uid = this.uid;
-            }
-            else {
-              uid = this.user.uid;
-            }
-            this.userDoc = this.afs.doc(`users/${uid}`).valueChanges();
-            this.userDoc.subscribe((data: UserInfo) => {
-              this.userInfo = data;
-            });
+//    this.route.params.subscribe(params => {
+      console.log('queryParams', params['uid']);
+      this.uid = params['uid'] || 0;
+      console.log('User:', this.uid);
+      authService.user.subscribe((user) => {
+        this.user = user;
+        if (user) {
+          if (this.uid) {
+            uid = this.uid;
           }
-        });
+          else {
+            uid = this.user.uid;
+          }
+          this.userDoc = this.afs.doc(`users/${uid}`).valueChanges();
+          this.userDoc.subscribe((data: UserInfo) => {
+            this.userInfo = data;
+          });
+        }
       });
+    });
   }
 
   ngOnInit() {
