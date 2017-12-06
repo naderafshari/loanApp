@@ -6,7 +6,7 @@ import * as firebase from 'firebase/app';
 import { Observable, Subject, BehaviorSubject } from 'rxjs/Rx';
 import { Router } from "@angular/router";
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
-import { UserInfo } from './user-info'
+import { UserInfo } from '../model/user-info'
 
 @Injectable()
 export class AuthService {
@@ -43,18 +43,9 @@ export class AuthService {
     return userRef.set(AuthData)
     //.catch ( (err) => alert(err));
   }
-
-  private setUserDoc(user) {
-    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
-    const userData = {email: user.email, displayName: user.displayName};
-    userRef.set(userData)
-    .catch ( (err) => {
-      alert(err);
-    })
     //return userRef.snapshotChanges()
     //.map(action => action.payload.exists)
     //.subscribe(exists => exists ? userRef.update(userData) : userRef.set(userData));
-  }
 
   // Returns true if user is logged in
   get authenticated(): boolean {

@@ -4,7 +4,7 @@ import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument 
 import { AuthService } from '../../provider/auth.service';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
-import { UserInfo } from '../../provider/user-info';
+import { UserInfo } from '../../model/user-info';
 
 @Component({
   selector: 'app-user-profile',
