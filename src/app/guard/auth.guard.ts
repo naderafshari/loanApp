@@ -9,29 +9,21 @@ import * as _ from 'lodash'
 
 @Injectable()
 export class AuthGuard implements CanActivate {
- constructor(private authService: AuthService,  private router: Router) {
- }
-
+  constructor(private authService: AuthService,  private router: Router) {
+  }
+  
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean> | boolean {    
       return this.authService.currentUser
-           .take(1)
-           .map(user => !!user)
-           .do(loggedIn => {
-             if (!loggedIn) {
-               console.log('access denied')
-               this.router.navigate(['/login']);
-             }
-         })
+            .take(1)
+            .map(user => !!user)
+            .do(loggedIn => {
+              if (!loggedIn) {
+                console.log('access denied')
+                this.router.navigate(['/login']);
+              }
+          })
   }
-  /*canActivate(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    if (!this.authService.authenticated){
-        return false;
-    }  
-    return true;
-  }*/ 
 }
  

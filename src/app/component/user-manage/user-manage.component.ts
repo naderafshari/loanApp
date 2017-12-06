@@ -4,7 +4,7 @@ import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument 
 import { AuthService } from '../../provider/auth.service';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
-import { UserInfo, UserAuthInfo } from '../../provider/user-info';
+import { UserInfo } from '../../provider/user-info';
 
 @Component({
   selector: 'app-user-manage',
@@ -12,7 +12,7 @@ import { UserInfo, UserAuthInfo } from '../../provider/user-info';
   styleUrls: ['./user-manage.component.css']
 })
 export class UserManageComponent implements OnInit {
-  userAuthInfo: any;
+  userInfo: any;
   usersCol: AngularFirestoreCollection<UserInfo>;
   userDoc: AngularFirestoreDocument<UserInfo>;  
   users: Observable<UserInfo[]>;
@@ -22,21 +22,18 @@ export class UserManageComponent implements OnInit {
               public authService: AuthService, 
               private router:Router,
               private route: ActivatedRoute) { 
-    authService.user.subscribe((userAuthInfo) => {
-      this.userAuthInfo = userAuthInfo;
-      this.usersCol = this.afs.collection<UserInfo>('users');
-      this.users = this.usersCol.snapshotChanges().map(actions => {
-        return actions.map(a => {
-          const data = a.payload.doc.data() as UserInfo;
-          const id = a.payload.doc.id;
-          return data;
-        });
+    this.usersCol = this.afs.collection<UserInfo>('users');
+    this.users = this.usersCol.snapshotChanges().map(actions => {
+      return actions.map(a => {
+        const data = a.payload.doc.data() as UserInfo;
+        const id = a.payload.doc.id;
+        return data;
       });
     });
   }
     
   deleteUser(user: UserInfo){
-    this.userDoc = this.afs.doc(`users/${this.userAuthInfo.uid}`);
+    this.userDoc = this.afs.doc(`users/${this.userInfo.uid}`);
     this.userDoc.delete();
   }
 

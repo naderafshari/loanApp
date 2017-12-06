@@ -20,7 +20,7 @@ export class SignupComponent implements OnInit {
   signup(formData){
     if(formData.valid) {
       if (formData.value.password == formData.value.password2) {
-        this.authService.signup(formData.value.email, formData.value.password);
+        this.authService.signup(formData.value.email, formData.value.password, formData.value.displayName);
 /*        .then( () => {
             //create a user document in firestore with only some info
             this.afs.collection('users').doc(this.authService.currentUserId).set({ 
