@@ -10,6 +10,7 @@ import { Routes, RouterModule } from "@angular/router";
 import * as firebase from 'firebase';
 
 import { AuthService } from './provider/auth.service';
+import { UserService } from './provider/user.service';
 import { AuthGuard } from './guard/auth.guard';
 import { AdminGuard } from './guard/admin.guard';
 import { routes, router } from './app.routes';
@@ -43,7 +44,7 @@ import { UserManageComponent } from './component/user-manage/user-manage.compone
     AngularFirestoreModule,
     RouterModule.forRoot(router)
   ],
-  providers: [AuthService, AuthGuard, AdminGuard],
+  providers: [AuthService, UserService, AuthGuard, AdminGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
