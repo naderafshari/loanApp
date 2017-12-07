@@ -24,7 +24,7 @@ export class AuthService {
           this.userDoc.subscribe((data: UserInfo) => {
             this.userInfo = data;
           });
-          return this.afs.doc<UserInfo>(`users/${user.uid}`).valueChanges()
+          return this.userDoc;
       } else {
         return Observable.of(null)
       }
@@ -35,8 +35,12 @@ export class AuthService {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${userAuth.uid}`);
     const data = {'displayName': userAuth.displayName};
     return userRef.update(data);
-    //.catch ( (err) => alert(err));
+    //const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${userAuth.uid}`);
+    //return userRef.snapshotChanges()
+    //.map(action => action.payload.exists)
+    //.subscribe(exists => exists ? userRef.update(userAuth) : userRef.set(userAuth));
   }
+
   private setUserAuthData(userAuth, displayName) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${userAuth.uid}`);
     const AuthData: UserInfo = {
@@ -47,11 +51,7 @@ export class AuthService {
         role: 'super-user'
     }
     return userRef.set(AuthData)
-    //.catch ( (err) => alert(err));
   }
-    //return userRef.snapshotChanges()
-    //.map(action => action.payload.exists)
-    //.subscribe(exists => exists ? userRef.update(userData) : userRef.set(userData));
 
   // Returns true if user is logged in
   get authenticated(): boolean {
@@ -89,7 +89,7 @@ export class AuthService {
     }
     
     signup(email: string, password: string, displayName: string) {
-    return this.firebaseAuth
+      return this.firebaseAuth
       .auth
       .createUserWithEmailAndPassword(email, password)
       .then( (value) => {
@@ -105,7 +105,7 @@ export class AuthService {
         alert('Something went wrong: ' + err.message);
         console.log('Something went wrong:',err.message);
       });
-  }
+    }
 
   login(email: string, password: string) {
     return this.firebaseAuth
@@ -179,43 +179,37 @@ export class AuthService {
   private socialSignIn(provider) {
     return this.firebaseAuth.auth.signInWithPopup(provider)
     .then( (value) => {
-        //console.log("login success uid = ",value.user.uid);
-        this.UpdatetUserAuthData(value.user).then(() => {
-//        this.afs.collection('users').doc(value.user.uid).update({
-//            'displayName': value.user.displayName
-//        })
-//        .then( () => {
-          //this.router.navigate(['/user-profile',value.user.uid]);
-//                  console.log("data from update: ",data);
-//          console.log("Role of logged in user: ", this.userInfo.role);
-          if (this.userInfo.role === 'admin'){
-            //console.log("(admin)user role is: ",this.userInfo.role);
-            this.router.navigateByUrl('/user-manage');
-          }else{
-            //console.log("(su)user role is: ",this.userInfo.role);
-            this.router.navigate(['/user-profile',value.user.uid]);
-          }
+      const data = {uid: value.user.uid};
+      const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${value.user.uid}`);
+      userRef.update(data)
+      .then(() => {
+        userRef.valueChanges().subscribe((data)=> {
+        if (data.role === 'admin')
+        {
+          this.router.navigateByUrl('/user-manage');
+        }
+        else if(data.role === 'super-user'){
+          this.router.navigate(['/user-profile',data.uid]);
+        }
+        });
+      })
+      .catch(() => {
+        userRef.set({
+          'displayName': value.user.displayName,
+          'email': value.user.email,
+          'uid': value.user.uid,
+          'photoURL': value.user.photoURL,
+          'role': 'super-user'
         })
-        .catch ( (err) => {
-          //alert (err);
-          this.afs.collection('users').doc(value.user.uid).set({
-            'displayName': value.user.displayName,
-            'email': value.user.email,
-            'uid': value.user.uid,
-            'photoURL': value.user.photoURL,
-            'role': 'super-user'
-            })
-            .then( () => {
-              alert('Your password may not have been set correctly! To use email/password login method in the future, password reset may be needed')
-              this.router.navigate(['/user-profile',value.user.uid]);
-            })
+        .then( () => {
+          alert('Your password may not have been set correctly! To use email/password login method in the future, password reset may be needed')
+          this.router.navigate(['/user-profile',value.user.uid]);
         })
-    })
-    .catch((err) => {
-        console.log(err)
-        alert(err)
-      }
-    )
+        .catch((err) => {
+          console.log(err);
+          alert(err);
+        });
+      })
+    });
   }
-
 }

@@ -26,26 +26,20 @@ export class UserProfileComponent implements OnInit {
               public authService: AuthService, 
               private router:Router,
               private route: ActivatedRoute) { 
-    let uid: string;
-    //this.sub = this.route.queryParams.subscribe(params => {
-      this.route.params.subscribe(params => {
+
+    this.route.params.subscribe(params => {
       console.log('queryParams', params['uid']);
       this.uid = params['uid'] || 0;
-      console.log('User Id:', this.uid);
       authService.user.subscribe((user) => {
         this.user = user;
         if (user) {
           if (this.uid) {
-            uid = this.uid;
+            this.userDoc = this.afs.doc(`users/${this.uid}`).valueChanges();
           }
           else {
-            uid = this.user.uid;
+            this.userDoc = this.afs.doc(`users/${this.user.uid}`).valueChanges();
           }
-          console.log("Role of user entering profile page: ", uid);
-          this.userDoc = this.afs.doc(`users/${uid}`).valueChanges();
-          this.userDoc.subscribe((data: UserInfo) => {
-            this.userInfo = data;
-          });
+          this.userDoc.subscribe((data: UserInfo) => this.userInfo = data);
         }
       });
     });
@@ -54,13 +48,13 @@ export class UserProfileComponent implements OnInit {
   ngOnInit() {
   }
   
+
   updateUser() {
     if (this.user != null && this.userInfo != null) {
-      console.log('User:', this.user.uid);
-      this.afs.collection('users').doc(this.user.uid).update(this.userInfo);
+      this.afs.collection('users').doc(this.userInfo.uid).update(this.userInfo);
     }
     else{
-      console.log('Cannot Update, user not logged in!');
+      alert('Cannot Update, user not logged in!');
       this.router.navigateByUrl('/login');
     }
   }
@@ -70,16 +64,9 @@ export class UserProfileComponent implements OnInit {
     if (this.user != null && this.userInfo != null) {
       return this.authService.userInfo.role !== 'admin';
     }
-    //return role !== 'admin'
   }
 
   logout() {
     this.authService.logout();
-    /*.then(
-      () => {
-              this.router.navigateByUrl('/login');
-      },
-      err => alert(err)
-    );*/
   }
 }
