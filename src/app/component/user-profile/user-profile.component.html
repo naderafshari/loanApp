@@ -1,9 +1,12 @@
 <!--<h1 *ngIf="authService.user | async">Welcome {{ (authService.user | async)?.email }}!</h1>
 <button (click)="logout()" *ngIf="authService.user | async">Logout</button>
+*ngIf="authService.user | async"
+
 <h2>Hey {{ name.auth.displayName }}!</h2>-->
 <div class="form-container" id="toolbar">
   <header>
-    <button class="alc" (click)="logout()" class="basic-btn" *ngIf="authService.user | async">Logout</button>
+    <a routerLink="/user-manage" id="goback">Go back</a>
+    <button class="alc" *ngIf="userNotAdmin() && authService.user | async" (click)="logout()" class="basic-btn">Logout</button>
   </header>
   <div id="page">
     <h3 class="alc">Welcome {{ userInfo?.displayName }}!</h3>

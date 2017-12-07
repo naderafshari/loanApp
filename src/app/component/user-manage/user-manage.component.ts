@@ -41,6 +41,16 @@ export class UserManageComponent implements OnInit {
     console.log(uid);
     this.router.navigate(['/user-profile', uid]);
   }
+  
+  logout() {
+    this.authService.logout();
+    /*.then(
+      () => {
+              this.router.navigateByUrl('/login');
+      },
+      err => alert(err)
+    );*/
+  }
 
   ngOnInit() {
   }
