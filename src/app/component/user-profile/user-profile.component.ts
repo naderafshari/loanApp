@@ -28,7 +28,7 @@ export class UserProfileComponent implements OnInit {
               private route: ActivatedRoute) { 
 
     this.route.params.subscribe(params => {
-      console.log('queryParams', params['uid']);
+      //console.log('queryParams', params['uid']);
       this.uid = params['uid'] || 0;
       authService.user.subscribe((user) => {
         this.user = user;

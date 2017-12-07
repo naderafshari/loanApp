@@ -32,24 +32,43 @@ export class UserManageComponent implements OnInit {
     });
   }
     
-  deleteUser(user: UserInfo){
-    this.userDoc = this.afs.doc(`users/${this.userInfo.uid}`);
-    this.userDoc.delete();
+  deleteClick(userId){
+    this.userDoc = this.afs.doc(`users/${userId}`);
+    this.userDoc.valueChanges().subscribe((data)=>{
+      if (data.role !== 'admin'){
+        this.userDoc.delete();
+      }
+      else{
+        alert("Admin user cannot be deleted here! Contact system admin");
+      }
+    });
   }
 
-  linkClick(uid) {
-    console.log(uid);
+  editClick(uid) {
     this.router.navigate(['/user-profile', uid]);
   }
   
   logout() {
     this.authService.logout();
-    /*.then(
-      () => {
-              this.router.navigateByUrl('/login');
-      },
-      err => alert(err)
-    );*/
+  }
+
+  showUser(userId)
+  {
+    if (this.userDoc = this.afs.doc(`users/${userId}`))
+    {
+      //this.userDoc.valueChanges().subscribe((data)=>{
+      //console.log("Role is: ", data.role)
+/*
+      if(data.role !== 'admin')
+      {
+        this.authService.user.subscribe( (loggedInUser) => {
+          console.log("Logged in user is: ", data.uid)
+          return true;//loggedInUser.uid == data.uid;
+        });
+      }*/
+      return true;
+      //});
+    }
   }
 
   ngOnInit() {

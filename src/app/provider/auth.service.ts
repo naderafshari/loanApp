@@ -31,16 +31,6 @@ export class AuthService {
     })
   }
 
-  private UpdatetUserAuthData(userAuth) {
-    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${userAuth.uid}`);
-    const data = {'displayName': userAuth.displayName};
-    return userRef.update(data);
-    //const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${userAuth.uid}`);
-    //return userRef.snapshotChanges()
-    //.map(action => action.payload.exists)
-    //.subscribe(exists => exists ? userRef.update(userAuth) : userRef.set(userAuth));
-  }
-
   private setUserAuthData(userAuth, displayName) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${userAuth.uid}`);
     const AuthData: UserInfo = {
@@ -48,7 +38,7 @@ export class AuthService {
         email: userAuth.email,
         displayName: displayName,
         photoURL: userAuth.photoURL,
-        role: 'super-user'
+        role: 'user'
     }
     return userRef.set(AuthData)
   }
@@ -116,11 +106,11 @@ export class AuthService {
         this.user.subscribe( (data) => {
           if (data){
             this.userInfo = data;
-            console.log("Role of logged in user: ", this.userInfo.role);
-            if (this.userInfo.role != 'admin'){
-              this.router.navigate(['/user-profile',this.userInfo.uid]);
-            }else{
+            //console.log("Role of logged in user: ", this.userInfo.role);
+            if (this.userInfo.role === 'admin'){
               this.router.navigateByUrl('/user-manage');
+            }else if(this.userInfo.role === 'user'){
+              this.router.navigate(['/user-profile',this.userInfo.uid]);
             }
           }
         });
@@ -147,12 +137,6 @@ export class AuthService {
   resetPassword(email: string) {
     return this.firebaseAuth.
      auth.sendPasswordResetEmail(email);
-      //.then(
-      //  () => {console.log("email sent");
-      //  this.router.navigateByUrl('/email-login');
-      //  }
-      //)
-      //.catch((error) => console.log(error))
   }
 
   //// Social Auth ////
@@ -188,7 +172,7 @@ export class AuthService {
         {
           this.router.navigateByUrl('/user-manage');
         }
-        else if(data.role === 'super-user'){
+        else if(data.role === 'user'){
           this.router.navigate(['/user-profile',data.uid]);
         }
         });
@@ -199,7 +183,7 @@ export class AuthService {
           'email': value.user.email,
           'uid': value.user.uid,
           'photoURL': value.user.photoURL,
-          'role': 'super-user'
+          'role': 'user'
         })
         .then( () => {
           alert('Your password may not have been set correctly! To use email/password login method in the future, password reset may be needed')
