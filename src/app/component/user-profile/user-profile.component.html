@@ -7,7 +7,7 @@
   </header>
   <div id="page">
     <h3 class="alc">Welcome {{ userInfo?.displayName }}!</h3>
-    <h4 class="alc">{{ (authService.user | async)?.email }}</h4>
+    <h4 class="alc">{{ (userInfo)?.email }}</h4>
   </div>
 
   <div class="user">

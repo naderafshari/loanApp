@@ -4,6 +4,7 @@ import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument 
 import { AuthService } from '../../provider/auth.service';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/observable/forkJoin';
 import { UserInfo } from '../../model/user-info';
 
 @Component({
@@ -26,11 +27,11 @@ export class UserProfileComponent implements OnInit {
               private router:Router,
               private route: ActivatedRoute) { 
     let uid: string;
-    this.sub = this.route.queryParams.subscribe(params => {
-//    this.route.params.subscribe(params => {
+    //this.sub = this.route.queryParams.subscribe(params => {
+      this.route.params.subscribe(params => {
       console.log('queryParams', params['uid']);
       this.uid = params['uid'] || 0;
-      console.log('User:', this.uid);
+      console.log('User Id:', this.uid);
       authService.user.subscribe((user) => {
         this.user = user;
         if (user) {
@@ -40,6 +41,7 @@ export class UserProfileComponent implements OnInit {
           else {
             uid = this.user.uid;
           }
+          console.log("Role of user entering profile page: ", uid);
           this.userDoc = this.afs.doc(`users/${uid}`).valueChanges();
           this.userDoc.subscribe((data: UserInfo) => {
             this.userInfo = data;

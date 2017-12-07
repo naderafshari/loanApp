@@ -31,6 +31,12 @@ export class AuthService {
     })
   }
 
+  private UpdatetUserAuthData(userAuth) {
+    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${userAuth.uid}`);
+    const data = {'displayName': userAuth.displayName};
+    return userRef.update(data);
+    //.catch ( (err) => alert(err));
+  }
   private setUserAuthData(userAuth, displayName) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${userAuth.uid}`);
     const AuthData: UserInfo = {
@@ -89,7 +95,7 @@ export class AuthService {
       .then( (value) => {
         console.log("signup success");
         this.setUserAuthData(value, displayName)
-        .then(()=> this.router.navigate(['/user-profile',0]))
+        .then(()=> this.router.navigate(['/user-profile',value.uid]))
         .catch(err => {
           console.log(err);
           alert(err);
@@ -111,7 +117,11 @@ export class AuthService {
           if (data){
             this.userInfo = data;
             console.log("Role of logged in user: ", this.userInfo.role);
-            this.router.navigate(['/user-profile',0])
+            if (this.userInfo.role != 'admin'){
+              this.router.navigate(['/user-profile',this.userInfo.uid]);
+            }else{
+              this.router.navigateByUrl('/user-manage');
+            }
           }
         });
     })
@@ -169,23 +179,35 @@ export class AuthService {
   private socialSignIn(provider) {
     return this.firebaseAuth.auth.signInWithPopup(provider)
     .then( (value) => {
-        console.log("login success");
-        this.afs.collection('users').doc(value.user.uid).update({
-            'displayName': value.user.displayName
+        //console.log("login success uid = ",value.user.uid);
+        this.UpdatetUserAuthData(value.user).then(() => {
+//        this.afs.collection('users').doc(value.user.uid).update({
+//            'displayName': value.user.displayName
+//        })
+//        .then( () => {
+          //this.router.navigate(['/user-profile',value.user.uid]);
+//                  console.log("data from update: ",data);
+//          console.log("Role of logged in user: ", this.userInfo.role);
+          if (this.userInfo.role === 'admin'){
+            //console.log("(admin)user role is: ",this.userInfo.role);
+            this.router.navigateByUrl('/user-manage');
+          }else{
+            //console.log("(su)user role is: ",this.userInfo.role);
+            this.router.navigate(['/user-profile',value.user.uid]);
+          }
         })
-        .then( () => {
-            this.router.navigate(['/user-profile',0])
-        })
-        .catch ( () => {
+        .catch ( (err) => {
+          //alert (err);
           this.afs.collection('users').doc(value.user.uid).set({
             'displayName': value.user.displayName,
             'email': value.user.email,
             'uid': value.user.uid,
-            'photoURL': value.user.photoURL
+            'photoURL': value.user.photoURL,
+            'role': 'super-user'
             })
             .then( () => {
               alert('Your password may not have been set correctly! To use email/password login method in the future, password reset may be needed')
-              this.router.navigate(['/user-profile',0]);
+              this.router.navigate(['/user-profile',value.user.uid]);
             })
         })
     })
