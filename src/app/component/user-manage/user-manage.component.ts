@@ -34,14 +34,25 @@ export class UserManageComponent implements OnInit {
     
   deleteClick(userId){
     this.userDoc = this.afs.doc(`users/${userId}`);
-    this.userDoc.valueChanges().subscribe((data)=>{
-      if (data.role !== 'admin'){
-        this.userDoc.delete();
-      }
-      else{
-        alert("Admin user cannot be deleted here! Contact system admin");
-      }
-    });
+    if (this.userDoc){
+      this.userDoc.valueChanges().subscribe((data)=>{
+        if(data){
+          if(data.role !== 'admin'){
+            this.userDoc.delete();
+            this.authService.deleteAuthCurrentUser()
+          }
+          else {
+            alert("Admin user cannot be deleted here! Contact system admin");
+          }
+        }//data
+        else { 
+          this.router.navigateByUrl('/login');
+        }
+      });
+    }//userDoc
+    else {
+      this.router.navigateByUrl('/login');
+    }
   }
 
   editClick(uid) {
@@ -50,25 +61,6 @@ export class UserManageComponent implements OnInit {
   
   logout() {
     this.authService.logout();
-  }
-
-  showUser(userId)
-  {
-    if (this.userDoc = this.afs.doc(`users/${userId}`))
-    {
-      //this.userDoc.valueChanges().subscribe((data)=>{
-      //console.log("Role is: ", data.role)
-/*
-      if(data.role !== 'admin')
-      {
-        this.authService.user.subscribe( (loggedInUser) => {
-          console.log("Logged in user is: ", data.uid)
-          return true;//loggedInUser.uid == data.uid;
-        });
-      }*/
-      return true;
-      //});
-    }
   }
 
   ngOnInit() {

@@ -18,7 +18,7 @@ export const router: Routes = [
     { path: 'email-login', component: EmailLoginComponent },
     { path: 'reset-password', component: ResetPasswordComponent },
     { path: 'user-profile/:uid', component: UserProfileComponent, canActivate: [AuthGuard] },
-    { path: 'user-manage', component: UserManageComponent, canActivate: [AdminGuard] }
+    { path: 'user-manage', component: UserManageComponent, canActivate: [AuthGuard] }
 ]
 
 export const routes: ModuleWithProviders = RouterModule.forRoot(router);

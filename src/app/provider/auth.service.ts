@@ -85,6 +85,7 @@ export class AuthService {
       .then( (value) => {
         console.log("signup success");
         this.setUserAuthData(value, displayName)
+        //.then(()=> this.router.navigateByUrl('/user-manage'))
         .then(()=> this.router.navigate(['/user-profile',value.uid]))
         .catch(err => {
           console.log(err);
@@ -105,16 +106,16 @@ export class AuthService {
         console.log("login success");
         this.user.subscribe( (data) => {
           if (data){
-            this.userInfo = data;
-            //console.log("Role of logged in user: ", this.userInfo.role);
-            if (this.userInfo.role === 'admin'){
+              this.userInfo = data;
               this.router.navigateByUrl('/user-manage');
-            }else if(this.userInfo.role === 'user'){
-              this.router.navigate(['/user-profile',this.userInfo.uid]);
-            }
           }
+/*          else if (this.authenticated)
+          { //when a user deletes itself the next time they login it get here
+              this.setUserAuthData(value, 'Awesome User');
+              console.log("User re-added!");
+        }*/
         });
-    })
+      })
       .catch(err => {
         console.log(err)
         alert(err);
@@ -132,6 +133,12 @@ export class AuthService {
       .catch(err => {
           alert('logout failed: ' + err);
       });
+  }
+
+  deleteAuthCurrentUser(){
+    return this.firebaseAuth
+    .auth
+    .currentUser.delete()
   }
 
   resetPassword(email: string) {
@@ -168,13 +175,9 @@ export class AuthService {
       userRef.update(data)
       .then(() => {
         userRef.valueChanges().subscribe((data)=> {
-        if (data.role === 'admin')
-        {
+        //if (data.role === 'admin'){
           this.router.navigateByUrl('/user-manage');
-        }
-        else if(data.role === 'user'){
-          this.router.navigate(['/user-profile',data.uid]);
-        }
+        //}else if(data.role === 'user'){this.router.navigate(['/user-profile', data.uid]);}
         });
       })
       .catch(() => {
@@ -187,7 +190,8 @@ export class AuthService {
         })
         .then( () => {
           alert('Your password may not have been set correctly! To use email/password login method in the future, password reset may be needed')
-          this.router.navigate(['/user-profile',value.user.uid]);
+          this.router.navigate(['/user-profile', value.user.uid]);
+          //this.router.navigateByUrl('/user-manage');
         })
         .catch((err) => {
           console.log(err);

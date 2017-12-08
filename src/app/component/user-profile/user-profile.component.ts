@@ -52,6 +52,7 @@ export class UserProfileComponent implements OnInit {
   updateUser() {
     if (this.user != null && this.userInfo != null) {
       this.afs.collection('users').doc(this.userInfo.uid).update(this.userInfo);
+      this.router.navigateByUrl('/user-manage');
     }
     else{
       alert('Cannot Update, user not logged in!');
