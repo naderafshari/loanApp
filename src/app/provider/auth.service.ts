@@ -92,7 +92,6 @@ export class AuthService {
     .then( (value) => {
       console.log("signup success");
       this.setUserAuthData(value, displayName)
-      //.then(()=> this.router.navigateByUrl('/user-manage'))
       .then(()=> this.router.navigate(['/user-profile',value.uid]))
       .catch(err => {
         console.log(err);
@@ -109,37 +108,42 @@ export class AuthService {
     return this.firebaseAuth
       .auth
       .signInWithEmailAndPassword(email, password)
-      .then( (value) => {
-        console.log("login success uid = ", value.uid, "email = ", value.email);
-        const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${value.uid}`);
-        userRef.update({
-          'email': value.email,
-          'uid': value.uid,
-        })
-        .then(() => {
-            this.router.navigateByUrl('/user-manage');
-        })
-        .catch(() => {
-          userRef.set({
-            'displayName': value.displayName,
-            'email': value.email,
-            'uid': value.uid,
-            'photoURL': value.photoURL,
-            'role': 'user'
-          })
-          .then( () => {
-            this.router.navigate(['/user-profile', value.uid]);
-          })
-          .catch((err) => {
-            console.log(err);
-            alert(err);
-          });
-        })
+      .then( (value) => { this.upset(value)})
+      .catch((err) => {
+        alert('Login failed! '+err);
+      });
+  }
+  
+  private socialSignIn(provider) {
+    return this.firebaseAuth.auth.signInWithPopup(provider)
+    .then( (value) => { this.upset(value.user)})
+    .catch((err) => {
+      alert('Login failed! ' + err);
+    });
+}
+  
+  upset(value){
+    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${value.uid}`);
+    userRef.update({'uid': value.uid})
+    .then(() => {
+        this.router.navigateByUrl('/user-manage');
+    })
+    .catch(() => {
+      userRef.set({
+        'displayName': value.displayName,
+        'email': value.email,
+        'uid': value.uid,
+        'photoURL': value.photoURL,
+        'role': 'user'
       })
-      .catch(err => {
-        console.log(err)
+      .then( () => {
+        this.router.navigate(['/user-profile', value.uid]);
+      })
+      .catch((err) => {
+        console.log(err);
         alert(err);
       });
+    });
   }
   
   logout() {
@@ -186,37 +190,4 @@ export class AuthService {
     return this.socialSignIn(provider);
   }
 
-  private socialSignIn(provider) {
-    return this.firebaseAuth.auth.signInWithPopup(provider)
-    .then( (value) => {
-      const data = {uid: value.user.uid};
-      const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${value.user.uid}`);
-      userRef.update(data)
-      .then(() => {
-        userRef.valueChanges().subscribe((data)=> {
-        //if (data.role === 'admin'){
-          this.router.navigateByUrl('/user-manage');
-        //}else if(data.role === 'user'){this.router.navigate(['/user-profile', data.uid]);}
-        });
-      })
-      .catch(() => {
-        userRef.set({
-          'displayName': value.user.displayName,
-          'email': value.user.email,
-          'uid': value.user.uid,
-          'photoURL': value.user.photoURL,
-          'role': 'user'
-        })
-        .then( () => {
-          alert('Your password may not have been set correctly! To use email/password login method in the future, password reset may be needed')
-          this.router.navigate(['/user-profile', value.user.uid]);
-          //this.router.navigateByUrl('/user-manage');
-        })
-        .catch((err) => {
-          console.log(err);
-          alert(err);
-        });
-      })
-    });
-  }
 }
