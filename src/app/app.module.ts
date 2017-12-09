@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { AngularFireModule } from 'angularfire2';
 import { environment } from '../environments/environment';
@@ -8,6 +9,11 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { Routes, RouterModule } from "@angular/router";
 import * as firebase from 'firebase';
+import { MatCardModule } from '@angular/material';
+import { MatButtonModule } from '@angular/material';
+import { MatDialogModule } from '@angular/material';
+import { MatTooltipModule } from '@angular/material';
+import { MatSnackBarModule } from '@angular/material';
 
 import { AuthService } from './provider/auth.service';
 import { UserService } from './provider/user.service';
@@ -22,6 +28,7 @@ import { SignupComponent } from './component/signup/signup.component';
 import { ResetPasswordComponent } from './component/reset-password/reset-password.component';
 import { UserProfileComponent } from './component/user-profile/user-profile.component';
 import { UserManageComponent } from './component/user-manage/user-manage.component';
+import { DialogComponent } from './component/dialog/dialog.component';
 
 
 @NgModule({
@@ -32,10 +39,17 @@ import { UserManageComponent } from './component/user-manage/user-manage.compone
     SignupComponent,
     ResetPasswordComponent,
     UserProfileComponent,
-    UserManageComponent
+    UserManageComponent,
+    DialogComponent
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
+    MatCardModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatTooltipModule,
+    MatSnackBarModule,
     FormsModule,
     HttpModule,
     RouterModule,
@@ -43,6 +57,9 @@ import { UserManageComponent } from './component/user-manage/user-manage.compone
     AngularFireAuthModule,
     AngularFirestoreModule,
     RouterModule.forRoot(router)
+  ],
+  entryComponents: [
+    DialogComponent
   ],
   providers: [AuthService, UserService, AuthGuard, AdminGuard],
   bootstrap: [AppComponent]
