@@ -1,10 +1,5 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { MatCardModule } from '@angular/material';
-import { MatButtonModule } from '@angular/material';
-import { MatDialogModule } from '@angular/material';
-import { MatTooltipModule } from '@angular/material';
-import { MatSnackBarModule } from '@angular/material';
 
 @Component({
   selector: 'app-dialog',

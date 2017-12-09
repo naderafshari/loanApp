@@ -7,11 +7,6 @@ import { DialogComponent } from '../dialog/dialog.component';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { UserInfo } from '../../model/user-info';
-import { MatCardModule } from '@angular/material';
-import { MatButtonModule } from '@angular/material';
-import { MatDialogModule } from '@angular/material';
-import { MatTooltipModule } from '@angular/material';
-import { MatSnackBarModule } from '@angular/material';
 
 @Component({
   selector: 'app-user-manage',
@@ -19,12 +14,10 @@ import { MatSnackBarModule } from '@angular/material';
   styleUrls: ['./user-manage.component.css']
 })
 export class UserManageComponent implements OnInit {
-  userInfo: any;
   usersCol: AngularFirestoreCollection<UserInfo>;
   userDoc: AngularFirestoreDocument<UserInfo>;  
   users: Observable<UserInfo[]>;
-  user: any;
-  dialogResult = "";
+  userId: any;
 
   constructor(private afs: AngularFirestore, 
               public authService: AuthService, private router:Router,
@@ -39,42 +32,41 @@ export class UserManageComponent implements OnInit {
     });
   }
 
-  openDialog(): void {
+  openDialog(userId): void {
     let dialogRef = this.dialog.open(DialogComponent, {
       width: '250px',
-      data: 'This text is passed into the dialog'
+      data: 'You are about to delete. Are you sure?'
     });
-
+    this.userId = userId;
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      this.dialogResult = result;
-      if (result === 'Confirm')
-      {
-        this.deleteUser('');
+      if (result === 'Confirm') {
+        this.deleteUser(this.userId);
       }
     });
   }
     
-  deleteUser(userId){
+  deleteUser(userId) {
+
     this.userDoc = this.afs.doc(`users/${userId}`);
-    if (this.userDoc){
-      this.userDoc.valueChanges().subscribe((data)=>{
-        if(data){
-          if(data.role !== 'admin'){
-            this.userDoc.delete();
-            this.authService.deleteAuthCurrentUser()
+    if (this.userDoc) {
+      let sub = this.userDoc.valueChanges().subscribe((data) => {
+         if(data) {
+          if(data.role !== 'admin') {
+            console.log("Deleting User");
+            this.userDoc.delete()
+            .then(() => {
+              sub.unsubscribe();
+              if(this.authService.currentUserId == userId){
+                this.authService.deleteAuthCurrentUser();
+                this.router.navigateByUrl('/login');
+              }
+            });
           }
           else {
             alert("Admin user cannot be deleted here! Contact system admin");
           }
-        }//data
-        else { 
-          this.router.navigateByUrl('/login');
         }
       });
-    }//userDoc
-    else {
-      this.router.navigateByUrl('/login');
     }
   }
 
