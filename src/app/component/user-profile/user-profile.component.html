@@ -1,7 +1,29 @@
+<mat-card>
+  <a routerLink="/user-manage" id="goback">Go back</a>
+  <hr>
+  <mat-form-field *ngIf="userInfo">
+    <input matInput [(ngModel)]="userInfo.firstName" placeholder="First Name.."> 
+  </mat-form-field>
+  
+  <mat-form-field *ngIf="userInfo">
+    <input matInput [(ngModel)]="userInfo.lastName" placeholder="Last Name.."> 
+  </mat-form-field>
+  
+  <mat-form-field *ngIf="(authService.user | async)?.role ==='admin' && userInfo">
+      <mat-select [(ngModel)]="userInfo.role" placeholder="Role">
+          <mat-option value="admin">admin</mat-option>
+          <mat-option value="user">user</mat-option>
+        </mat-select>
+  </mat-form-field>  
+  <br>
+  <button mat-raised-button color="primary" (click)="updateUser()">Submit</button>
+</mat-card>
+<!--
+<hr>
 <div class="form-container" id="toolbar">
   <header>
     <a routerLink="/user-manage" id="goback">Go back</a>
-<!--    <button class="alc" *ngIf="userNotAdmin() && authService.user | async" (click)="logout()" class="basic-btn">Logout</button>-->
+    <button class="alc" *ngIf="userNotAdmin() && authService.user | async" (click)="logout()" class="basic-btn">Logout</button>
   </header>
   <div id="page">
     <h3 class="alc">Welcome {{ userInfo?.displayName }}!</h3>
@@ -25,3 +47,4 @@
   </div>
   
 </div>
+-->

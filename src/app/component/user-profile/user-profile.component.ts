@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';   
+import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { AuthService } from '../../provider/auth.service';
 import { Observable } from 'rxjs/Observable';
@@ -22,21 +22,19 @@ export class UserProfileComponent implements OnInit {
   uid: string;
   private sub: any;
 
-  constructor(private afs: AngularFirestore, 
-              public authService: AuthService, 
-              private router:Router,
-              private route: ActivatedRoute) { 
+  constructor(private afs: AngularFirestore,
+              public authService: AuthService,
+              private router: Router,
+              private route: ActivatedRoute) {
 
     this.route.params.subscribe(params => {
-      //console.log('queryParams', params['uid']);
       this.uid = params['uid'] || 0;
       authService.user.subscribe((user) => {
         this.user = user;
         if (user) {
           if (this.uid) {
             this.userDoc = this.afs.doc(`users/${this.uid}`).valueChanges();
-          }
-          else {
+          } else {
             this.userDoc = this.afs.doc(`users/${this.user.uid}`).valueChanges();
           }
           this.userDoc.subscribe((data: UserInfo) => this.userInfo = data);
@@ -47,21 +45,18 @@ export class UserProfileComponent implements OnInit {
 
   ngOnInit() {
   }
-  
 
   updateUser() {
     if (this.user != null && this.userInfo != null) {
       this.afs.collection('users').doc(this.userInfo.uid).update(this.userInfo);
       this.router.navigateByUrl('/user-manage');
-    }
-    else{
+    } else {
       alert('Cannot Update, user not logged in!');
       this.router.navigateByUrl('/login');
     }
   }
 
-  userNotAdmin()
-  {
+  userNotAdmin()  {
     if (this.user != null && this.userInfo != null) {
       return this.authService.userInfo.role !== 'admin';
     }

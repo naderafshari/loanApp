@@ -1,10 +1,10 @@
 <mat-card>
   <mat-card-header>
-    <button mat-raised-button *ngIf="authService.user | async" (click)="logout()" class="basic-btn">Logout</button>
+    <button mat-raised-button color="primary" *ngIf="authService.user | async" (click)="logout()" >Logout</button>
   </mat-card-header>
   <hr>
   <mat-card-content>
-    <div class="alc">
+    <div>
       <ul *ngFor="let user of users | async" class="collection">
         <li *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.uid === user.uid" class="collection-item"><strong>{{user.firstName}} </strong> {{user.lastName}}
           <a (click)="editClick(user.uid);" class="secondary-content">Edit</a>

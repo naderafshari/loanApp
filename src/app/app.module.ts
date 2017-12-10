@@ -6,11 +6,11 @@ import { AngularFireAuthModule } from 'angularfire2/auth';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { Routes, RouterModule } from "@angular/router";
+import { Routes, RouterModule } from '@angular/router';
 import * as firebase from 'firebase';
 
 import { environment } from '../environments/environment';
-import { MaterialModule } from'./material.module'
+import { MaterialModule } from './material.module';
 import { AuthService } from './provider/auth.service';
 import { UserService } from './provider/user.service';
 import { AuthGuard } from './guard/auth.guard';
