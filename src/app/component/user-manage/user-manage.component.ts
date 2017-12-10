@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { Router, ActivatedRoute } from '@angular/router';   
+import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { AuthService } from '../../provider/auth.service';
 import { DialogComponent } from '../dialog/dialog.component';
@@ -15,13 +15,13 @@ import { UserInfo } from '../../model/user-info';
 })
 export class UserManageComponent implements OnInit {
   usersCol: AngularFirestoreCollection<UserInfo>;
-  userDoc: AngularFirestoreDocument<UserInfo>;  
+  userDoc: AngularFirestoreDocument<UserInfo>;
   users: Observable<UserInfo[]>;
   userId: any;
 
-  constructor(private afs: AngularFirestore, 
-              public authService: AuthService, private router:Router,
-              private route: ActivatedRoute, public dialog: MatDialog) { 
+  constructor(private afs: AngularFirestore,
+              public authService: AuthService, private router: Router,
+              private route: ActivatedRoute, public dialog: MatDialog) {
     this.usersCol = this.afs.collection<UserInfo>('users');
     this.users = this.usersCol.snapshotChanges().map(actions => {
       return actions.map(a => {
@@ -33,7 +33,7 @@ export class UserManageComponent implements OnInit {
   }
 
   openDialog(userId): void {
-    let dialogRef = this.dialog.open(DialogComponent, {
+    const dialogRef = this.dialog.open(DialogComponent, {
       width: '250px',
       data: 'You are about to delete. Are you sure?'
     });
@@ -44,26 +44,25 @@ export class UserManageComponent implements OnInit {
       }
     });
   }
-    
+
   deleteUser(userId) {
 
     this.userDoc = this.afs.doc(`users/${userId}`);
     if (this.userDoc) {
-      let sub = this.userDoc.valueChanges().subscribe((data) => {
-         if(data) {
-          if(data.role !== 'admin') {
-            console.log("Deleting User");
+      const sub = this.userDoc.valueChanges().subscribe((data) => {
+         if (data) {
+          if (data.role !== 'admin') {
+            console.log('Deleting User');
             this.userDoc.delete()
             .then(() => {
               sub.unsubscribe();
-              if(this.authService.currentUserId == userId){
+              if (this.authService.currentUserId === userId) {
                 this.authService.deleteAuthCurrentUser();
                 this.router.navigateByUrl('/login');
               }
             });
-          }
-          else {
-            alert("Admin user cannot be deleted here! Contact system admin");
+          } else {
+            alert('Admin user cannot be deleted here! Contact system admin');
           }
         }
       });
@@ -73,7 +72,7 @@ export class UserManageComponent implements OnInit {
   editClick(uid) {
     this.router.navigate(['/user-profile', uid]);
   }
-  
+
   logout() {
     this.authService.logout();
   }

@@ -5,12 +5,12 @@
   <hr>
   <mat-card-content>
     <div>
-      <ul *ngFor="let user of users | async" class="collection">
-        <li *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.uid === user.uid" class="collection-item"><strong>{{user.firstName}} </strong> {{user.lastName}}
-          <a (click)="editClick(user.uid);" class="secondary-content">Edit</a>
+      <mat-list *ngFor="let user of users | async">
+        <mat-list-item *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.uid === user.uid"><strong>{{user.firstName}} </strong> {{user.lastName}}
+          <a (click)="editClick(user.uid);" class="secondary-content"><span>Edit</span></a>
           <a (click)="openDialog(user.uid);" class="secondary-content">Delete</a>
-        </li>
-      </ul>
+        </mat-list-item>
+      </mat-list>
     </div>
   </mat-card-content>
 </mat-card>
