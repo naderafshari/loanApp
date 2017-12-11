@@ -1,9 +1,9 @@
 export interface UserInfo {
   uid: string;
-  email: string,
+  email: string;
   role?: string;
-  displayName?: string,
+  displayName?: string;
   photoURL?: string;
-  firstName?: string,
-  lastName?: string,
+  firstName?: string;
+  lastName?: string;
 }

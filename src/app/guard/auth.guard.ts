@@ -5,16 +5,16 @@ import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/take';
-import * as _ from 'lodash'
+import * as _ from 'lodash';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(private authService: AuthService,  private router: Router) {
   }
-  
+
   canActivate(
     next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean> | boolean {    
+    state: RouterStateSnapshot): Observable<boolean> | boolean {
       return this.authService.currentUser
             .take(1)
             .map(user => !!user)
@@ -23,7 +23,6 @@ export class AuthGuard implements CanActivate {
                 console.log('access denied')
                 this.router.navigate(['/login']);
               }
-          })
+          });
   }
 }
- 

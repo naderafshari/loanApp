@@ -19,6 +19,6 @@ export const router: Routes = [
     { path: 'reset-password', component: ResetPasswordComponent },
     { path: 'user-profile/:uid', component: UserProfileComponent, canActivate: [AuthGuard] },
     { path: 'user-manage', component: UserManageComponent, canActivate: [AuthGuard] }
-]
+];
 
 export const routes: ModuleWithProviders = RouterModule.forRoot(router);

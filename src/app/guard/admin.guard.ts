@@ -5,7 +5,7 @@ import { AuthService } from '../provider/auth.service';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/take';
-import * as _ from 'lodash'
+import * as _ from 'lodash';
 
 @Injectable()
 export class AdminGuard implements CanActivate {
@@ -26,11 +26,11 @@ export class AdminGuard implements CanActivate {
           console.log('route prevented!')
           alert('Access denied! Insufficient priviliges.');
           // this.router.navigate(['/']);
-          })
+          });
         }
         //else{
-        //  console.log('route allowed!')        
+        //  console.log('route allowed!')
         //}
-      })  
+      });
     }
 }

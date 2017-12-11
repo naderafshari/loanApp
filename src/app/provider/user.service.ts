@@ -1,24 +1,23 @@
 import { Injectable } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';   
+import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { AuthService } from './auth.service';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { UserInfo } from '../model/user-info';
 
-
 @Injectable()
 export class UserService {
 
   usersCol: AngularFirestoreCollection<UserInfo>;
-  userDoc: AngularFirestoreDocument<UserInfo>;  
+  userDoc: AngularFirestoreDocument<UserInfo>;
   users: Observable<UserInfo[]>;
 
-  constructor(private afs: AngularFirestore, 
-              public authService: AuthService, 
-              private router:Router,
-              private route: ActivatedRoute) { 
+  constructor(private afs: AngularFirestore,
+              public authService: AuthService,
+              private router: Router,
+              private route: ActivatedRoute) {
     this.usersCol = this.afs.collection<UserInfo>('users');
     this.users = this.usersCol.snapshotChanges().map(actions => {
       return actions.map(a => {
@@ -29,22 +28,22 @@ export class UserService {
     });
   }
 
-  getUsers(){
-    return this.users
+  getUsers() {
+    return this.users;
   }
 
-  addUser(user: UserInfo){
+  addUser(user: UserInfo) {
     this.usersCol.add(user);
   }
 
-  deleteUser(user: UserInfo){
+  deleteUser(user: UserInfo) {
     this.userDoc = this.afs.doc(`users/${user.uid}`);
     this.userDoc.delete();
   }
 
-  updateUser(user: UserInfo){
+  updateUser(user: UserInfo) {
     this.userDoc = this.afs.doc(`users/${user.uid}`);
     this.userDoc.update(user);
   }
-  
+
 }

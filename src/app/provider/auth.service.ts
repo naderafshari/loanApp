@@ -4,9 +4,9 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
 import { Observable, Subject, BehaviorSubject } from 'rxjs/Rx';
-import { Router } from "@angular/router";
+import { Router } from '@angular/router';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
-import { UserInfo } from '../model/user-info'
+import { UserInfo } from '../model/user-info';
 
 @Injectable()
 export class AuthService {
@@ -14,9 +14,9 @@ export class AuthService {
   user: Observable<UserInfo>;
   userDoc: Observable<{}>;
   userInfo: UserInfo;
-  
-  constructor(private firebaseAuth: AngularFireAuth, private router:Router, private afs: AngularFirestore) {
-    
+
+  constructor(private firebaseAuth: AngularFireAuth, private router: Router, private afs: AngularFirestore) {
+
     this.user = this.firebaseAuth.authState
     .switchMap(user => {
       if (user) {
@@ -26,9 +26,9 @@ export class AuthService {
           });
           return this.userDoc;
       } else {
-        return Observable.of(null)
+        return Observable.of(null);
       }
-    })
+    });
   }
 
   private setUserAuthData(userAuth, displayName) {
@@ -39,8 +39,8 @@ export class AuthService {
         displayName: displayName,
         photoURL: userAuth.photoURL,
         role: 'user'
-    }
-    return userRef.set(AuthData)
+    };
+    return userRef.set(AuthData);
   }
 
   // Returns true if user is logged in
@@ -50,9 +50,9 @@ export class AuthService {
   }
 
   get userAuthRole(): string {
-    return this.authenticated ? this.userInfo.role: null;
+    return this.authenticated ? this.userInfo.role : null;
   }
-  
+
   // Returns current user data
   get currentUser(): any {
       return this.authenticated ? this.firebaseAuth.authState : null;
@@ -61,7 +61,7 @@ export class AuthService {
 
   // Returns
   get currentUserObservable(): any {
-    return this.firebaseAuth.authState
+    return this.firebaseAuth.authState;
   }
 
   // Returns current user Info
@@ -79,20 +79,20 @@ export class AuthService {
   get currentUserDisplayName(): string {
     return this.authenticated ? this.userInfo.displayName : '';
   }
-  
+
   // Returns current user UID
   get currentUserEmail(): string {
     return this.authenticated ? this.firebaseAuth.auth.currentUser.email : '';
   }
-    
+
   signup(email: string, password: string, displayName: string) {
     return this.firebaseAuth
     .auth
     .createUserWithEmailAndPassword(email, password)
     .then( (value) => {
-      console.log("signup success");
+      console.log('signup success');
       this.setUserAuthData(value, displayName)
-      .then(()=> this.router.navigate(['/user-profile',value.uid]))
+      .then(() => this.router.navigate(['/user-profile',value.uid]))
       .catch(err => {
         console.log(err);
         alert(err);
@@ -100,7 +100,7 @@ export class AuthService {
     })
     .catch(err => {
       alert('Something went wrong: ' + err.message);
-      console.log('Something went wrong:',err.message);
+      console.log('Something went wrong:', err.message);
     });
   }
 
@@ -108,21 +108,21 @@ export class AuthService {
     return this.firebaseAuth
       .auth
       .signInWithEmailAndPassword(email, password)
-      .then( (value) => { this.upset(value)})
+      .then( (value) => { this.upset(value); })
       .catch((err) => {
-        alert('Login failed! '+err);
+        alert('Login failed! ' + err);
       });
   }
-  
+
   private socialSignIn(provider) {
     return this.firebaseAuth.auth.signInWithPopup(provider)
-    .then( (value) => { this.upset(value.user)})
+    .then( (value) => { this.upset(value.user); })
     .catch((err) => {
       alert('Login failed! ' + err);
     });
 }
-  
-  upset(value){
+
+  upset(value) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${value.uid}`);
     userRef.update({'uid': value.uid})
     .then(() => {
@@ -145,23 +145,23 @@ export class AuthService {
       });
     });
   }
-  
+
   logout() {
     return this.firebaseAuth.auth.signOut()
     .then(
       () => {
-        this.firebaseAuth.authState.subscribe(() =>     
-          this.router.navigateByUrl('/login'))
+        this.firebaseAuth.authState.subscribe(() =>
+          this.router.navigateByUrl('/login'));
       })
       .catch(err => {
           alert('logout failed: ' + err);
       });
   }
 
-  deleteAuthCurrentUser(){
+  deleteAuthCurrentUser() {
     return this.firebaseAuth
     .auth
-    .currentUser.delete()
+    .currentUser.delete();
   }
 
   resetPassword(email: string) {
@@ -171,22 +171,22 @@ export class AuthService {
 
   //// Social Auth ////
   githubLogin() {
-    const provider = new firebase.auth.GithubAuthProvider()
+    const provider = new firebase.auth.GithubAuthProvider();
     return this.socialSignIn(provider);
   }
 
   googleLogin() {
-    const provider = new firebase.auth.GoogleAuthProvider()
+    const provider = new firebase.auth.GoogleAuthProvider();
     return this.socialSignIn(provider);
   }
 
   facebookLogin() {
-    const provider = new firebase.auth.FacebookAuthProvider()
+    const provider = new firebase.auth.FacebookAuthProvider();
     return this.socialSignIn(provider);
   }
 
-  twitterLogin(){
-    const provider = new firebase.auth.TwitterAuthProvider()
+  twitterLogin() {
+    const provider = new firebase.auth.TwitterAuthProvider();
     return this.socialSignIn(provider);
   }
 

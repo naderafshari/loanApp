@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../provider/auth.service';
-import { Router } from '@angular/router';   
+import { Router } from '@angular/router';
 import * as firebase from 'firebase';
 
 @Component({
@@ -10,25 +10,25 @@ import * as firebase from 'firebase';
 })
 export class LoginComponent implements OnInit {
   error: any;
-  
-  constructor( public authService: AuthService, private router:Router) {
+
+  constructor( public authService: AuthService, private router: Router) {
   }
 
-  googleLogin(){
-    this.authService.googleLogin()
+  googleLogin() {
+    this.authService.googleLogin();
     /*.then(
       () => {
-        this.router.navigateByUrl('/user-profile');        
+        this.router.navigateByUrl('/user-profile');
       }
     ),
     error => alert(error)*/
   }
 
-  facebookLogin(){
-    this.authService.facebookLogin()
+  facebookLogin() {
+    this.authService.facebookLogin();
     /*.then(
       () => {
-        this.router.navigateByUrl('/user-profile');        
+        this.router.navigateByUrl('/user-profile');
       }
     ),
     error => alert(error)*/
