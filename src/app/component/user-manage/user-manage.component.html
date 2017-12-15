@@ -2,13 +2,13 @@
   <mat-card-header>
     <button mat-raised-button color="primary" *ngIf="authService.user | async" (click)="logout()" >Logout</button>
   </mat-card-header>
-  <hr>
+  <br>
   <mat-card-content>
     <div>
       <mat-list *ngFor="let user of users | async">
-        <mat-list-item *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.uid === user.uid"><strong>{{user.firstName}} </strong> {{user.lastName}}
-          <a (click)="editClick(user.uid);" class="secondary-content"><span>Edit</span></a>
-          <a (click)="openDialog(user.uid);" class="secondary-content">Delete</a>
+        <mat-list-item *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.uid === user.uid"><strong>{{user.firstName}}</strong> &nbsp; {{user.lastName}}&nbsp;
+          <a (click)="editClick(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Edit</a>
+          <a (click)="openDialog(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;Delete</a>
         </mat-list-item>
       </mat-list>
     </div>

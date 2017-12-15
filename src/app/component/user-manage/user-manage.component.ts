@@ -46,7 +46,6 @@ export class UserManageComponent implements OnInit {
   }
 
   deleteUser(userId) {
-
     this.userDoc = this.afs.doc(`users/${userId}`);
     if (this.userDoc) {
       const sub = this.userDoc.valueChanges().subscribe((data) => {
