@@ -9,6 +9,7 @@
         <mat-list-item *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.uid === user.uid"><strong>{{user.firstName}}</strong> &nbsp; {{user.lastName}}&nbsp;
           <a (click)="editClick(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Edit</a>
           <a (click)="openDialog(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;Delete</a>
+          <a (click)="goToForm(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;Form 1</a>
         </mat-list-item>
       </mat-list>
     </div>

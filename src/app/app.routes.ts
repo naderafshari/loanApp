@@ -10,6 +10,7 @@ import { SignupComponent } from './component/signup/signup.component';
 import { ResetPasswordComponent } from './component/reset-password/reset-password.component';
 import { UserProfileComponent } from './component/user-profile/user-profile.component';
 import { UserManageComponent } from './component/user-manage/user-manage.component';
+import { Form1Component } from './component/form1/form1.component';
 
 export const router: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -18,7 +19,8 @@ export const router: Routes = [
     { path: 'email-login', component: EmailLoginComponent },
     { path: 'reset-password', component: ResetPasswordComponent },
     { path: 'user-profile/:uid', component: UserProfileComponent, canActivate: [AuthGuard] },
-    { path: 'user-manage', component: UserManageComponent, canActivate: [AuthGuard] }
+    { path: 'user-manage', component: UserManageComponent, canActivate: [AuthGuard] },
+    { path: 'form1/:uid', component: Form1Component, canActivate: [AuthGuard] },
 ];
 
 export const routes: ModuleWithProviders = RouterModule.forRoot(router);

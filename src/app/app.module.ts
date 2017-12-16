@@ -10,7 +10,7 @@ import { Routes, RouterModule } from '@angular/router';
 import * as firebase from 'firebase';
 
 import { environment } from '../environments/environment';
-import { MaterialModule } from './material.module';
+import { MaterialModule } from './material/material.module';
 import { AuthService } from './provider/auth.service';
 import { UserService } from './provider/user.service';
 import { AuthGuard } from './guard/auth.guard';
@@ -25,6 +25,7 @@ import { ResetPasswordComponent } from './component/reset-password/reset-passwor
 import { UserProfileComponent } from './component/user-profile/user-profile.component';
 import { UserManageComponent } from './component/user-manage/user-manage.component';
 import { DialogComponent } from './component/dialog/dialog.component';
+import { Form1Component } from './component/form1/form1.component';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import { DialogComponent } from './component/dialog/dialog.component';
     ResetPasswordComponent,
     UserProfileComponent,
     UserManageComponent,
-    DialogComponent
+    DialogComponent,
+    Form1Component
   ],
   imports: [
     BrowserModule,

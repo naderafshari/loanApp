@@ -76,6 +76,10 @@ export class UserManageComponent implements OnInit {
     this.authService.logout();
   }
 
+  goToForm(uid) {
+    this.router.navigate(['/form1', uid]);
+  }
+
   ngOnInit() {
   }
 
