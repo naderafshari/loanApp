@@ -2,12 +2,10 @@
     <a routerLink="/user-manage" id="goback">Go back</a>
     <br>
     <br>
+    <mat-list-item *ngIf="form1Data">Last Updated: {{form1Data.updateTime}}</mat-list-item>
+    <br>
     <mat-form-field *ngIf="form1Data">
-      <input matInput [(ngModel)]="form1Data.time" placeholder="Last update time.."> 
-    </mat-form-field>
-    
-    <mat-form-field *ngIf="form1Data">
-      <input matInput [(ngModel)]="form1Data.field1.fieldName" placeholder="Field Name.."> 
+      <input matInput [(ngModel)]="form1Data.field1.fieldValue" placeholder={{form1Data.field1.fieldName}}> 
     </mat-form-field>
     <!--
     <mat-form-field *ngIf="(authService.user | async)?.role ==='admin' && userInfo">
@@ -18,5 +16,5 @@
     </mat-form-field>  
   -->
     <br>
-    <button mat-raised-button color="primary" (click)="updateFormData()">Submit</button>
+    <button *ngIf="form1Data" mat-raised-button color="primary" (click)="updateFormData()">Submit</button>
   </mat-card>

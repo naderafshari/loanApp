@@ -76,8 +76,35 @@ export class UserManageComponent implements OnInit {
     this.authService.logout();
   }
 
-  goToForm(uid) {
+  goToForm1(uid) {
     this.router.navigate(['/form1', uid]);
+  }
+  goToForm2(uid) {
+    this.router.navigate(['/form2', uid]);
+  }
+  goToForm3(uid) {
+    this.router.navigate(['/form3', uid]);
+  }
+  goToForm4(uid) {
+    this.router.navigate(['/form4', uid]);
+  }
+  goToForm5(uid) {
+    this.router.navigate(['/form5', uid]);
+  }
+  goToForm6(uid) {
+    this.router.navigate(['/form6', uid]);
+  }
+  goToForm7(uid) {
+    this.router.navigate(['/form7', uid]);
+  }
+  goToForm8(uid) {
+    this.router.navigate(['/form8', uid]);
+  }
+  goToForm9(uid) {
+    this.router.navigate(['/form9', uid]);
+  }
+  goToForm10(uid) {
+    this.router.navigate(['/form10', uid]);
   }
 
   ngOnInit() {

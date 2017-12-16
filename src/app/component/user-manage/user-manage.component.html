@@ -9,7 +9,16 @@
         <mat-list-item *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.uid === user.uid"><strong>{{user.firstName}}</strong> &nbsp; {{user.lastName}}&nbsp;
           <a (click)="editClick(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Edit</a>
           <a (click)="openDialog(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;Delete</a>
-          <a (click)="goToForm(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;Form 1</a>
+          <a (click)="goToForm1(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;{{user.form1Name}}</a>
+          <a (click)="goToForm2(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;{{user.form2Name}}</a>
+          <a (click)="goToForm3(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;{{user.form3Name}}</a>
+          <a (click)="goToForm4(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;{{user.form4Name}}</a>
+          <a (click)="goToForm5(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;{{user.form5Name}}</a>
+          <a (click)="goToForm6(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;{{user.form6Name}}</a>
+          <a (click)="goToForm7(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;{{user.form7Name}}</a>
+          <a (click)="goToForm8(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;{{user.form8Name}}</a>
+          <a (click)="goToForm9(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;{{user.form9Name}}</a>
+          <a (click)="goToForm10(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;{{user.form10Name}}</a>
         </mat-list-item>
       </mat-list>
     </div>
