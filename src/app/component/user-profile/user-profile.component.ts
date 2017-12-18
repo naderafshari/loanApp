@@ -56,12 +56,6 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
-  userNotAdmin()  {
-    if (this.user != null && this.userInfo != null) {
-      return this.authService.userInfo.role !== 'admin';
-    }
-  }
-
   logout() {
     this.authService.logout();
   }

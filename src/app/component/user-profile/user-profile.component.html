@@ -24,7 +24,7 @@
 <div class="form-container" id="toolbar">
   <header>
     <a routerLink="/user-manage" id="goback">Go back</a>
-    <button class="alc" *ngIf="userNotAdmin() && authService.user | async" (click)="logout()" class="basic-btn">Logout</button>
+    <button class="alc" *ngIf="(authService.user | async)?.role !=='admin' && userInfo" (click)="logout()" class="basic-btn">Logout</button>
   </header>
   <div id="page">
     <h3 class="alc">Welcome {{ userInfo?.displayName }}!</h3>

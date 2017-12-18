@@ -7,4 +7,9 @@ export interface Form {
         fieldType: string;
         fieldValue: string;
     };
+    field2: {
+        fieldName: string;
+        fieldType: string;
+        fieldValue: string;
+    };
 }

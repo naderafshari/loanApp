@@ -23,13 +23,15 @@ export class UserManageComponent implements OnInit {
               public authService: AuthService, private router: Router,
               private route: ActivatedRoute, public dialog: MatDialog) {
     this.usersCol = this.afs.collection<UserInfo>('users');
+    this.users = this.usersCol.valueChanges();
+    /* use this code if you want to get the id bu the id is storeed in the dofument so not need now
     this.users = this.usersCol.snapshotChanges().map(actions => {
       return actions.map(a => {
         const data = a.payload.doc.data() as UserInfo;
         const id = a.payload.doc.id;
         return data;
       });
-    });
+    }); */
   }
 
   openDialog(userId): void {
