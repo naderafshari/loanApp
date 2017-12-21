@@ -1,3 +1,22 @@
-<p>
-  form-config works!
-</p>
+<mat-card>
+    <a routerLink="/form-manage" id="goback">Go back</a>
+    <br>
+    <br>
+    <mat-form-field *ngIf="form">
+      <input matInput [(ngModel)]="form.formName" placeholder="Form Name.."> 
+    </mat-form-field>
+    
+    <mat-form-field *ngIf="form">
+      <input matInput [(ngModel)]="form.field1.fieldName" placeholder="Field 1 Name.."> 
+    </mat-form-field>
+   
+    <mat-form-field *ngIf="form">
+        <mat-select [(ngModel)]="form.field1.fieldType" placeholder="Field 1 Type">
+            <mat-option value="text">text input</mat-option>
+            <mat-option value="textBox">text box</mat-option>
+          </mat-select>
+    </mat-form-field>  
+    <br>
+    <button mat-raised-button color="primary" (click)="updateForm()">Submit</button>
+  </mat-card>
+  

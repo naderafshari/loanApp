@@ -33,15 +33,15 @@ export class FormManageComponent implements OnInit {
     });
   }
 
-  createForms(){
-    for (let i = 1; i<= 10; i++) {
+  createForms() {
+    for (let i = 1; i <= 10; i++) {
       const formsRef: AngularFirestoreDocument<any> = this.afs.doc(`forms/form${i}`);
       const Form: Form = {formName: `Form${i}`};
       formsRef.set(Form);
     }
   }
-  editClick(id)
-  {
-    this.router.navigate(['/form-config',id]);
+
+  editClick(id) {
+    this.router.navigate(['/form-config', id]);
   }
 }
