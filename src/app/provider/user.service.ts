@@ -19,6 +19,8 @@ export class UserService {
               private router: Router,
               private route: ActivatedRoute) {
     this.usersCol = this.afs.collection<UserInfo>('users');
+    this.users = this.usersCol.valueChanges();
+/*   
     this.users = this.usersCol.snapshotChanges().map(actions => {
       return actions.map(a => {
         const data = a.payload.doc.data() as UserInfo;
@@ -26,6 +28,7 @@ export class UserService {
         return data;
       });
     });
+*/
   }
 
   getUsers() {

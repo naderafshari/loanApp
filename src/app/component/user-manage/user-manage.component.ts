@@ -7,6 +7,7 @@ import { DialogComponent } from '../dialog/dialog.component';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { UserInfo } from '../../model/user-info';
+import { FormManageComponent } from '../form-manage/form-manage.component';
 
 @Component({
   selector: 'app-user-manage',

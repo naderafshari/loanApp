@@ -11,6 +11,8 @@ import { ResetPasswordComponent } from './component/reset-password/reset-passwor
 import { UserProfileComponent } from './component/user-profile/user-profile.component';
 import { UserManageComponent } from './component/user-manage/user-manage.component';
 import { Form1Component } from './component/form1/form1.component';
+import { FormManageComponent } from './component/form-manage/form-manage.component';
+import { FormConfigComponent } from './component/form-config/form-config.component';
 
 export const router: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -21,6 +23,8 @@ export const router: Routes = [
     { path: 'user-profile/:uid', component: UserProfileComponent, canActivate: [AuthGuard] },
     { path: 'user-manage', component: UserManageComponent, canActivate: [AuthGuard] },
     { path: 'form1/:uid', component: Form1Component, canActivate: [AuthGuard] },
+    { path: 'form-manage', component: FormManageComponent, canActivate: [AdminGuard] },
+    { path: 'form-config/:id', component: FormConfigComponent, canActivate: [AdminGuard] }
 ];
 
 export const routes: ModuleWithProviders = RouterModule.forRoot(router);

@@ -13,9 +13,10 @@ import { environment } from '../environments/environment';
 import { MaterialModule } from './material/material.module';
 import { AuthService } from './provider/auth.service';
 import { UserService } from './provider/user.service';
+import { FormService } from './provider/form.service';
 import { AuthGuard } from './guard/auth.guard';
 import { AdminGuard } from './guard/admin.guard';
-import { routes, router } from './app.routes';
+import { router } from './app.routes';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './component/login/login.component';
@@ -26,6 +27,8 @@ import { UserProfileComponent } from './component/user-profile/user-profile.comp
 import { UserManageComponent } from './component/user-manage/user-manage.component';
 import { DialogComponent } from './component/dialog/dialog.component';
 import { Form1Component } from './component/form1/form1.component';
+import { FormManageComponent } from './component/form-manage/form-manage.component';
+import { FormConfigComponent } from './component/form-config/form-config.component';
 
 
 @NgModule({
@@ -38,7 +41,9 @@ import { Form1Component } from './component/form1/form1.component';
     UserProfileComponent,
     UserManageComponent,
     DialogComponent,
-    Form1Component
+    Form1Component,
+    FormManageComponent,
+    FormConfigComponent
   ],
   imports: [
     BrowserModule,
@@ -55,7 +60,7 @@ import { Form1Component } from './component/form1/form1.component';
   entryComponents: [
     DialogComponent
   ],
-  providers: [AuthService, UserService, AuthGuard, AdminGuard],
+  providers: [AuthService, UserService, FormService, AuthGuard, AdminGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
