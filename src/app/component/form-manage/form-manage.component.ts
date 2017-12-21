@@ -3,7 +3,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { Observable } from 'rxjs/Observable';
 import { Form } from '../../model/form';
-import { FormConfigComponent } from '../form-config/form-config.component'
+import { FormConfigComponent } from '../form-config/form-config.component';
+import { FormService } from '../../provider/form.service'
  
 @Component({
   selector: 'app-form-manage',
@@ -17,11 +18,12 @@ export class FormManageComponent implements OnInit {
 
   constructor(private afs: AngularFirestore,
     private router: Router,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute,
+    private formService: FormService ) {
   }
 
   ngOnInit() {
-    //this.createForms();
+    //this.formService.createForms();
     this.formsCol = this.afs.collection<Form>('forms');
     //this.forms = this.formsCol.valueChanges();
     this.forms = this.formsCol.snapshotChanges().map(actions => {
@@ -31,14 +33,6 @@ export class FormManageComponent implements OnInit {
         return {id, ...data};
       });
     });
-  }
-
-  createForms() {
-    for (let i = 1; i <= 10; i++) {
-      const formsRef: AngularFirestoreDocument<any> = this.afs.doc(`forms/form${i}`);
-      const Form: Form = {formName: `Form${i}`};
-      formsRef.set(Form);
-    }
   }
 
   editClick(id) {

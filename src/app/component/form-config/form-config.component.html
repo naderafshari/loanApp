@@ -1,16 +1,18 @@
-<mat-card>
-    <a routerLink="/form-manage" id="goback">Go back</a>
+<mat-card *ngIf="form">
+    <a routerLink="/form-manage" id="goback">Go back/Cancel</a>
+    <br><br>
+    <hr>
+    <p>Last Updated: {{form.updateTime}}</p>
     <br>
-    <br>
-    <mat-form-field *ngIf="form">
-      <input matInput [(ngModel)]="form.formName" placeholder="Form Name.."> 
+    <mat-form-field>
+      <input matInput [(ngModel)]="form.formName" placeholder="Form Name..."> 
     </mat-form-field>
-    
-    <mat-form-field *ngIf="form">
-      <input matInput [(ngModel)]="form.field1.fieldName" placeholder="Field 1 Name.."> 
+
+    <hr>
+    <mat-form-field>
+      <input matInput multiline [(ngModel)]="form.field1.fieldName" placeholder="Field 1 Desc..."> 
     </mat-form-field>
-   
-    <mat-form-field *ngIf="form">
+       <mat-form-field>
         <mat-select [(ngModel)]="form.field1.fieldType" placeholder="Field 1 Type">
             <mat-option value="text">text input</mat-option>
             <mat-option value="textBox">text box</mat-option>

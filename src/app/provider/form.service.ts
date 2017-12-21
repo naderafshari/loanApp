@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { Observable } from 'rxjs/Observable';
-import { Form } from '../model/form';
+import { Form, FormClass } from '../model/form';
 import { FormConfigComponent } from '../component/form-config/form-config.component'
 
 @Injectable()
@@ -16,7 +16,6 @@ export class FormService {
     private router: Router,
     private route: ActivatedRoute) {
 
-    //this.createForms();
     this.formsCol = this.afs.collection<Form>('forms');
     //this.forms = this.formsCol.valueChanges();
     this.forms = this.formsCol.snapshotChanges().map(actions => {
@@ -32,10 +31,14 @@ export class FormService {
   }
 
   createForms(){
+    var formClass: FormClass = new FormClass();
     for (let i = 1; i<= 10; i++) {
       const formsRef: AngularFirestoreDocument<any> = this.afs.doc(`forms/form${i}`);
-      const Form: Form = {formName: `Form${i}`};
-      formsRef.set(Form);
+      const Form: Form = formClass.form;
+      Form.formName = `form${i}`;
+      Form.updateTime = new Date().toString();
+      Form.startTime = new Date().toString();
+      formsRef.set(Form).then(() => console.log(`forms${i} added`));
     }
   }
 
