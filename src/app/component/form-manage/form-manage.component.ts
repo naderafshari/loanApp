@@ -21,7 +21,7 @@ export class FormManageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.createForms();
+    //this.createForms();
     this.formsCol = this.afs.collection<Form>('forms');
     //this.forms = this.formsCol.valueChanges();
     this.forms = this.formsCol.snapshotChanges().map(actions => {

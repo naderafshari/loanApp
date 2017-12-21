@@ -29,12 +29,15 @@ export class FormConfigComponent implements OnInit {
 
     this.route.params.subscribe(params => {
       this.id = params['id'] || 0;
-          if (this.id) {
-            this.formRef = this.afs.doc<Form>(`forms/${this.id}`);
-            this.form = this.formRef.valueChanges();
-          }
+      if (this.id) {
+        this.formRef = this.afs.doc<Form>(`forms/${this.id}`);
+        this.form = this.formRef.valueChanges();
+
+        this.form.subscribe((data) => console.log(data));
+        
+        this.fs.forms.subscribe((data) => console.log(data));
+      }
     });
-    this.form.subscribe((data) => console.log(data));
   }
 
   ngOnInit() {

@@ -15,19 +15,20 @@ export class FormService {
   constructor(private afs: AngularFirestore,
     private router: Router,
     private route: ActivatedRoute) {
-  }
 
-  ngOnInit() {
-    this.createForms();
+    //this.createForms();
     this.formsCol = this.afs.collection<Form>('forms');
-    this.forms = this.formsCol.valueChanges();
-    /*this.forms = this.formsCol.snapshotChanges().map(actions => {
+    //this.forms = this.formsCol.valueChanges();
+    this.forms = this.formsCol.snapshotChanges().map(actions => {
       return actions.map(a => {
         const data = a.payload.doc.data() as Form;
         const id = a.payload.doc.id;
-        return data;
+        return {id, ...data};
       });
-    });*/
+    });
+  }
+
+  ngOnInit() {
   }
 
   createForms(){
