@@ -7,7 +7,7 @@
   <mat-card-content>
     <mat-list  *ngIf = "(authService.user | async)?.role ==='admin'">
       <mat-list-item>
-        <a routerLink="/form-manage">Manage Forms</a>
+        <a routerLink="/form-manage">Configure Forms</a>
       </mat-list-item>
     </mat-list>
   </mat-card-content>
@@ -17,8 +17,12 @@
     <div>
       <mat-list *ngFor="let user of users | async">
         <mat-list-item *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.uid === user.uid"><strong>{{user.firstName}}</strong> &nbsp; {{user.lastName}}&nbsp;
-          <a (click)="editClick(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Edit</a>
-          <a (click)="openDialog(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;Delete</a>
+          <a (click)="editClick(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Edit-Profile</a>
+          <a (click)="openDialog(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;Delete-Profile</a>
+          <a (click)="goFormAssign(user.uid);"class="secondary-content">&nbsp;&nbsp;&nbsp;Form-Assignments</a>
+
+          <a *ngFor="let form of forms | async" (click)="goToForm1(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;{{form.formId}}</a>
+          
           <a (click)="goToForm1(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;{{user.form1Name}}</a>
           <a (click)="goToForm2(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;{{user.form2Name}}</a>
           <a (click)="goToForm3(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;{{user.form3Name}}</a>

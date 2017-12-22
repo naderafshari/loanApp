@@ -1,3 +1,4 @@
+import { FormService } from './../../provider/form.service';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -7,6 +8,7 @@ import { DialogComponent } from '../dialog/dialog.component';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { UserInfo } from '../../model/user-info';
+import { Form } from '../../model/form';
 import { FormManageComponent } from '../form-manage/form-manage.component';
 
 @Component({
@@ -19,10 +21,15 @@ export class UserManageComponent implements OnInit {
   userDoc: AngularFirestoreDocument<UserInfo>;
   users: Observable<UserInfo[]>;
   userId: any;
+  forms: Observable<{}>;
+  userForms: Form[];
 
-  constructor(private afs: AngularFirestore,
+  constructor(private afs: AngularFirestore, public fs: FormService,
               public authService: AuthService, private router: Router,
               private route: ActivatedRoute, public dialog: MatDialog) {
+  }
+
+  ngOnInit() {
     this.usersCol = this.afs.collection<UserInfo>('users');
     this.users = this.usersCol.valueChanges();
     /* use this code if you want to get the id bu the id is storeed in the dofument so not need now
@@ -32,7 +39,20 @@ export class UserManageComponent implements OnInit {
         const id = a.payload.doc.id;
         return data;
       });
-    }); */
+    });  ref => ref.orderBy('startTime', 'desc').limit(1)     */
+    this.users.subscribe((users) => {
+      if (users) {
+        users.forEach( (user) => {
+          this.afs.doc(`users/${user.uid}`).collection<Form>('forms')
+          .valueChanges().subscribe((forms) => {
+            if (forms) {
+              this.userForms = forms;
+            }
+          });
+        });
+
+        }
+    });
   }
 
   openDialog(userId): void {
@@ -79,7 +99,12 @@ export class UserManageComponent implements OnInit {
     this.authService.logout();
   }
 
+  goFormAssign(uid) {
+    this.router.navigate(['/form-assign', uid]);
+  }
+
   goToForm1(uid) {
+    //this.afs.doc(`users/${uid}`).collection(formName).doc(new Date().toString()).set(this.formsArray[0]);
     this.router.navigate(['/form1', uid]);
   }
   goToForm2(uid) {
@@ -109,8 +134,4 @@ export class UserManageComponent implements OnInit {
   goToForm10(uid) {
     this.router.navigate(['/form10', uid]);
   }
-
-  ngOnInit() {
-  }
-
 }

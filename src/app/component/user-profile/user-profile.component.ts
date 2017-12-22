@@ -3,8 +3,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { AuthService } from '../../provider/auth.service';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/observable/forkJoin';
 import { UserInfo } from '../../model/user-info';
 
 @Component({
@@ -14,13 +12,10 @@ import { UserInfo } from '../../model/user-info';
 })
 
 export class UserProfileComponent implements OnInit {
-  usersCol: AngularFirestoreCollection<UserInfo>;
-  usersDoc: Observable<UserInfo[]>;
   userDoc: Observable<{}>;
   user: any;
   userInfo: UserInfo;
   uid: string;
-  private sub: any;
 
   constructor(private afs: AngularFirestore,
               public authService: AuthService,

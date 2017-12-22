@@ -13,6 +13,7 @@ import { UserManageComponent } from './component/user-manage/user-manage.compone
 import { Form1Component } from './component/form1/form1.component';
 import { FormManageComponent } from './component/form-manage/form-manage.component';
 import { FormConfigComponent } from './component/form-config/form-config.component';
+import { FormAssignComponent } from './component/form-assign/form-assign.component';
 
 export const router: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -24,7 +25,8 @@ export const router: Routes = [
     { path: 'user-manage', component: UserManageComponent, canActivate: [AuthGuard] },
     { path: 'form1/:uid', component: Form1Component, canActivate: [AuthGuard] },
     { path: 'form-manage', component: FormManageComponent, canActivate: [AdminGuard] },
-    { path: 'form-config/:id', component: FormConfigComponent, canActivate: [AdminGuard] }
+    { path: 'form-config/:id', component: FormConfigComponent, canActivate: [AdminGuard] },
+    { path: 'form-assign/:uid', component: FormAssignComponent, canActivate: [AdminGuard] }
 ];
 
 export const routes: ModuleWithProviders = RouterModule.forRoot(router);

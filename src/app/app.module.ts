@@ -29,6 +29,7 @@ import { DialogComponent } from './component/dialog/dialog.component';
 import { Form1Component } from './component/form1/form1.component';
 import { FormManageComponent } from './component/form-manage/form-manage.component';
 import { FormConfigComponent } from './component/form-config/form-config.component';
+import { FormAssignComponent } from './component/form-assign/form-assign.component';
 
 
 @NgModule({
@@ -43,7 +44,8 @@ import { FormConfigComponent } from './component/form-config/form-config.compone
     DialogComponent,
     Form1Component,
     FormManageComponent,
-    FormConfigComponent
+    FormConfigComponent,
+    FormAssignComponent
   ],
   imports: [
     BrowserModule,

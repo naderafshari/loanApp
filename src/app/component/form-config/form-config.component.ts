@@ -14,28 +14,24 @@ import { FormService } from '../../provider/form.service';
   styleUrls: ['./form-config.component.css']
 })
 export class FormConfigComponent implements OnInit {
-
-  //forms: Form[];
   form: Form;
   id: string;
 
   constructor(private afs: AngularFirestore,
-    //public fs: FormService,
+    public fs: FormService,
     private router: Router,
     private route: ActivatedRoute) {
 
     this.route.params.subscribe(params => {
       this.id = params['id'] || 0;
       if (this.id) {
-        this.afs.doc<Form>(`forms/${this.id}`).valueChanges().subscribe((data) => this.form = data);
-
-        //this.fs.forms.subscribe((data) => { console.log(data)});
+        this.fs.getForm(this.id).subscribe((data) => this.form = data);
       }
     });
   }
 
   updateForm() {
-    if (this.form != null) {
+    if (this.form) {
       this.afs.collection('forms').doc(this.id).update(this.form);
     } else {
       alert('Cannot Update, user not logged in!');

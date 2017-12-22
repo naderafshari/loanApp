@@ -1,4 +1,5 @@
 export interface Form {
+    formId: string;
     formName: string;
     startTime?: string;
     updateTime?: string;
@@ -104,8 +105,9 @@ export interface Form {
     };
 }
 
-export class FormClass implements Form {
-    form = <Form>{ 
+export class FormClass {
+    form = <Form> {
+        formId: '',
         formName: '',
         startTime: '',
         updateTime: '',
