@@ -9,11 +9,11 @@ import { UserInfo } from '../../model/user-info';
 import { Form } from '../../model/form';
 
 @Component({
-  selector: 'app-form1',
-  templateUrl: './form1.component.html',
-  styleUrls: ['./form1.component.css']
+  selector: 'app-form',
+  templateUrl: './form.component.html',
+  styleUrls: ['./form.component.css']
 })
-export class Form1Component implements OnInit {
+export class FormComponent implements OnInit {
 
   userDoc: any;
   forms: Observable<Form[]>;

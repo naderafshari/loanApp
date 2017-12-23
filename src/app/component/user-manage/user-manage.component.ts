@@ -103,6 +103,6 @@ export class UserManageComponent implements OnInit {
   }
 
   goToForm(uid, formId) {
-    this.router.navigate(['/form1', uid, formId]);
+    this.router.navigate(['/form', uid, formId]);
   }
 }

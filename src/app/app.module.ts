@@ -26,7 +26,7 @@ import { ResetPasswordComponent } from './component/reset-password/reset-passwor
 import { UserProfileComponent } from './component/user-profile/user-profile.component';
 import { UserManageComponent } from './component/user-manage/user-manage.component';
 import { DialogComponent } from './component/dialog/dialog.component';
-import { Form1Component } from './component/form1/form1.component';
+import { FormComponent } from './component/form/form.component';
 import { FormManageComponent } from './component/form-manage/form-manage.component';
 import { FormConfigComponent } from './component/form-config/form-config.component';
 import { FormAssignComponent } from './component/form-assign/form-assign.component';
@@ -42,7 +42,7 @@ import { FormAssignComponent } from './component/form-assign/form-assign.compone
     UserProfileComponent,
     UserManageComponent,
     DialogComponent,
-    Form1Component,
+    FormComponent,
     FormManageComponent,
     FormConfigComponent,
     FormAssignComponent
