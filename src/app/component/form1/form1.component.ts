@@ -16,11 +16,12 @@ import { Form } from '../../model/form';
 export class Form1Component implements OnInit {
 
   userDoc: any;
-  form1: Observable<Form[]>;
+  forms: Observable<Form[]>;
   user: any;
   uid: string;
-  form1Data: Form;
-  form1Ref: AngularFirestoreCollection<Form>;
+  formId: string;
+  formData: Form;
+  formRef: AngularFirestoreCollection<Form>;
 
   constructor(private afs: AngularFirestore,
     public authService: AuthService,
@@ -29,32 +30,26 @@ export class Form1Component implements OnInit {
 
     this.route.params.subscribe(params => {
       this.uid = params['uid'] || 0;
-      // authService.user.subscribe((user) => {
-        // this.user = user;
-        // if (user) {
-          if (this.uid) {
-            this.form1Ref = this.afs.doc(`users/${this.uid}`).collection<Form>('form1', ref =>
-              ref.orderBy('startTime', 'desc').limit(1));
-            this.form1 = this.form1Ref.valueChanges();
-          }// else {
-            // this.form1Ref = this.afs.doc(`users/${this.user.uid}`).collection<Form>('form1', ref =>
-            //   ref.orderBy('startTime', 'desc').limit(1));
-            // this.form1 = this.form1Ref.valueChanges();
-          // }
-          this.form1.subscribe((data) => {
-            this.form1Data = data[0];
-            /* console.log(this.form1Data); */ });
-        // }
-      // });
+      this.formId = params['fid'] || 0;
+      // console.log('form id', this.formId);
+      // console.log('user id', this.uid);
+      if (this.uid) {
+        this.formRef = this.afs.doc(`users/${this.uid}`).collection<Form>('forms', ref =>
+          ref.where('formId', '==', this.formId).orderBy('startTime', 'desc').limit(1));
+        this.forms = this.formRef.valueChanges();
+      }
+      this.forms.subscribe((data) => {
+        this.formData = data[0];
+          console.log(this.formData); });
     });
   }
 
   updateFormData() {
-    if (this.form1Data != null ) {
-      this.form1Data.updateTime = new Date().toString();
+    if (this.formData != null ) {
+      this.formData.updateTime = new Date().toString();
       /* Use somthing like this is you want to create a new record at every submit */
-       this.afs.doc(`users/${this.uid}`).collection('form1').doc(this.form1Data.updateTime).set(this.form1Data);
-      // this.afs.doc(`users/${this.uid}`).collection('form1').doc(this.form1Data.startTime).update(this.form1Data);
+       this.afs.doc(`users/${this.uid}`).collection('forms').doc(this.formData.updateTime).set(this.formData);
+      // this.afs.doc(`users/${this.uid}`).collection('forms').doc(this.formData.startTime).update(this.formData);
     } else {
       alert('Cannot Update, Form not available!');
     }

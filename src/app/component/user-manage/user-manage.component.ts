@@ -22,7 +22,8 @@ export class UserManageComponent implements OnInit {
   users: Observable<UserInfo[]>;
   userId: any;
   forms: Observable<{}>;
-  userForms: Form[];
+  userForms: Form[] = [];
+  userForm: Form;
 
   constructor(private afs: AngularFirestore, public fs: FormService,
               public authService: AuthService, private router: Router,
@@ -32,25 +33,23 @@ export class UserManageComponent implements OnInit {
   ngOnInit() {
     this.usersCol = this.afs.collection<UserInfo>('users');
     this.users = this.usersCol.valueChanges();
-    /* use this code if you want to get the id bu the id is storeed in the dofument so not need now
-    this.users = this.usersCol.snapshotChanges().map(actions => {
-      return actions.map(a => {
-        const data = a.payload.doc.data() as UserInfo;
-        const id = a.payload.doc.id;
-        return data;
-      });
-    });  ref => ref.orderBy('startTime', 'desc').limit(1)     */
     this.users.subscribe((users) => {
       if (users) {
         users.forEach( (user) => {
           this.afs.doc(`users/${user.uid}`).collection<Form>('forms')
           .valueChanges().subscribe((forms) => {
             if (forms) {
-              this.userForms = forms;
+              for (let i = 0; i <= 10; i++) {
+                this.userForm = forms.sort().filter(e => e.formId === `form${i}`)[0];
+                if (this.userForm !== undefined) {
+                  this.userForm.uid = user.uid;
+                  this.userForms.push( this.userForm);
+                }
+              }
             }
           });
         });
-
+        // console.log(this.userForms);
         }
     });
   }
@@ -103,35 +102,7 @@ export class UserManageComponent implements OnInit {
     this.router.navigate(['/form-assign', uid]);
   }
 
-  goToForm1(uid) {
-    //this.afs.doc(`users/${uid}`).collection(formName).doc(new Date().toString()).set(this.formsArray[0]);
-    this.router.navigate(['/form1', uid]);
-  }
-  goToForm2(uid) {
-    this.router.navigate(['/form2', uid]);
-  }
-  goToForm3(uid) {
-    this.router.navigate(['/form3', uid]);
-  }
-  goToForm4(uid) {
-    this.router.navigate(['/form4', uid]);
-  }
-  goToForm5(uid) {
-    this.router.navigate(['/form5', uid]);
-  }
-  goToForm6(uid) {
-    this.router.navigate(['/form6', uid]);
-  }
-  goToForm7(uid) {
-    this.router.navigate(['/form7', uid]);
-  }
-  goToForm8(uid) {
-    this.router.navigate(['/form8', uid]);
-  }
-  goToForm9(uid) {
-    this.router.navigate(['/form9', uid]);
-  }
-  goToForm10(uid) {
-    this.router.navigate(['/form10', uid]);
+  goToForm(uid, formId) {
+    this.router.navigate(['/form1', uid, formId]);
   }
 }

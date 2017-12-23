@@ -23,7 +23,7 @@ export const router: Routes = [
     { path: 'reset-password', component: ResetPasswordComponent },
     { path: 'user-profile/:uid', component: UserProfileComponent, canActivate: [AuthGuard] },
     { path: 'user-manage', component: UserManageComponent, canActivate: [AuthGuard] },
-    { path: 'form1/:uid', component: Form1Component, canActivate: [AuthGuard] },
+    { path: 'form1/:uid/:fid', component: Form1Component, canActivate: [AuthGuard] },
     { path: 'form-manage', component: FormManageComponent, canActivate: [AdminGuard] },
     { path: 'form-config/:id', component: FormConfigComponent, canActivate: [AdminGuard] },
     { path: 'form-assign/:uid', component: FormAssignComponent, canActivate: [AdminGuard] }
