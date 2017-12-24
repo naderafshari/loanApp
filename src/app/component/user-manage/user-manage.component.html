@@ -1,13 +1,13 @@
 <mat-card>
   <mat-card-header>
-    <a *ngIf="authService.user | async" (click)="logout()" >Logout</a>
+    <a *ngIf="authService.user | async" (click)="logout()">Logout</a>
     <!--<button mat-raised-button color="primary" *ngIf="authService.user | async" (click)="logout()" >Logout</button> -->
   </mat-card-header>
   <br>
   <mat-card-content>
     <mat-list  *ngIf = "(authService.user | async)?.role ==='admin'">
       <mat-list-item>
-        <a routerLink="/form-manage">Configure Forms</a>
+        <a routerLink="/form-manage">Manage Forms</a>
       </mat-list-item>
     </mat-list>
   </mat-card-content>
@@ -23,7 +23,7 @@
               <a (click)="goFormAssign(user.uid);"class="secondary-content">&nbsp;&nbsp;&nbsp;Assign-Form</a>
           </div>
           <div>&nbsp;&nbsp;&nbsp;Active Forms:</div>          
-          <div *ngFor="let userForm of userForms" >
+          <div *ngFor="let userForm of userForms">
             <a *ngIf="userForm.uid === user.uid" (click)="goToForm(user.uid,userForm.formId);" class="secondary-content">&nbsp;&nbsp;&nbsp;{{userForm.formName}}</a>
           </div>
         </mat-list-item>

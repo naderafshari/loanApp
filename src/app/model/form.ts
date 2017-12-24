@@ -5,104 +5,104 @@ export interface Form {
     startTime?: string;
     updateTime?: string;
     field1?: {
-        fieldName: string;
-        fieldType: string;
-        fieldValue: string;
+        name: string;
+        type: string;
+        value: string;
     };
     field2?: {
-        fieldName: string;
-        fieldType: string;
-        fieldValue: string;
+        name: string;
+        type: string;
+        value: string;
     };
     field3?: {
-        fieldName: string;
-        fieldType: string;
-        fieldValue: string;
+        name: string;
+        type: string;
+        value: string;
     };
     field4?: {
-        fieldName: string;
-        fieldType: string;
-        fieldValue: string;
+        name: string;
+        type: string;
+        value: string;
     };
     field5?: {
-        fieldName: string;
-        fieldType: string;
-        fieldValue: string;
+        name: string;
+        type: string;
+        value: string;
     };
     field6?: {
-        fieldName: string;
-        fieldType: string;
-        fieldValue: string;
+        name: string;
+        type: string;
+        value: string;
     };
     field7?: {
-        fieldName: string;
-        fieldType: string;
-        fieldValue: string;
+        name: string;
+        type: string;
+        value: string;
     };
     field8?: {
-        fieldName: string;
-        fieldType: string;
-        fieldValue: string;
+        name: string;
+        type: string;
+        value: string;
     };
     field9?: {
-        fieldName: string;
-        fieldType: string;
-        fieldValue: string;
+        name: string;
+        type: string;
+        value: string;
     };
     field10?: {
-        fieldName: string;
-        fieldType: string;
-        fieldValue: string;
+        name: string;
+        type: string;
+        value: string;
     };
     field11?: {
-        fieldName: string;
-        fieldType: string;
-        fieldValue: string;
+        name: string;
+        type: string;
+        value: string;
     };
     field12?: {
-        fieldName: string;
-        fieldType: string;
-        fieldValue: string;
+        name: string;
+        type: string;
+        value: string;
     };
     field13?: {
-        fieldName: string;
-        fieldType: string;
-        fieldValue: string;
+        name: string;
+        type: string;
+        value: string;
     };
     field14?: {
-        fieldName: string;
-        fieldType: string;
-        fieldValue: string;
+        name: string;
+        type: string;
+        value: string;
     };
     field15?: {
-        fieldName: string;
-        fieldType: string;
-        fieldValue: string;
+        name: string;
+        type: string;
+        value: string;
     };
     field16?: {
-        fieldName: string;
-        fieldType: string;
-        fieldValue: string;
+        name: string;
+        type: string;
+        value: string;
     };
     field17?: {
-        fieldName: string;
-        fieldType: string;
-        fieldValue: string;
+        name: string;
+        type: string;
+        value: string;
     };
     field18?: {
-        fieldName: string;
-        fieldType: string;
-        fieldValue: string;
+        name: string;
+        type: string;
+        value: string;
     };
     field19?: {
-        fieldName: string;
-        fieldType: string;
-        fieldValue: string;
+        name: string;
+        type: string;
+        value: string;
     };
     field20?: {
-        fieldName: string;
-        fieldType: string;
-        fieldValue: string;
+        name: string;
+        type: string;
+        value: string;
     };
 }
 
@@ -114,104 +114,104 @@ export class FormClass {
         startTime: '',
         updateTime: '',
         field1: {
-            fieldName: '',
-            fieldType: '',
-            fieldValue: ''
+            name: '',
+            type: '',
+            value: ''
         },
         field2: {
-            fieldName: '',
-            fieldType: '',
-            fieldValue: ''
+            name: '',
+            type: '',
+            value: ''
         },
         field3: {
-            fieldName: '',
-            fieldType: '',
-            fieldValue: ''
+            name: '',
+            type: '',
+            value: ''
         },
         field4: {
-            fieldName: '',
-            fieldType: '',
-            fieldValue: ''
+            name: '',
+            type: '',
+            value: ''
         },
         field5: {
-            fieldName: '',
-            fieldType: '',
-            fieldValue: ''
+            name: '',
+            type: '',
+            value: ''
         },
         field6: {
-            fieldName: '',
-            fieldType: '',
-            fieldValue: ''
+            name: '',
+            type: '',
+            value: ''
         },
         field7: {
-            fieldName: '',
-            fieldType: '',
-            fieldValue: ''
+            name: '',
+            type: '',
+            value: ''
         },
         field8: {
-            fieldName: '',
-            fieldType: '',
-            fieldValue: ''
+            name: '',
+            type: '',
+            value: ''
         },
         field9: {
-            fieldName: '',
-            fieldType: '',
-            fieldValue: ''
+            name: '',
+            type: '',
+            value: ''
         },
         field10: {
-            fieldName: '',
-            fieldType: '',
-            fieldValue: ''
+            name: '',
+            type: '',
+            value: ''
         },
         field11: {
-            fieldName: '',
-            fieldType: '',
-            fieldValue: ''
+            name: '',
+            type: '',
+            value: ''
         },
         field12: {
-            fieldName: '',
-            fieldType: '',
-            fieldValue: ''
+            name: '',
+            type: '',
+            value: ''
         },
         field13: {
-            fieldName: '',
-            fieldType: '',
-            fieldValue: ''
+            name: '',
+            type: '',
+            value: ''
         },
         field14: {
-            fieldName: '',
-            fieldType: '',
-            fieldValue: ''
+            name: '',
+            type: '',
+            value: ''
         },
         field15: {
-            fieldName: '',
-            fieldType: '',
-            fieldValue: ''
+            name: '',
+            type: '',
+            value: ''
         },
         field16: {
-            fieldName: '',
-            fieldType: '',
-            fieldValue: ''
+            name: '',
+            type: '',
+            value: ''
         },
         field17: {
-            fieldName: '',
-            fieldType: '',
-            fieldValue: ''
+            name: '',
+            type: '',
+            value: ''
         },
         field18: {
-            fieldName: '',
-            fieldType: '',
-            fieldValue: ''
+            name: '',
+            type: '',
+            value: ''
         },
         field19: {
-            fieldName: '',
-            fieldType: '',
-            fieldValue: ''
+            name: '',
+            type: '',
+            value: ''
         },
         field20: {
-            fieldName: '',
-            fieldType: '',
-            fieldValue: ''
+            name: '',
+            type: '',
+            value: ''
         }
     };
 }

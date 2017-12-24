@@ -12,7 +12,8 @@ import { MatFormFieldModule } from '@angular/material';
 import { MatOptionModule } from '@angular/material';
 import { MatSelectModule } from '@angular/material';
 import { MatListModule } from '@angular/material';
-
+import { MatDatepickerModule } from '@angular/material';
+import { MatNativeDateModule } from '@angular/material';
 
 @NgModule({
     imports: [
@@ -27,7 +28,9 @@ import { MatListModule } from '@angular/material';
         MatFormFieldModule,
         MatOptionModule,
         MatSelectModule,
-        MatListModule
+        MatListModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
     ],
     exports: [
         MatButtonModule,
@@ -41,7 +44,9 @@ import { MatListModule } from '@angular/material';
         MatFormFieldModule,
         MatOptionModule,
         MatSelectModule,
-        MatListModule
+        MatListModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
     ]
   })
   export class MaterialModule {}

@@ -33,7 +33,10 @@ export class FormAssignComponent implements OnInit {
     const form = this.afs.collection<Form>('forms', ref => ref.where('formId', '==', formId)).valueChanges();
     form.subscribe((data) => {
         this.formsArray = data;
+        this.formsArray[0].updateTime = new Date().toString();
+        this.formsArray[0].startTime = new Date().toString();
         this.afs.doc(`users/${this.uid}`).collection('forms').doc(new Date().toString()).set(this.formsArray[0]);
+        alert('Form assigned successfully.');
         this.router.navigateByUrl('/user-manage');
     });
   }

@@ -16,26 +16,23 @@ export class FormService {
     private router: Router,
     private route: ActivatedRoute) {
       this.formsCol = this.afs.collection<Form>('forms');
-      // this.forms = this.formsCol.valueChanges();
-    /*this.forms = this.formsCol.snapshotChanges().map(actions => {
-      return actions.map(a => {
-        const data = a.payload.doc.data() as Form;
-        const id = a.payload.doc.id;
-        return {id, ...data};
-      });
-    });*/
-  }
+      this.forms = this.formsCol.valueChanges();
+      /*this.forms = this.formsCol.snapshotChanges().map(actions => {
+        return actions.map(a => {
+          const data = a.payload.doc.data() as Form;
+          const id = a.payload.doc.id;
+          return {id, ...data};
+        });
+      });*/
+    }
 
   getForms() {
-    return this.formsCol.valueChanges();
+    return this.forms;
   }
 
   getForm(id) {
     return this.afs.doc<Form>(`forms/${id}`).valueChanges();
   }
-
-  ngOnInit() {
-}
 
   createForms() {
     const formClass: FormClass = new FormClass();

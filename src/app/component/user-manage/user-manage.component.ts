@@ -1,12 +1,12 @@
 import { FormService } from './../../provider/form.service';
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
-import { AuthService } from '../../provider/auth.service';
-import { DialogComponent } from '../dialog/dialog.component';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { DialogComponent } from '../dialog/dialog.component';
+import { AuthService } from '../../provider/auth.service';
 import { UserInfo } from '../../model/user-info';
 import { Form } from '../../model/form';
 import { FormManageComponent } from '../form-manage/form-manage.component';
@@ -39,8 +39,8 @@ export class UserManageComponent implements OnInit {
           this.afs.doc(`users/${user.uid}`).collection<Form>('forms')
           .valueChanges().subscribe((forms) => {
             if (forms) {
-              for (let i = 0; i <= 10; i++) {
-                this.userForm = forms.sort().filter(e => e.formId === `form${i}`)[0];
+              for (let i = 0; i <= forms.length; i++) {
+                this.userForm = forms.filter(e => e.formId === `form${i}`).reverse()[0];
                 if (this.userForm !== undefined) {
                   this.userForm.uid = user.uid;
                   this.userForms.push( this.userForm);

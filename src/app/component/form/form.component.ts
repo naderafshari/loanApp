@@ -38,9 +38,7 @@ export class FormComponent implements OnInit {
           ref.where('formId', '==', this.formId).orderBy('startTime', 'desc').limit(1));
         this.forms = this.formRef.valueChanges();
       }
-      this.forms.subscribe((data) => {
-        this.formData = data[0];
-          console.log(this.formData); });
+      this.forms.subscribe((data) => this.formData = data[0]);
     });
   }
 
@@ -49,6 +47,7 @@ export class FormComponent implements OnInit {
       this.formData.updateTime = new Date().toString();
       /* Use somthing like this is you want to create a new record at every submit */
        this.afs.doc(`users/${this.uid}`).collection('forms').doc(this.formData.updateTime).set(this.formData);
+       /* Or update and existing form... */
       // this.afs.doc(`users/${this.uid}`).collection('forms').doc(this.formData.startTime).update(this.formData);
     } else {
       alert('Cannot Update, Form not available!');

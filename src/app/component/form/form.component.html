@@ -1,20 +1,31 @@
 <mat-card>
-    <a routerLink="/user-manage" id="goback">Go back</a>
+    <a routerLink="/user-manage" id="goback">Go back/Cancel</a>
     <br>
     <br>
     <mat-list-item *ngIf="formData">Last Updated: {{formData.updateTime}}</mat-list-item>
     <br>
-    <mat-form-field *ngIf="formData">
-      <input matInput [(ngModel)]="formData.field1.fieldValue" placeholder={{formData.field1.fieldName}}> 
+    <mat-form-field *ngIf="formData && formData.field1.type == 'textbox'">
+      <input matInput [(ngModel)]="formData.field1.value" placeholder={{formData.field1.name}}> 
     </mat-form-field>
-    <!--
-    <mat-form-field *ngIf="(authService.user | async)?.role ==='admin' && userInfo">
-        <mat-select [(ngModel)]="userInfo.role" placeholder="Role">
-            <mat-option value="admin">admin</mat-option>
-            <mat-option value="user">user</mat-option>
+
+    <mat-form-field *ngIf="formData && formData.field1.type == 'textarea'">
+        <textarea matInput [(ngModel)]="formData.field1.value" placeholder={{formData.field1.name}}> </textarea>
+      </mat-form-field>
+  
+    <mat-form-field *ngIf="formData && formData.field1.type == 'select'">
+        <mat-select [(ngModel)]="formData.field1.value" placeholder={{formData.field1.name}}>
+            <mat-option value={{formData.field1.option1}}>{{formData.field1.option1}}</mat-option>
+            <mat-option value={{formData.field1.option2}}>{{formData.field1.option2}}</mat-option>
+            <mat-option value={{formData.field1.option3}}>{{formData.field1.option3}}</mat-option>
           </mat-select>
     </mat-form-field>  
-  -->
+
+    <mat-form-field *ngIf="formData && formData.field1.type == 'date'">
+        <input matInput [matDatepicker]="picker" [(ngModel)]="formData.field1.value" placeholder="Choose a date">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
     <br>
     <button *ngIf="formData" mat-raised-button color="primary" (click)="updateFormData()">Submit</button>
   </mat-card>

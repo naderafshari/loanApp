@@ -7,17 +7,45 @@
     <mat-form-field>
       <input matInput [(ngModel)]="form.formName" placeholder="Form Name..."> 
     </mat-form-field>
-
+<div *ngFor="let i of [1,2,3]">
     <hr>
     <mat-form-field>
-      <input matInput multiline [(ngModel)]="form.field1.fieldName" placeholder="Field 1 Desc..."> 
+      <textarea matInput [(ngModel)]="form.field1.name" placeholder="Field 1 Desc..."></textarea> 
     </mat-form-field>
-       <mat-form-field>
-        <mat-select [(ngModel)]="form.field1.fieldType" placeholder="Field 1 Type">
-            <mat-option value="text">text input</mat-option>
-            <mat-option value="textBox">text box</mat-option>
-          </mat-select>
+
+    <mat-form-field>
+      <mat-select [(ngModel)]="form.field1.type" placeholder="Field 1 Type">
+        <mat-option value="textbox">text box</mat-option>
+        <mat-option value="textarea">text area</mat-option>
+        <mat-option value="select">select</mat-option>
+        <mat-option value="date">date picker</mat-option>
+      </mat-select>
     </mat-form-field>
+
+    <br>
+    <div *ngIf="form.field1.type === 'select'">
+      <mat-form-field>
+        <input matInput [(ngModel)]="form.field1.option1" placeholder="Field 1 Select Option 1..."> 
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput [(ngModel)]="form.field1.option2" placeholder="Field 1 Select Option 2..."> 
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput [(ngModel)]="form.field1.option3" placeholder="Field 1 Select Option 3..."> 
+      </mat-form-field>
+      <br>
+      <mat-form-field>
+        <input matInput [(ngModel)]="form.field1.option4" placeholder="Field 1 Select Option 4..."> 
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput [(ngModel)]="form.field1.option5" placeholder="Field 1 Select Option 5..."> 
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput [(ngModel)]="form.field1.option6" placeholder="Field 1 Select Option 6..."> 
+      </mat-form-field>
+    </div>
+    <hr>
+</div>    
     <br>
     <button mat-raised-button color="primary" (click)="updateForm()">Submit</button>
   </mat-card>
