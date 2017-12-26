@@ -38,7 +38,8 @@ export class AuthService {
         email: userAuth.email,
         displayName: displayName,
         photoURL: userAuth.photoURL,
-        role: 'user'
+        role: 'user',
+        assignedForms: {}
     };
     return userRef.set(AuthData);
   }
@@ -108,7 +109,7 @@ export class AuthService {
     return this.firebaseAuth
       .auth
       .signInWithEmailAndPassword(email, password)
-      .then( (value) => { this.upset(value); })
+      .then( (value) => { this.upsert(value); })
       .catch((err) => {
         alert('Login failed! ' + err);
       });
@@ -116,13 +117,13 @@ export class AuthService {
 
   private socialSignIn(provider) {
     return this.firebaseAuth.auth.signInWithPopup(provider)
-    .then( (value) => { this.upset(value.user); })
+    .then( (value) => { this.upsert(value.user); })
     .catch((err) => {
       alert('Login failed! ' + err);
     });
 }
 
-  upset(value) {
+  upsert(value) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${value.uid}`);
     userRef.update({'uid': value.uid})
     .then(() => {
@@ -134,7 +135,8 @@ export class AuthService {
         'email': value.email,
         'uid': value.uid,
         'photoURL': value.photoURL,
-        'role': 'user'
+        'role': 'user',
+        'assignedForms': {}
       })
       .then( () => {
         this.router.navigate(['/user-profile', value.uid]);

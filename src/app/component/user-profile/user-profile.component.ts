@@ -4,6 +4,8 @@ import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument 
 import { AuthService } from '../../provider/auth.service';
 import { Observable } from 'rxjs/Observable';
 import { UserInfo } from '../../model/user-info';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { DialogComponent } from '../dialog/dialog.component';
 
 @Component({
   selector: 'app-user-profile',
@@ -16,10 +18,11 @@ export class UserProfileComponent implements OnInit {
   user: any;
   userInfo: UserInfo;
   uid: string;
+  uidDialog: string;
 
   constructor(private afs: AngularFirestore,
               public authService: AuthService,
-              private router: Router,
+              private router: Router, private dialog: MatDialog,
               private route: ActivatedRoute) {
 
     this.route.params.subscribe(params => {
@@ -48,6 +51,37 @@ export class UserProfileComponent implements OnInit {
     } else {
       alert('Cannot Update, user not logged in!');
       this.router.navigateByUrl('/login');
+    }
+  }
+
+  openDialog(userId): void {
+    const dialogRef = this.dialog.open(DialogComponent, {
+      width: '250px',
+      data: 'You are about to delete. Are you sure?'
+    });
+    this.uidDialog = userId;
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'Confirm') {
+        this.deleteUser(this.uidDialog);
+      }
+    });
+  }
+
+  deleteUser(userId) {
+    if (this.userInfo) {
+      if (this.userInfo.role !== 'admin') {
+        this.afs.doc(`users/${userId}`).delete()
+        .then(() => {
+          if (this.authService.currentUserId === userId) {
+            this.authService.deleteAuthCurrentUser();
+            this.router.navigateByUrl('/login');
+          } else {
+            this.router.navigateByUrl('/user-manage');
+          }
+        });
+      } else {
+        alert('Admin user cannot be deleted here! Contact system admin');
+      }
     }
   }
 

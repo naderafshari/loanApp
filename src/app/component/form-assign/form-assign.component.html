@@ -5,10 +5,10 @@
       <br>
       <mat-list *ngFor="let form of forms | async">
           <mat-list-item><strong>{{form.formName}}</strong>
-            <a (click)="assignClick(form.formId);" class="secondary-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Assign</a>
-            <!--<a (click)="openDialog();" class="secondary-content">&nbsp;&nbsp;&nbsp;Delete</a> -->
+            <a (click)="assignClick(form.formId);" class="secondary-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Assign/Reassign</a>
+            <a *ngIf="userInfo.assignedForms[form.formId] === 'true'" (click)="unAssignClick(form.formId);" class="secondary-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Unassign</a>
+            <!--<a (click)="openDialog();" class="secondary-content">&nbsp;&nbsp;&nbsp;</a> -->
           </mat-list-item>
       </mat-list>
     </mat-card-content>
   </mat-card>
-  

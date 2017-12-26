@@ -7,28 +7,25 @@
   <mat-card-content>
     <mat-list  *ngIf = "(authService.user | async)?.role ==='admin'">
       <mat-list-item>
-        <a routerLink="/form-manage">Manage Forms</a>
+        <a routerLink="/form-manage">(Manage Forms)</a>
       </mat-list-item>
     </mat-list>
   </mat-card-content>
 </mat-card>
 <mat-card>
   <mat-card-content> &nbsp;&nbsp;&nbsp;Manage Users
-    <div>
-      <mat-list *ngFor="let user of users | async">
-        <mat-list-item *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.uid === user.uid"><strong>{{user.firstName}}</strong> &nbsp; {{user.lastName}}&nbsp;
-          <a (click)="editClick(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Edit-Profile</a>
-          <a (click)="openDialog(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;Delete-Profile</a>
-          <div *ngIf = "(authService.user | async)?.role ==='admin'">
-              <a (click)="goFormAssign(user.uid);"class="secondary-content">&nbsp;&nbsp;&nbsp;Assign-Form</a>
-          </div>
-          <div>&nbsp;&nbsp;&nbsp;Active Forms:</div>          
-          <div *ngFor="let userForm of userForms">
-            <a *ngIf="userForm.uid === user.uid" (click)="goToForm(user.uid,userForm.formId);" class="secondary-content">&nbsp;&nbsp;&nbsp;{{userForm.formName}}</a>
-          </div>
-        </mat-list-item>
-      </mat-list>
-    </div>
+    <mat-list *ngFor="let user of users | async">
+      <mat-list-item *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.uid === user.uid"><strong>{{user.firstName}}</strong> &nbsp; {{user.lastName}}&nbsp;
+        <a (click)="editClick(user.uid);" class="secondary-content">&nbsp;(Edit-Profile)</a>
+        <div *ngIf = "(authService.user | async)?.role ==='admin'">
+            <a (click)="goFormAssign(user.uid);"class="secondary-content">&nbsp;&nbsp;&nbsp;(Form-Assignments)</a>
+        </div>
+        <div>&nbsp;&nbsp;&nbsp;Active Forms:</div>
+        <div *ngFor="let userForm of userForms">
+          <a *ngIf="userForm.uid === user.uid" (click)="goToForm(user.uid,userForm.formId);" class="secondary-content">&nbsp;&nbsp;&nbsp;{{userForm.formName}}</a>
+        </div>
+      </mat-list-item>
+    </mat-list>
   </mat-card-content>
 </mat-card>
 

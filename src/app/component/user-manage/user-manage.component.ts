@@ -47,8 +47,8 @@ export class UserManageComponent implements OnInit {
                     if (form.formId === `form${i}`) {
                       formAlreadyPushed = true;
                     }
-                   });
-                  if (!formAlreadyPushed) {
+                  });
+                  if (!formAlreadyPushed && user.assignedForms[`form${i}`] === 'true') {
                     this.userForm.uid = user.uid;
                     this.userForms.push( this.userForm);
                   }
@@ -57,44 +57,8 @@ export class UserManageComponent implements OnInit {
             }
           });
         });
-        }
-    });
-  }
-
-  openDialog(userId): void {
-    const dialogRef = this.dialog.open(DialogComponent, {
-      width: '250px',
-      data: 'You are about to delete. Are you sure?'
-    });
-    this.userId = userId;
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === 'Confirm') {
-        this.deleteUser(this.userId);
       }
     });
-  }
-
-  deleteUser(userId) {
-    this.userDoc = this.afs.doc(`users/${userId}`);
-    if (this.userDoc) {
-      const sub = this.userDoc.valueChanges().subscribe((data) => {
-         if (data) {
-          if (data.role !== 'admin') {
-            console.log('Deleting User');
-            this.userDoc.delete()
-            .then(() => {
-              sub.unsubscribe();
-              if (this.authService.currentUserId === userId) {
-                this.authService.deleteAuthCurrentUser();
-                this.router.navigateByUrl('/login');
-              }
-            });
-          } else {
-            alert('Admin user cannot be deleted here! Contact system admin');
-          }
-        }
-      });
-    }
   }
 
   editClick(uid) {

@@ -8,4 +8,5 @@ export interface UserInfo {
   photoURL?:     string;
   firstName?:    string;
   lastName?:     string;
+  assignedForms?: {};
 }
