@@ -17,22 +17,78 @@ export class FormManageComponent implements OnInit {
   formsCol: AngularFirestoreCollection<Form>;
   userDoc: AngularFirestoreDocument<Form>;
   forms: Observable<Form[]>;
+  usedForms: string[] = [];
 
   constructor(private afs: AngularFirestore,
     private router: Router,   private route: ActivatedRoute,
     private fs: FormService,  public dialog: MatDialog ) {
-  }
+    }
 
   ngOnInit() {
-    this.forms = this.fs.getForms();
+    /*Setting up for add form. To find next available
+     form, find the not available ones first at init*/
+    this.formsCol = this.afs.collection<Form>('forms');
+    this.forms = this.formsCol.valueChanges();
+    this.forms.subscribe(forms => {
+      this.usedForms = [];
+      forms.forEach(form => {
+        this.usedForms.push(form.formId.charAt(4) + form.formId.charAt(5));
+      });
+    });
   }
 
   createForms() {
-    this.fs.createForms();
+    this.fs.createAllForms();
   }
 
   editClick(id) {
     this.router.navigate(['/form-config', id]);
+  }
+
+  addForm() {
+      this.fs.addForm(this.nextSlot(0, 'up'));
+  }
+
+  nextSlot(current, direction) {
+    let inc = 1;
+    if ( direction === 'down' ) {
+        inc = -1;
+    }
+    const next = current + inc;
+    for (let i = 0; i < this.usedForms.length; i++) {
+      if ( Number(this.usedForms[i]) === next ) {
+        return this.nextSlot(next , direction );
+      }
+    }
+    return next ;
+  }
+
+  openDeleteAllDialog(): void {
+    const dialogRef = this.dialog.open(DialogComponent, {
+      width: '250px',
+      data: 'You are about to Delete the forms. Form Configurartion will be cleared and form will be removed. Are you sure?'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'Confirm') {
+        for (let i = 0; i < this.usedForms.length; i++) {
+          this.fs.deleteForm('form' + this.usedForms[i]);
+        }
+      }
+    });
+  }
+
+  openDeleteDialog(formId): void {
+    const dialogRef = this.dialog.open(DialogComponent, {
+      width: '250px',
+      data: 'You are about to Delete the forms. Form Configurartion will be cleared and form will be removed. Are you sure?'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'Confirm') {
+        this.fs.deleteForm(formId);
+      }
+    });
   }
 
   openDialog(): void {

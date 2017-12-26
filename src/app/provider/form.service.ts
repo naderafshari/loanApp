@@ -34,7 +34,23 @@ export class FormService {
     return this.afs.doc<Form>(`forms/${id}`).valueChanges();
   }
 
-  createForms() {
+  deleteForm(id) {
+    const formsRef: AngularFirestoreDocument<any> = this.afs.doc(`forms/${id}`);
+    formsRef.delete().then(() => console.log(`${id} deleted`));
+  }
+
+  addForm(i) {
+    const formClass: FormClass = new FormClass();
+    const formsRef: AngularFirestoreDocument<any> = this.afs.doc(`forms/form${i}`);
+    const Form: Form = formClass.form;
+    Form.formId = `form${i}`;
+    Form.formName = `form${i}`;
+    Form.updateTime = new Date().toString();
+    Form.startTime = new Date().toString();
+    formsRef.set(Form).then(() => console.log(`form${i} added`));
+  }
+
+  createAllForms() {
     const formClass: FormClass = new FormClass();
     for (let i = 1; i <= 10; i++) {
       const formsRef: AngularFirestoreDocument<any> = this.afs.doc(`forms/form${i}`);

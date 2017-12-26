@@ -58,7 +58,7 @@ export class FormComponent implements OnInit {
           });
         }
       });
-  });
+    });
   }
 
   getValue(i) {

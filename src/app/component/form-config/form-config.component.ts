@@ -90,7 +90,7 @@ export class FormConfigComponent implements OnInit {
     } else {
       alert('Cannot Update, user not logged in!');
     }
-    this.sub.unsubscribe();
+    //this.sub.unsubscribe();
     this.router.navigateByUrl('/form-manage');
   }
 

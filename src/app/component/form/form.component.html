@@ -9,7 +9,7 @@
           <input matInput [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}}> 
         </mat-form-field>
 
-        <mat-form-field *ngIf="formData && field.type == 'textarea'">
+        <mat-form-field *ngIf="formData && field.type == 'textarea'"> <p>{{field.name}}</p>
             <textarea matInput [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}}> </textarea>
         </mat-form-field>
 
