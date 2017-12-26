@@ -1,3 +1,16 @@
+export interface Field {
+    index: number;
+    name: string;
+    type: string;
+    option1: string;
+    option2: string;
+    option3: string;
+    option4: string;
+    option5: string;
+    option6: string;
+    value: string;
+}
+
 export interface Form {
     uid: string;
     formId: string;

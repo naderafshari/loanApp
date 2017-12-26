@@ -6,7 +6,8 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/forkJoin';
 import { UserInfo } from '../../model/user-info';
-import { Form } from '../../model/form';
+import { Form, Field } from '../../model/form';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-form',
@@ -17,29 +18,14 @@ export class FormComponent implements OnInit {
 
   userDoc: any;
   forms: Observable<Form[]>;
+  sub: Subscription;
   user: any;
   uid: string;
   formId: string;
   formData: Form;
   formRef: AngularFirestoreCollection<Form>;
-  fields: {
-    index: number;
-    name: string;
-    type: string;
-    //option1: string;
-    value: string;
-  }[] = [];
-  /*names : string[] = [];
-  types : string[] = [];
-  option1 : string[] = [];
-  option2 : string[] = [];
-  option3 : string[] = [];
-  option4 : string[] = [];
-  option5 : string[] = [];
-  option6 : string[] = [];
-  values : string[] = [];*/
-  index = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
-  
+  fields: Field[] = [];
+
   constructor(private afs: AngularFirestore,
     public authService: AuthService,
     private router: Router,
@@ -48,49 +34,44 @@ export class FormComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.uid = params['uid'] || 0;
       this.formId = params['fid'] || 0;
-      // console.log('form id', this.formId);
-      // console.log('user id', this.uid);
       if (this.uid) {
         this.formRef = this.afs.doc(`users/${this.uid}`).collection<Form>('forms', ref =>
           ref.where('formId', '==', this.formId).orderBy('startTime', 'desc').limit(1));
         this.forms = this.formRef.valueChanges();
       }
-      this.forms.subscribe((data) => {
+      this.sub = this.forms.subscribe((data) => {
         this.formData = data[0];
-        //if(this.formData.field1 !== undefined) {
-          for (let i = 1; i <= 20; i++) {
-            const obj: Form = this.formData;
-            this.fields.push({
-                                index: i,
-                                name: eval('obj.field'+i+'.name'), 
-                                type: eval('obj.field'+i+'.type'), 
-                                value: eval('obj.field'+i+'.value')
-                              });
-            /*this.types.push(eval('obj.field'+i+'.type'));
-            this.option1.push(eval('obj.field'+i+'.option1'));
-            this.option2.push(eval('obj.field'+i+'.option2'));
-            this.option3.push(eval('obj.field'+i+'.option3'));
-            this.option4.push(eval('obj.field'+i+'.option4'));
-            this.option5.push(eval('obj.field'+i+'.option5'));
-            this.option6.push(eval('obj.field'+i+'.option6'));
-            this.values.push('formData.field'+i+'.value');*/
-          }
-        //}
-        console.log(this.fields);
-       });
+        this.fields = [];
+        for (let i = 1; i <= 20; i++) {
+          const obj: Form = this.formData;
+          this.fields.push({
+            index:    i,
+            name:     eval('obj.field' + i + '.name'),
+            type:     eval('obj.field' + i + '.type'),
+            option1:  eval('obj.field' + i + '.option1'),
+            option2:  eval('obj.field' + i + '.option2'),
+            option3:  eval('obj.field' + i + '.option3'),
+            option4:  eval('obj.field' + i + '.option4'),
+            option5:  eval('obj.field' + i + '.option5'),
+            option6:  eval('obj.field' + i + '.option6'),
+            value:    eval('obj.field' + i + '.value')
+          });
+        }
+      });
   });
   }
-  getValue(i){
-    return this.fields[i].value;
+
+  getValue(i) {
+    const obj: Form = this.formData;
+    return eval('obj.field' + i + '.value');
   }
 
-  setValue(value,i) {
-    console.log(value);
-    console.log(i)
-    //const obj: Form = this.formData;
-    //eval('obj.field'+i+'.value = '+value);
-    //this.formData = obj;
+  setValue(value, i) {
+    let obj: Form = this.formData;
+    eval('obj.field' + i + '.value = value');
+    this.formData = obj;
   }
+
   updateFormData() {
     if (this.formData != null ) {
       this.formData.updateTime = new Date().toString();
@@ -101,6 +82,7 @@ export class FormComponent implements OnInit {
     } else {
       alert('Cannot Update, Form not available!');
     }
+    this.sub.unsubscribe();
     this.router.navigateByUrl('/user-manage');
   }
 
