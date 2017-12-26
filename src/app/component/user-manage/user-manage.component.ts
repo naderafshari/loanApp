@@ -41,15 +41,22 @@ export class UserManageComponent implements OnInit {
             if (forms) {
               for (let i = 0; i <= forms.length; i++) {
                 this.userForm = forms.filter(e => e.formId === `form${i}`).reverse()[0];
-                if (this.userForm !== undefined) {
-                  this.userForm.uid = user.uid;
-                  this.userForms.push( this.userForm);
+                if (this.userForm) {
+                  let formAlreadyPushed = false;
+                  this.userForms.forEach((form) => {
+                    if (form.formId === `form${i}`) {
+                      formAlreadyPushed = true;
+                    }
+                   });
+                  if (!formAlreadyPushed) {
+                    this.userForm.uid = user.uid;
+                    this.userForms.push( this.userForm);
+                  }
                 }
               }
             }
           });
         });
-        // console.log(this.userForms);
         }
     });
   }
