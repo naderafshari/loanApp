@@ -1,26 +1,27 @@
-<!--<div class="mat-container">
-  <mat-table [dataSource]="dataSource">
-    <ng-container>
-      <mat-heaer-cel *matHeaderCellDef>FormID</mat-heaer-cel>
-      <mat-cell *matCellDef="let form">{{form.formId}}</mat-cell>
+<div class="form-container mat-elevation-z8">
+  <mat-table #table [dataSource]="dataSource" matSort>
+    <ng-container matColumnDef="formId">
+            <mat-header-cell *matHeaderCellDef  mat-sort-header> Id </mat-header-cell>
+            <mat-cell *matCellDef="let formsInfo"> {{formsInfo.formId}} </mat-cell>
     </ng-container>
-    <ng-container>
-        <mat-heaer-cel *matHeaderCellDef>FormName</mat-heaer-cel>
-        <mat-cell *matCellDef="let form">{{form.formName}}</mat-cell>
+          
+    <ng-container matColumnDef="formName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+            <mat-cell *matCellDef="let formsInfo"> {{formsInfo.formName}} </mat-cell>
     </ng-container>
-    <ng-container>
-        <mat-heaer-cel *matHeaderCellDef>Assigned</mat-heaer-cel>
-        <mat-cell *matCellDef="let form">{{form.assigned}}</mat-cell>
+    <ng-container matColumnDef="startTime">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Assigned on </mat-header-cell>
+            <mat-cell *matCellDef="let formsInfo"> {{formsInfo.startTime}} </mat-cell>
     </ng-container>
-    <ng-container>
-        <mat-heaer-cel *matHeaderCellDef>Assiged On</mat-heaer-cel>
-        <mat-cell *matCellDef="let form">{{form.startTime}}</mat-cell>
-    </ng-container>
-    <ng-container>
-        <mat-heaer-cel *matHeaderCellDef>Laste Update</mat-heaer-cel>
-        <mat-cell *matCellDef="let form">{{form.udpateTime}}</mat-cell>
+    <ng-container matColumnDef="updateTime">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> LastUpdated </mat-header-cell>
+            <mat-cell *matCellDef="let formsInfo"> {{formsInfo.updateTime}} </mat-cell>
     </ng-container>
     <mat-header-row *matHeaderRowDef="displayedColums"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
   </mat-table>
-</div>-->
+  <mat-paginator #paginator
+                 [pageSize]="20"
+                 [pageSizeOptions]="[5, 10, 20, 50, 100]">
+  </mat-paginator>
+</div>

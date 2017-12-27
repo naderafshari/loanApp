@@ -15,7 +15,7 @@ import { MatListModule } from '@angular/material';
 import { MatDatepickerModule } from '@angular/material';
 import { MatNativeDateModule } from '@angular/material';
 import { MatTableModule } from '@angular/material';
-//import { MatTableDataSource } from '@angular/material';
+import { MatPaginatorModule } from '@angular/material';
 
 @NgModule({
     imports: [
@@ -33,7 +33,7 @@ import { MatTableModule } from '@angular/material';
         MatListModule,
         MatDatepickerModule,
         MatNativeDateModule,
-//        MatTableDataSource,
+        MatPaginatorModule,
         MatTableModule,
     ],
     exports: [
@@ -51,7 +51,7 @@ import { MatTableModule } from '@angular/material';
         MatListModule,
         MatDatepickerModule,
         MatNativeDateModule,
-    //    MatTableDataSource,
+        MatPaginatorModule,
         MatTableModule,
     ]
   })

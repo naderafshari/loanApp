@@ -14,7 +14,6 @@ export interface Field {
 export interface FormInfo {
     formId: string;
     formName: string;
-    assiged: string;
     startTime: string;
     updateTime: string;
   }

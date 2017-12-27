@@ -6,6 +6,7 @@ import { UserInfo } from '../../model/user-info';
 import { Observable } from 'rxjs/Observable';
 import { Form } from '../../model/form';
 import { FormService } from '../../provider/form.service';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-form-assign',
@@ -15,10 +16,11 @@ import { FormService } from '../../provider/form.service';
 export class FormAssignComponent implements OnInit {
   uid: string;
   forms: Observable<Form[]>;
-  formsArray: Form[];
+  formData: Form;
   userDoc: Observable<{}>;
   user: any;
   userInfo: UserInfo;
+  sub: Subscription;
 
   constructor(private afs: AngularFirestore,
               private router: Router,
@@ -28,11 +30,8 @@ export class FormAssignComponent implements OnInit {
       this.uid = params['uid'] || 0;
       if (this.uid) {
         this.forms = this.fs.getForms();
-        // console.log(this.forms);
-        if (this.uid) {
-          this.userDoc = this.afs.doc(`users/${this.uid}`).valueChanges();
-          this.userDoc.subscribe((data: UserInfo) => this.userInfo = data);
-        }
+        this.userDoc = this.afs.doc(`users/${this.uid}`).valueChanges();
+        this.sub = this.userDoc.subscribe((data: UserInfo) => this.userInfo = data);
       }
     });
   }
@@ -40,10 +39,10 @@ export class FormAssignComponent implements OnInit {
   assignClick(formId) {
     const form = this.afs.collection<Form>('forms', ref => ref.where('formId', '==', formId)).valueChanges();
     const sub = form.subscribe((data) => {
-        this.formsArray = data;
-        this.formsArray[0].updateTime = new Date().toString();
-        this.formsArray[0].startTime = new Date().toString();
-        this.afs.doc(`users/${this.uid}`).collection('forms').doc(new Date().toString()).set(this.formsArray[0]);
+        this.formData = data[0];
+        this.formData.updateTime = new Date().toString();
+        this.formData.startTime = new Date().toString();
+        this.afs.doc(`users/${this.uid}`).collection('forms').doc(new Date().toString()).set(this.formData);
         if (this.userInfo) {
           this.userInfo.assignedForms[`${formId}`] = 'true';
           this.afs.collection('users').doc(this.userInfo.uid).update(this.userInfo);
@@ -55,17 +54,13 @@ export class FormAssignComponent implements OnInit {
   }
 
   unAssignClick(formId) {
-    const user = this.afs.collection<UserInfo>('users', ref => ref.where('uid', '==', this.userInfo.uid)).valueChanges();
-    const sub = user.subscribe((data) => {
-        this.user = data;
-        if (this.user) {
-          this.userInfo.assignedForms[`${formId}`] = 'false';
-          this.afs.collection('users').doc(this.userInfo.uid).update(this.userInfo);
-          sub.unsubscribe();
-          alert('Form Unassigned successfully.');
-          this.router.navigateByUrl('/user-manage');
-        }
-    });
+    if (this.userInfo) {
+      this.userInfo.assignedForms[`${formId}`] = 'false';
+      this.afs.collection('users').doc(this.userInfo.uid).update(this.userInfo);
+      this.sub.unsubscribe();
+      alert('Form Unassigned successfully.');
+      this.router.navigateByUrl('/user-manage');
+    }
   }
 
   ngOnInit() {
