@@ -11,6 +11,9 @@ import { Form, FormInfo } from '../../model/form';
 import { Subscription } from 'rxjs/Subscription';
 import { MatTableDataSource, MatSort } from '@angular/material';
 import { MatPaginator } from '@angular/material';
+import { SelectionModel } from '@angular/cdk/collections';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { DialogComponent } from '../dialog/dialog.component';
 
 @Component({
   selector: 'app-form-history',
@@ -26,15 +29,15 @@ export class FormHistoryComponent {
   userInfo: UserInfo;
   sub: Subscription;
   formsInfo: FormInfo[] = [];
-  displayedColumns = ['formId', 'formName', 'startTime', 'updateTime'];
+  displayedColumns = ['select', 'formId', 'formName', 'startTime', 'updateTime'];
   dataSource: any;
+  selection: any;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private afs: AngularFirestore,
-              private router: Router,
-              private route: ActivatedRoute,
+  constructor(private afs: AngularFirestore, private router: Router,
+              private route: ActivatedRoute, public dialog: MatDialog,
               public fs: FormService) {
     this.route.params.subscribe(params => {
       this.uid = params['uid'] || 0;
@@ -56,6 +59,7 @@ export class FormHistoryComponent {
                 this.formsInfo.push(formInfo);
               });
               this.dataSource = new MatTableDataSource<FormInfo>(this.formsInfo);
+              this.selection = new SelectionModel<FormInfo>(true, []);
               this.dataSource.paginator = this.paginator;
               this.dataSource.sort = this.sort;
               this.sub.unsubscribe();
@@ -64,6 +68,45 @@ export class FormHistoryComponent {
         });
       }
     });
+  }
+
+  openDeleteDialog(): void {
+    const dialogRef = this.dialog.open(DialogComponent, {
+      width: '250px',
+      data: 'You are about to Delete form record(s) for the selected user. There is no recovery once deleted. Are you sure?'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'Confirm') {
+        this.deleteSelection();
+      }
+    });
+  }
+
+
+  deleteSelection() {
+    this.selection.selected.forEach((selection) => {
+      const formColRef = this.afs.doc(`users/${this.uid}`).collection<Form>('forms', ref => 
+                                  ref.where('updateTime', '==', selection.updateTime));
+      formColRef.valueChanges().subscribe((forms) => {
+        formColRef.doc(`${selection.updateTime}`).delete();
+        this.router.navigateByUrl('/user-manage');
+      });      
+    });
+  }
+
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected == numRows;
+  }
+  
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle() {
+    this.isAllSelected() ?
+        this.selection.clear() :
+        this.dataSource.data.forEach(row => this.selection.select(row));
   }
 
 }

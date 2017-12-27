@@ -1,5 +1,30 @@
+<mat-card>
+   <mat-card-content>
+        <a routerLink="/user-manage" id="goback">Go back</a>
+        <br>
+        <br>
+        <button mat-raised-button (click)="openDeleteDialog()">Delete Selected</button>
+   </mat-card-content>
+</mat-card>
+        
 <div class="form-container mat-elevation-z8">
   <mat-table #table [dataSource]="dataSource" matSort>
+
+    <ng-container matColumnDef="select" > 
+        <mat-header-cell *matHeaderCellDef>
+            <mat-checkbox *ngIf="selection" (change)="$event ? masterToggle() : null"
+                [checked]="selection.hasValue() && isAllSelected()"
+                [indeterminate]="selection.hasValue() && !isAllSelected()">
+            </mat-checkbox>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+            <mat-checkbox (click)="$event.stopPropagation()"
+                (change)="$event ? selection.toggle(row) : null"
+                [checked]="selection.isSelected(row)">
+            </mat-checkbox>
+        </mat-cell>
+    </ng-container>
+
     <ng-container matColumnDef="formId">
             <mat-header-cell *matHeaderCellDef  mat-sort-header> Id </mat-header-cell>
             <mat-cell *matCellDef="let formsInfo"> {{formsInfo.formId}} </mat-cell>
@@ -18,7 +43,8 @@
             <mat-cell *matCellDef="let formsInfo"> {{formsInfo.updateTime}} </mat-cell>
     </ng-container>
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"> 
+                (click)="selection.toggle(row)"></mat-row>
   </mat-table>
   <mat-paginator #paginator
                  [pageSize]="20"
