@@ -17,7 +17,7 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header> LastUpdated </mat-header-cell>
             <mat-cell *matCellDef="let formsInfo"> {{formsInfo.updateTime}} </mat-cell>
     </ng-container>
-    <mat-header-row *matHeaderRowDef="displayedColums"></mat-header-row>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
   </mat-table>
   <mat-paginator #paginator
