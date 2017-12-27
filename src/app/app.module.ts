@@ -30,6 +30,7 @@ import { FormComponent } from './component/form/form.component';
 import { FormManageComponent } from './component/form-manage/form-manage.component';
 import { FormConfigComponent } from './component/form-config/form-config.component';
 import { FormAssignComponent } from './component/form-assign/form-assign.component';
+import { FormHistoryComponent } from './component/form-history/form-history.component';
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import { FormAssignComponent } from './component/form-assign/form-assign.compone
     FormComponent,
     FormManageComponent,
     FormConfigComponent,
-    FormAssignComponent
+    FormAssignComponent,
+    FormHistoryComponent
   ],
   imports: [
     BrowserModule,

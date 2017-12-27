@@ -11,6 +11,14 @@ export interface Field {
     value: string;
 }
 
+export interface FormInfo {
+    formId: string;
+    formName: string;
+    assiged: string;
+    startTime: string;
+    updateTime: string;
+  }
+
 export interface Form {
     uid: string;
     formId: string;

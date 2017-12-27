@@ -39,11 +39,12 @@ export class UserManageComponent implements OnInit {
           this.afs.doc(`users/${user.uid}`).collection<Form>('forms')
           .valueChanges().subscribe((forms) => {
             if (forms) {
-              for (let i = 0; i <= forms.length; i++) {
+              let formAlreadyPushed;
+              for (let i = 1; i <= forms.length; i++) {
                 this.userForm = forms.filter(e => e.formId === `form${i}`).reverse()[0];
                 if (this.userForm) {
-                  let formAlreadyPushed = false;
                   this.userForms.forEach((form) => {
+                    formAlreadyPushed = false;
                     if (form.formId === `form${i}`) {
                       formAlreadyPushed = true;
                     }
@@ -75,5 +76,9 @@ export class UserManageComponent implements OnInit {
 
   goToForm(uid, formId) {
     this.router.navigate(['/form', uid, formId]);
+  }
+
+  goFormHistory(uid) {
+    this.router.navigate(['/form-history', uid]);
   }
 }
