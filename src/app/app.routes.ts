@@ -15,6 +15,7 @@ import { FormManageComponent } from './component/form-manage/form-manage.compone
 import { FormConfigComponent } from './component/form-config/form-config.component';
 import { FormAssignComponent } from './component/form-assign/form-assign.component';
 import { FormHistoryComponent } from './component/form-history/form-history.component';
+import { FormReviewComponent } from './component/form-review/form-review.component';
 
 export const router: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -28,7 +29,8 @@ export const router: Routes = [
     { path: 'form-manage', component: FormManageComponent, canActivate: [AdminGuard] },
     { path: 'form-config/:id', component: FormConfigComponent, canActivate: [AdminGuard] },
     { path: 'form-assign/:uid', component: FormAssignComponent, canActivate: [AdminGuard] },
-    { path: 'form-history/:uid', component: FormHistoryComponent, canActivate: [AdminGuard] }
+    { path: 'form-history/:uid', component: FormHistoryComponent, canActivate: [AdminGuard] },
+    { path: 'form-review/:uid/:tid', component: FormReviewComponent, canActivate: [AdminGuard] }
 ];
 
 export const routes: ModuleWithProviders = RouterModule.forRoot(router);

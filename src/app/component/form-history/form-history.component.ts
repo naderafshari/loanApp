@@ -70,6 +70,17 @@ export class FormHistoryComponent {
     });
   }
 
+  viewSelected() {
+    if (this.selection.selected[1]) {
+      alert('More than one item was selected! Please, select only one item.');
+    }
+    else if (this.selection.selected[0]) {
+      this.router.navigate(['/form-review', this.uid, this.selection.selected[0].updateTime]);
+    }
+    else {
+      alert('No item was selected! Please, select one item.');
+    }
+  }
   openDeleteDialog(): void {
     const dialogRef = this.dialog.open(DialogComponent, {
       width: '250px',
@@ -82,7 +93,6 @@ export class FormHistoryComponent {
       }
     });
   }
-
 
   deleteSelection() {
     this.selection.selected.forEach((selection) => {
