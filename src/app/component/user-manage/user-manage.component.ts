@@ -22,8 +22,8 @@ export class UserManageComponent implements OnInit {
   users: Observable<UserInfo[]>;
   userId: any;
   forms: Observable<{}>;
-  userForms: Form[] = [];
-  userForm: Form;
+  userForms: any[];
+  userForm: any;
 
   constructor(private afs: AngularFirestore, public fs: FormService,
               public authService: AuthService, private router: Router,
@@ -36,20 +36,23 @@ export class UserManageComponent implements OnInit {
     this.users.subscribe((users) => {
       if (users) {
         users.forEach( (user) => {
+          this.userForms = [];
           this.afs.doc(`users/${user.uid}`).collection<Form>('forms')
           .valueChanges().subscribe((forms) => {
             if (forms) {
-              let formAlreadyPushed;
+              // let formAlreadyPushed;
               for (let i = 1; i <= forms.length; i++) {
                 this.userForm = forms.filter(e => e.formId === `form${i}`).reverse()[0];
+                /* find the latest of each form Id */
                 if (this.userForm) {
-                  this.userForms.forEach((form) => {
-                    formAlreadyPushed = false;
-                    if (form.formId === `form${i}`) {
-                      formAlreadyPushed = true;
-                    }
-                  });
-                  if (!formAlreadyPushed && user.assignedForms[`form${i}`] === 'true') {
+                  // this.userForms.forEach((form) => {
+                  //   formAlreadyPushed = false;
+                  // if (form.formId === `form${i}`) {
+                  //    formAlreadyPushed = true;
+                  //  }
+                  // });
+                  //  if (!formAlreadyPushed && user.assignedForms[`form${i}`] === 'true') {
+                  if (user.assignedForms[`form${i}`] === 'true') {
                     this.userForm.uid = user.uid;
                     this.userForms.push( this.userForm);
                   }
@@ -70,6 +73,9 @@ export class UserManageComponent implements OnInit {
     this.authService.logout();
   }
 
+  goFormManage(uid) {
+    this.router.navigate(['/form-manage', uid]);
+  }
   goFormAssign(uid) {
     this.router.navigate(['/form-assign', uid]);
   }

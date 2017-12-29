@@ -5,9 +5,9 @@
   </mat-card-header>
   <br>
   <mat-card-content>
-    <mat-list  *ngIf = "(authService.user | async)?.role ==='admin'">
-      <mat-list-item>
-        <a routerLink="/form-manage">Manage/Configre Form Templates</a>
+    <mat-list  *ngFor="let user of users | async">
+      <mat-list-item *ngIf = "((authService.user | async)?.role ==='admin' || (authService.user | async)?.role ==='super') &&  (authService.user | async)?.uid === user.uid;" >
+        <a (click)="goFormManage(user.uid);"class="secondary-content">Manage/Configre Form Templates </a>
       </mat-list-item>
     </mat-list>
   </mat-card-content>
@@ -15,9 +15,9 @@
 <mat-card>
   <mat-card-content> &nbsp;&nbsp;&nbsp;Manage Users
     <mat-list *ngFor="let user of users | async">
-      <mat-list-item *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.uid === user.uid"><strong>{{user.firstName}}</strong> &nbsp; {{user.lastName}}&nbsp;
+        <mat-list-item *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.role ==='super' || (authService.user | async)?.uid === user.uid"><strong>{{user.firstName}}</strong> &nbsp; {{user.lastName}}&nbsp;
         <a (click)="editClick(user.uid);" class="secondary-content">&nbsp;(Edit-Profile)</a>
-        <div *ngIf = "(authService.user | async)?.role ==='admin'">
+        <div *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.role ==='super'">
             <a (click)="goFormAssign(user.uid);"class="secondary-content">&nbsp;&nbsp;(Form-Assignments)</a>
             <a (click)="goFormHistory(user.uid);"class="secondary-content">&nbsp;&nbsp;(Form-History)</a>
           </div>

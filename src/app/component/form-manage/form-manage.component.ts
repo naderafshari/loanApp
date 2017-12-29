@@ -7,6 +7,8 @@ import { DialogComponent } from '../dialog/dialog.component';
 import { Form } from '../../model/form';
 import { FormConfigComponent } from '../form-config/form-config.component';
 import { FormService } from '../../provider/form.service';
+import { AuthService } from '../../provider/auth.service';
+import { UserInfo } from '../../model/user-info';
 
 @Component({
   selector: 'app-form-manage',
@@ -15,9 +17,13 @@ import { FormService } from '../../provider/form.service';
 })
 export class FormManageComponent implements OnInit {
   formsCol: AngularFirestoreCollection<Form>;
-  userDoc: AngularFirestoreDocument<Form>;
   forms: Observable<Form[]>;
   usedForms: string[] = [];
+  usersCol: AngularFirestoreCollection<UserInfo>;
+  userDoc: AngularFirestoreDocument<UserInfo>;
+  users: Observable<UserInfo[]>;
+  userId: string;
+  userInfo: UserInfo;
 
   constructor(private afs: AngularFirestore,
     private router: Router,   private route: ActivatedRoute,
@@ -25,15 +31,26 @@ export class FormManageComponent implements OnInit {
     }
 
   ngOnInit() {
-    /*Setting up for add form. To find next available
-     form, find the not available ones first at init*/
-    this.formsCol = this.afs.collection<Form>('forms');
-    this.forms = this.formsCol.valueChanges();
-    this.forms.subscribe(forms => {
-      this.usedForms = [];
-      forms.forEach(form => {
-        this.usedForms.push(form.formId.charAt(4) + form.formId.charAt(5));
-      });
+    this.route.params.subscribe(params => {
+      this.userId = params['uid'] || 0;
+      if (this.userId) {
+        this.usersCol = this.afs.collection<UserInfo>('users', ref => ref.where('uid', '==', this.userId));
+        this.users = this.usersCol.valueChanges();
+        this.users.subscribe((users) => {
+          if (users) {this.userInfo = users[0];
+          }
+        });
+        /*Setting up for add form. To find next available
+        form, find the not available ones first at init*/
+        this.formsCol = this.afs.collection<Form>('forms');
+        this.forms = this.formsCol.valueChanges();
+        this.forms.subscribe(forms => {
+          this.usedForms = [];
+          forms.forEach(form => {
+            this.usedForms.push(form.formId.charAt(4) + form.formId.charAt(5));
+          });
+        });
+      }
     });
   }
 
@@ -64,31 +81,39 @@ export class FormManageComponent implements OnInit {
   }
 
   openDeleteAllDialog(): void {
-    const dialogRef = this.dialog.open(DialogComponent, {
-      width: '250px',
-      data: 'You are about to Delete the forms. Form Configurartion will be cleared and form will be removed. Are you sure?'
-    });
+    if (this.userInfo.role === 'admin') {
+      const dialogRef = this.dialog.open(DialogComponent, {
+        width: '250px',
+        data: 'You are about to Delete the forms. Form Configurartion will be cleared and form will be removed. Are you sure?'
+      });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === 'Confirm') {
-        for (let i = 0; i < this.usedForms.length; i++) {
-          this.fs.deleteForm('form' + this.usedForms[i]);
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === 'Confirm') {
+          for (let i = 0; i < this.usedForms.length; i++) {
+            this.fs.deleteForm('form' + this.usedForms[i]);
+          }
         }
-      }
-    });
+      });
+    } else {
+      alert('No Delete privilages! Please contact the Administrator');
+    }
   }
 
   openDeleteDialog(formId): void {
-    const dialogRef = this.dialog.open(DialogComponent, {
-      width: '250px',
-      data: 'You are about to Delete the forms. Form Configurartion will be cleared and form will be removed. Are you sure?'
-    });
+    if (this.userInfo.role === 'admin') {
+      const dialogRef = this.dialog.open(DialogComponent, {
+        width: '250px',
+        data: 'You are about to Delete the forms. Form Configurartion will be cleared and form will be removed. Are you sure?'
+      });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === 'Confirm') {
-        this.fs.deleteForm(formId);
-      }
-    });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === 'Confirm') {
+          this.fs.deleteForm(formId);
+        }
+      });
+    } else {
+      alert('No Delete privilages! Please contact the Administrator');
+    }
   }
 
   openDialog(): void {

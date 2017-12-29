@@ -26,7 +26,7 @@ export const router: Routes = [
     { path: 'user-profile/:uid', component: UserProfileComponent, canActivate: [AuthGuard] },
     { path: 'user-manage', component: UserManageComponent, canActivate: [AuthGuard] },
     { path: 'form/:uid/:fid', component: FormComponent, canActivate: [AuthGuard] },
-    { path: 'form-manage', component: FormManageComponent, canActivate: [AdminGuard] },
+    { path: 'form-manage/:uid', component: FormManageComponent, canActivate: [AdminGuard] },
     { path: 'form-config/:id', component: FormConfigComponent, canActivate: [AdminGuard] },
     { path: 'form-assign/:uid', component: FormAssignComponent, canActivate: [AdminGuard] },
     { path: 'form-history/:uid', component: FormHistoryComponent, canActivate: [AdminGuard] },

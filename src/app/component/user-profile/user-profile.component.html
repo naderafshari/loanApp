@@ -2,7 +2,7 @@
   <a routerLink="/user-manage" id="goback">Go back/Cancel</a>
   <br>
   <br>
-  <div *ngIf="userInfo">
+  <div *ngIf="(authService.user | async)?.role ==='admin' && userInfo">
     <a (click)="openDialog(userInfo.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;Delete-Profile</a>
   </div>
   <br>
@@ -17,39 +17,10 @@
   <mat-form-field *ngIf="(authService.user | async)?.role ==='admin' && userInfo">
     <mat-select [(ngModel)]="userInfo.role" placeholder="Role">
       <mat-option value="admin">admin</mat-option>
+      <mat-option value="super">super user</mat-option>
       <mat-option value="user">user</mat-option>
     </mat-select>
   </mat-form-field>  
   <br>
   <button mat-raised-button color="primary" (click)="updateUser()">Submit</button>
 </mat-card>
-<!--
-<hr>
-<div class="form-container" id="toolbar">
-  <header>
-    <a routerLink="/user-manage" id="goback">Go back</a>
-    <button class="alc" *ngIf="(authService.user | async)?.role !=='admin' && userInfo" (click)="logout()" class="basic-btn">Logout</button>
-  </header>
-  <div id="page">
-    <h3 class="alc">Welcome {{ userInfo?.displayName }}!</h3>
-    <h4 class="alc">{{ (userInfo)?.email }}</h4>
-  </div>
-
-  <div class="user">
-    <form id="userForm">
-      <p>
-        <label>First Name</label>
-        <input type="text" *ngIf="userInfo" [(ngModel)]="userInfo.firstName" (ngModelChange)="userInfo.firstName=$event" name="firstName" placeholder="First Name.."> 
-      </p>
-      <p>
-        <label>Last Name</label>
-        <input type="text" *ngIf="userInfo" [(ngModel)]="userInfo.lastName" name="lastName" placeholder="Last Name..">  
-      </p>
-      <p>
-        <input type="submit" value="Submit" (click)="updateUser()">
-      </p>
-    </form>
-  </div>
-  
-</div>
--->

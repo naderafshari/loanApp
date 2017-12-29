@@ -19,7 +19,7 @@ export interface FormInfo {
   }
 
 export interface Form {
-    uid: string;
+    //uid: string;
     formId: string;
     formName: string;
     startTime?: string;
@@ -128,7 +128,7 @@ export interface Form {
 
 export class FormClass {
     form = <Form> {
-        uid: '',
+        //uid: '',
         formId: '',
         formName: '',
         startTime: '',

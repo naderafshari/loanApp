@@ -18,7 +18,7 @@ export class AdminGuard implements CanActivate {
     state: RouterStateSnapshot): Observable<boolean> | boolean {
     return this.authService.user
       .take(1)
-      .map(user => _.isEqual(_.get(user, 'role'), 'admin'))
+      .map(user => (_.isEqual(_.get(user, 'role'), 'admin') || _.isEqual(_.get(user, 'role'), 'super')))
       .do(authorized => {
         if (!authorized) {
           this.authService.logout()

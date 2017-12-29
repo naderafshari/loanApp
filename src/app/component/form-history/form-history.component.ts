@@ -1,3 +1,4 @@
+import { AuthService } from './../../provider/auth.service';
 import { Component, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
@@ -38,7 +39,7 @@ export class FormHistoryComponent {
 
   constructor(private afs: AngularFirestore, private router: Router,
               private route: ActivatedRoute, public dialog: MatDialog,
-              public fs: FormService) {
+              public fs: FormService, private authService: AuthService) {
     this.route.params.subscribe(params => {
       this.uid = params['uid'] || 0;
       if (this.uid) {
@@ -73,35 +74,37 @@ export class FormHistoryComponent {
   viewSelected() {
     if (this.selection.selected[1]) {
       alert('More than one item was selected! Please, select only one item.');
-    }
-    else if (this.selection.selected[0]) {
+    } else if (this.selection.selected[0]) {
       this.router.navigate(['/form-review', this.uid, this.selection.selected[0].updateTime]);
-    }
-    else {
+    } else {
       alert('No item was selected! Please, select one item.');
     }
   }
   openDeleteDialog(): void {
-    const dialogRef = this.dialog.open(DialogComponent, {
-      width: '250px',
-      data: 'You are about to Delete form record(s) for the selected user. There is no recovery once deleted. Are you sure?'
-    });
+    if (this.userInfo.role !== 'admin') {
+      const dialogRef = this.dialog.open(DialogComponent, {
+        width: '250px',
+        data: 'You are about to Delete form record(s) for the selected user. There is no recovery once deleted. Are you sure?'
+      });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === 'Confirm') {
-        this.deleteSelection();
-      }
-    });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === 'Confirm') {
+          this.deleteSelection();
+        }
+      });
+    } else {
+      alert('No Delete privilages! Please contact the Administrator');
+    }
   }
 
   deleteSelection() {
     this.selection.selected.forEach((selection) => {
-      const formColRef = this.afs.doc(`users/${this.uid}`).collection<Form>('forms', ref => 
+      const formColRef = this.afs.doc(`users/${this.uid}`).collection<Form>('forms', ref =>
                                   ref.where('updateTime', '==', selection.updateTime));
       formColRef.valueChanges().subscribe((forms) => {
         formColRef.doc(`${selection.updateTime}`).delete();
         this.router.navigateByUrl('/user-manage');
-      });      
+      });
     });
   }
 
@@ -109,9 +112,9 @@ export class FormHistoryComponent {
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.data.length;
-    return numSelected == numRows;
+    return numSelected === numRows;
   }
-  
+
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle() {
     this.isAllSelected() ?

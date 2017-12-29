@@ -42,24 +42,24 @@ export class FormService {
   addForm(i) {
     const formClass: FormClass = new FormClass();
     const formsRef: AngularFirestoreDocument<any> = this.afs.doc(`forms/form${i}`);
-    const Form: Form = formClass.form;
-    Form.formId = `form${i}`;
-    Form.formName = `form${i}`;
-    Form.updateTime = new Date().toString();
-    Form.startTime = new Date().toString();
-    formsRef.set(Form).then(() => console.log(`form${i} added`));
+    const form: Form = formClass.form;
+    form.formId = `form${i}`;
+    form.formName = `form${i}`;
+    form.updateTime = new Date().toString();
+    form.startTime = new Date().toString();
+    formsRef.set(form).then(() => console.log(`form${i} added`));
   }
 
   createAllForms() {
     const formClass: FormClass = new FormClass();
     for (let i = 1; i <= 10; i++) {
       const formsRef: AngularFirestoreDocument<any> = this.afs.doc(`forms/form${i}`);
-      const Form: Form = formClass.form;
-      Form.formId = `form${i}`;
-      Form.formName = `form${i}`;
-      Form.updateTime = new Date().toString();
-      Form.startTime = new Date().toString();
-      formsRef.set(Form).then(() => console.log(`forms${i} added`));
+      const form: Form = formClass.form;
+      form.formId = `form${i}`;
+      form.formName = `form${i}`;
+      form.updateTime = new Date().toString();
+      form.startTime = new Date().toString();
+      formsRef.set(form).then(() => console.log(`forms${i} added`));
     }
   }
 
