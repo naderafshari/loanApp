@@ -3,14 +3,12 @@
       <a (click)="goBack()" id="goback">Go back</a>
       <br>
       <br>
-      <mat-list >
+        <mat-list *ngIf="fields">
           <mat-list-item><strong>{{formData.formName}}</strong></mat-list-item>
           <br>
-          <mat-list-item><strong>{{formData.field1.name}}</strong></mat-list-item>
-          <mat-list-item><strong>{{formData.field1.value}}</strong></mat-list-item>
-          <br>
-          <mat-list-item><strong>{{formData.field2.name}}</strong></mat-list-item>
-          <mat-list-item><strong>{{formData.field2.value}}</strong></mat-list-item>
-      </mat-list>
+          <div *ngFor="let field of fields">
+              <mat-list-item><strong>{{field.name}}</strong>&nbsp;&nbsp;&nbsp;&nbsp;{{field.value}}</mat-list-item>
+          </div>
+        </mat-list>
     </mat-card-content>
   </mat-card>

@@ -19,12 +19,12 @@ export class FormComponent implements OnInit {
   userDoc: any;
   forms: Observable<Form[]>;
   sub: Subscription;
-  user: any;
   uid: string;
   formId: string;
   formData: Form;
   formRef: AngularFirestoreCollection<Form>;
-  fields: Field[] = [];
+  fields: any[] = [];
+  usedFields: any[];
 
   constructor(private afs: AngularFirestore,
     public authService: AuthService,
@@ -41,20 +41,26 @@ export class FormComponent implements OnInit {
       }
       this.sub = this.forms.subscribe((data) => {
         this.formData = data[0];
+        const usedFields = Object.keys(this.formData)
+        .filter( fields => fields.charAt(0) === 'f')
+        .filter( fields => fields.charAt(1) === 'i')
+        .filter( fields => fields.charAt(2) === 'e');
+        this.usedFields = usedFields.map((x) => x.charAt(5) + x.charAt(6));
+        // console.log(this.usedFields);
         this.fields = [];
-        for (let i = 1; i <= 20; i++) {
+        for (let i = 0; i < this.formData.numOfFields; i++) {
           const obj: Form = this.formData;
           this.fields.push({
-            index:    i,
-            name:     eval('obj.field' + i + '.name'),
-            type:     eval('obj.field' + i + '.type'),
-            option1:  eval('obj.field' + i + '.option1'),
-            option2:  eval('obj.field' + i + '.option2'),
-            option3:  eval('obj.field' + i + '.option3'),
-            option4:  eval('obj.field' + i + '.option4'),
-            option5:  eval('obj.field' + i + '.option5'),
-            option6:  eval('obj.field' + i + '.option6'),
-            value:    eval('obj.field' + i + '.value')
+            index:    this.usedFields[i],
+            name:     eval('obj.field' + this.usedFields[i] + '.name'),
+            type:     eval('obj.field' + this.usedFields[i] + '.type'),
+            option1:  eval('obj.field' + this.usedFields[i] + '.option1'),
+            option2:  eval('obj.field' + this.usedFields[i] + '.option2'),
+            option3:  eval('obj.field' + this.usedFields[i] + '.option3'),
+            option4:  eval('obj.field' + this.usedFields[i] + '.option4'),
+            option5:  eval('obj.field' + this.usedFields[i] + '.option5'),
+            option6:  eval('obj.field' + this.usedFields[i] + '.option6'),
+            value:    eval('obj.field' + this.usedFields[i] + '.value')
           });
         }
       });

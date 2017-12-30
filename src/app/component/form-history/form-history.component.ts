@@ -1,4 +1,3 @@
-import { AuthService } from './../../provider/auth.service';
 import { Component, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
@@ -8,7 +7,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/forkJoin';
 import { UserInfo } from '../../model/user-info';
-import { Form, FormInfo } from '../../model/form';
+import { Form } from '../../model/form';
 import { Subscription } from 'rxjs/Subscription';
 import { MatTableDataSource, MatSort } from '@angular/material';
 import { MatPaginator } from '@angular/material';
@@ -29,7 +28,7 @@ export class FormHistoryComponent {
   user: any;
   userInfo: UserInfo;
   sub: Subscription;
-  formsInfo: FormInfo[] = [];
+  formsInfo: Form[] = [];
   displayedColumns = ['select', 'formId', 'formName', 'startTime', 'updateTime'];
   dataSource: any;
   selection: any;
@@ -40,7 +39,7 @@ export class FormHistoryComponent {
   constructor(private afs: AngularFirestore, private router: Router,
               private route: ActivatedRoute, public dialog: MatDialog,
               public fs: FormService, private authService: AuthService) {
-    this.route.params.subscribe(params => {
+      this.route.params.subscribe(params => {
       this.uid = params['uid'] || 0;
       if (this.uid) {
         this.formsInfo = [];
@@ -59,8 +58,8 @@ export class FormHistoryComponent {
                 };
                 this.formsInfo.push(formInfo);
               });
-              this.dataSource = new MatTableDataSource<FormInfo>(this.formsInfo);
-              this.selection = new SelectionModel<FormInfo>(true, []);
+              this.dataSource = new MatTableDataSource<Form>(this.formsInfo);
+              this.selection = new SelectionModel<Form>(true, []);
               this.dataSource.paginator = this.paginator;
               this.dataSource.sort = this.sort;
               this.sub.unsubscribe();
@@ -80,8 +79,9 @@ export class FormHistoryComponent {
       alert('No item was selected! Please, select one item.');
     }
   }
+
   openDeleteDialog(): void {
-    if (this.userInfo.role !== 'admin') {
+    if (this.authService.userAuthRole === 'admin') {
       const dialogRef = this.dialog.open(DialogComponent, {
         width: '250px',
         data: 'You are about to Delete form record(s) for the selected user. There is no recovery once deleted. Are you sure?'
@@ -100,8 +100,13 @@ export class FormHistoryComponent {
   deleteSelection() {
     this.selection.selected.forEach((selection) => {
       const formColRef = this.afs.doc(`users/${this.uid}`).collection<Form>('forms', ref =>
-                                  ref.where('updateTime', '==', selection.updateTime));
+        ref.where('updateTime', '==', selection.updateTime));
       formColRef.valueChanges().subscribe((forms) => {
+        if (this.userInfo.assignedForms[forms[0].formId] === 'true') {
+          alert('Assinged Forms cannot be deleted. Unassign Form before deleting history');
+          this.router.navigateByUrl('/user-manage');
+          return;
+        }
         formColRef.doc(`${selection.updateTime}`).delete();
         this.router.navigateByUrl('/user-manage');
       });
