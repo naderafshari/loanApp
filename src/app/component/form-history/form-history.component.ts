@@ -98,19 +98,28 @@ export class FormHistoryComponent {
   }
 
   deleteSelection() {
-    this.selection.selected.forEach((selection) => {
-      const formColRef = this.afs.doc(`users/${this.uid}`).collection<Form>('forms', ref =>
-        ref.where('updateTime', '==', selection.updateTime));
-      formColRef.valueChanges().subscribe((forms) => {
-        if (this.userInfo.assignedForms[forms[0].formId] === 'true') {
-          alert('Assinged Forms cannot be deleted. Unassign Form before deleting history');
+    const breakException = {};
+    try {
+      this.selection.selected.forEach((selection) => {
+        const formColRef = this.afs.doc(`users/${this.uid}`).collection<Form>('forms', ref =>
+          ref.where('updateTime', '==', selection.updateTime));
+        formColRef.valueChanges().subscribe((forms) => {
+          if (forms[0]) {
+            if (this.userInfo.assignedForms[forms[0].formId] === 'true') {
+              alert('Assinged Forms history cannot be deleted. Unassign Form before deleting history.');
+              this.router.navigateByUrl('/user-manage');
+              throw breakException;
+            }
+          }
+          formColRef.doc(`${selection.updateTime}`).delete();
           this.router.navigateByUrl('/user-manage');
-          return;
-        }
-        formColRef.doc(`${selection.updateTime}`).delete();
-        this.router.navigateByUrl('/user-manage');
+        });
       });
-    });
+    } catch (e) {
+    if (e !== breakException) {
+      throw e;
+      }
+    }
   }
 
   /** Whether the number of selected elements matches the total number of rows. */

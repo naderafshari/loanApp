@@ -141,7 +141,7 @@ export class FormConfigComponent implements OnInit {
   }
 
   openDeleteAllDialog(): void {
-    //if (this.authService.userAuthRole === 'admin') {
+    if (this.authService.userAuthRole === 'admin') {
       const dialogRef = this.dialog.open(DialogComponent, {
         width: '250px',
         data: 'You are about to Delete All Fields. Fields and their content will be removed. Are you sure?'
@@ -152,13 +152,13 @@ export class FormConfigComponent implements OnInit {
           this.deleteAllFields();
         }
       });
-    //} else {
-    //  alert('No Delete privilages! Please contact the Administrator');
-    //}
+    } else {
+      alert('No Delete privilages! Please contact the Administrator');
+    }
   }
 
   openDeleteDialog(index): void {
-    //if (this.authService.userAuthRole === 'admin') {
+    if (this.authService.userAuthRole === 'admin') {
       const dialogRef = this.dialog.open(DialogComponent, {
         width: '250px',
         data: 'You are about to Delete a Field. Field and content will be removed. Are you sure?'
@@ -169,9 +169,9 @@ export class FormConfigComponent implements OnInit {
           this.deleteField(index);
         }
       });
-    //} else {
-    //  alert('No Delete privilages! Please contact the Administrator');
-    //}
+    } else {
+      alert('No Delete privilages! Please contact the Administrator');
+    }
   }
 
   nextSlot(current, direction) {

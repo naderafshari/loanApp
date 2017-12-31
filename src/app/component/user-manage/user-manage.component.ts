@@ -24,6 +24,7 @@ export class UserManageComponent implements OnInit {
   forms: Observable<{}>;
   userForms: any[];
   userForm: any;
+  usedForms: string[];
 
   constructor(private afs: AngularFirestore, public fs: FormService,
               public authService: AuthService, private router: Router,
@@ -31,35 +32,38 @@ export class UserManageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.usersCol = this.afs.collection<UserInfo>('users');
-    this.users = this.usersCol.valueChanges();
-    this.users.subscribe((users) => {
-      if (users) {
-        users.forEach( (user) => {
-          this.userForms = [];
-          this.afs.doc(`users/${user.uid}`).collection<Form>('forms')
-          .valueChanges().subscribe((forms) => {
-            if (forms) {
-              // let formAlreadyPushed;
-              for (let i = 1; i <= forms.length; i++) {
-                this.userForm = forms.filter(e => e.formId === `form${i}`).reverse()[0];
-                /* find the latest of each form Id */
-                if (this.userForm) {
-                  // this.userForms.forEach((form) => {
-                  //   formAlreadyPushed = false;
-                  // if (form.formId === `form${i}`) {
-                  //    formAlreadyPushed = true;
-                  //  }
-                  // });
-                  //  if (!formAlreadyPushed && user.assignedForms[`form${i}`] === 'true') {
-                  if (user.assignedForms[`form${i}`] === 'true') {
-                    this.userForm.uid = user.uid;
-                    this.userForms.push( this.userForm);
-                  }
+    this.afs.collection<Form>('forms')
+    .valueChanges().subscribe((definedForms) => {
+      if (definedForms) {
+        this.usedForms = [];
+        for (let i = 0; i < definedForms.length; i++) {
+          this.usedForms.push(definedForms[i].formId);
+        }
+        this.usersCol = this.afs.collection<UserInfo>('users');
+        this.users = this.usersCol.valueChanges();
+        this.userForms = [];
+        this.users.subscribe((users) => {
+          if (users) {
+            users.forEach( user => {
+              this.afs.doc(`users/${user.uid}`).collection<Form>('forms')
+              .valueChanges().subscribe((forms) => {
+                if (forms) {
+                  this.usedForms.forEach( e => {
+                    /* Find the latest of each form of each user ( user's forms collection )and
+                     * push it to userForms array along with the uid of the user if the form is assigned */
+                    this.userForm = forms.filter(form => form.formId === e).reverse()[0];
+                    if (this.userForm) {
+                      if (user.assignedForms[e] === 'true') {
+                        this.userForm.uid = user.uid;
+                        this.userForms.push( this.userForm);
+                      }
+                    }
+                  });
                 }
-              }
-            }
-          });
+                // console.log(this.userForms);
+              });
+            });
+          }
         });
       }
     });

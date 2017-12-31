@@ -36,24 +36,26 @@ export class FormReviewComponent implements OnInit {
           ref.where('updateTime', '==', this.tid));
         this.forms = this.formRef.valueChanges();
         this.sub = this.forms.subscribe((data) => {
-          this.formData = data[0];
-          this.fields = [];
-          for (let i = 1; i <= this.formData.numOfFields; i++) {
-            const obj: Form = this.formData;
-            this.fields.push({
-              index:    i,
-              name:     eval('obj.field' + i + '.name'),
-              type:     eval('obj.field' + i + '.type'),
-              option1:  eval('obj.field' + i + '.option1'),
-              option2:  eval('obj.field' + i + '.option2'),
-              option3:  eval('obj.field' + i + '.option3'),
-              option4:  eval('obj.field' + i + '.option4'),
-              option5:  eval('obj.field' + i + '.option5'),
-              option6:  eval('obj.field' + i + '.option6'),
-              value:    eval('obj.field' + i + '.value')
-            });
+          if (data) {
+            this.formData = data[0];
+            this.fields = [];
+            for (let i = 1; i <= this.formData.numOfFields; i++) {
+              const obj: Form = this.formData;
+              this.fields.push({
+                index:    i,
+                name:     eval('obj.field' + i + '.name'),
+                type:     eval('obj.field' + i + '.type'),
+                option1:  eval('obj.field' + i + '.option1'),
+                option2:  eval('obj.field' + i + '.option2'),
+                option3:  eval('obj.field' + i + '.option3'),
+                option4:  eval('obj.field' + i + '.option4'),
+                option5:  eval('obj.field' + i + '.option5'),
+                option6:  eval('obj.field' + i + '.option6'),
+                value:    eval('obj.field' + i + '.value')
+              });
+            }
+            console.log(this.fields);
           }
-          console.log(this.fields);
         });
       }
     });
