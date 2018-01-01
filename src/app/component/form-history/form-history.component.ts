@@ -38,7 +38,7 @@ export class FormHistoryComponent {
 
   constructor(private afs: AngularFirestore, private router: Router,
               private route: ActivatedRoute, public dialog: MatDialog,
-              public fs: FormService, private authService: AuthService) {
+              public fs: FormService, public authService: AuthService) {
       this.route.params.subscribe(params => {
       this.uid = params['uid'] || 0;
       if (this.uid) {

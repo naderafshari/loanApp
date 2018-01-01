@@ -13,7 +13,7 @@
     <!--<button mat-raised-button (click)="openDeleteAllDialog()">Delete All Fields</button> -->
     <hr>
     <div *ngFor="let field of fields">
-      <button mat-raised-button *ngIf="(authService.user | async)?.role == 'admin'" (click)="DeleteField(field.inde)">Delete Field</button> 
+      <button mat-raised-button *ngIf="(authService.user | async)?.role == 'admin'" (click)="openDeleteDialog(field.index)">Delete Field</button> 
       <!--<button mat-raised-button (click)="openDeleteDialog(field.index)">Delete Field</button>-->
       <mat-form-field>
         <textarea matInput [ngModel]='getName(field.index)' (ngModelChange)='setName($event,field.index)' placeholder="Field Description.."></textarea> 

@@ -23,7 +23,7 @@ export class AdminGuard implements CanActivate {
         if (!authorized) {
           this.authService.logout()
           .then( () =>  {
-          console.log('route prevented!')
+          console.log('route prevented!');
           alert('Access denied! Insufficient priviliges.');
           // this.router.navigate(['/']);
           });

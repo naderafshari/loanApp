@@ -2,7 +2,7 @@
   <a routerLink="/login" id="goback">Go back</a>
   <h2>Email Login</h2>
 
-  <span class="error" *ngIf="error" [@fallIn]='state'>{{ error }}</span>
+  <!--<span class="error" *ngIf="error" [@fallIn]='state'>{{ error }}</span>-->
 
   <form #formData='ngForm' (ngSubmit)="login(formData)">
 

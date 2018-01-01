@@ -93,7 +93,7 @@ export class AuthService {
     .then( (value) => {
       console.log('signup success');
       this.setUserAuthData(value, displayName)
-      .then(() => this.router.navigate(['/user-profile',value.uid]))
+      .then(() => this.router.navigate(['/user-profile', value.uid]))
       .catch(err => {
         console.log(err);
         alert(err);
@@ -109,26 +109,20 @@ export class AuthService {
     return this.firebaseAuth
       .auth
       .signInWithEmailAndPassword(email, password)
-      .then( (value) => { this.upsert(value); })
-      .catch((err) => {
-        alert('Login failed! ' + err);
-      });
+      .then( (value) => this.upsert(value))
+      .catch( (err) => alert('Login failed! ' + err));
   }
 
   private socialSignIn(provider) {
     return this.firebaseAuth.auth.signInWithPopup(provider)
-    .then( (value) => { this.upsert(value.user); })
-    .catch((err) => {
-      alert('Login failed! ' + err);
-    });
+    .then( (value) => this.upsert(value.user))
+    .catch( (err) =>  alert('Login failed! ' + err));
 }
 
   upsert(value) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${value.uid}`);
     userRef.update({'uid': value.uid})
-    .then(() => {
-        this.router.navigateByUrl('/user-manage');
-    })
+    .then(() => this.router.navigateByUrl('/user-manage'))
     .catch(() => {
       userRef.set({
         'displayName': value.displayName,
@@ -138,9 +132,7 @@ export class AuthService {
         'role': 'user',
         'assignedForms': {}
       })
-      .then( () => {
-        this.router.navigate(['/user-profile', value.uid]);
-      })
+      .then( () => this.router.navigate(['/user-profile', value.uid]))
       .catch((err) => {
         console.log(err);
         alert(err);
@@ -150,14 +142,11 @@ export class AuthService {
 
   logout() {
     return this.firebaseAuth.auth.signOut()
-    .then(
-      () => {
+    .then( () => {
         this.firebaseAuth.authState.subscribe(() =>
           this.router.navigateByUrl('/login'));
       })
-      .catch(err => {
-          alert('logout failed: ' + err);
-      });
+      .catch(err => alert('logout failed: ' + err));
   }
 
   deleteAuthCurrentUser() {

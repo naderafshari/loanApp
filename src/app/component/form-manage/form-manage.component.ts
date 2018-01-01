@@ -18,7 +18,7 @@ import { UserInfo } from '../../model/user-info';
 export class FormManageComponent implements OnInit {
   formsCol: AngularFirestoreCollection<Form>;
   forms: Observable<Form[]>;
-  usedForms: string[] = [];
+  usedForms: string[];
   usersCol: AngularFirestoreCollection<UserInfo>;
   userDoc: AngularFirestoreDocument<UserInfo>;
   users: Observable<UserInfo[]>;
@@ -40,8 +40,8 @@ export class FormManageComponent implements OnInit {
           if (users) {this.userInfo = users[0];
           }
         });
-        /*Setting up for add form. To find next available
-        form, find the not available ones first at init*/
+        /* Setting up for add form. To find next available
+        form, find the not-available ones first here (at init) */
         this.formsCol = this.afs.collection<Form>('forms');
         this.forms = this.formsCol.valueChanges();
         this.forms.subscribe(forms => {

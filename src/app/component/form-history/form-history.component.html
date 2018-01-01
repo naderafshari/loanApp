@@ -8,7 +8,7 @@
    </mat-card-content>
 </mat-card>
         
-<div class="form-container mat-elevation-z8">
+<div *ngIf="userInfo" class="form-container mat-elevation-z8"> Form History for: {{userInfo.firstName}} {{userInfo.lastName}}
   <mat-table #table [dataSource]="dataSource" matSort>
 
     <ng-container matColumnDef="select" > 

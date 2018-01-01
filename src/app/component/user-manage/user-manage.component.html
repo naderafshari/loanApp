@@ -15,13 +15,15 @@
 <mat-card>
   <mat-card-content> &nbsp;&nbsp;&nbsp;Manage Users
     <mat-list *ngFor="let user of users | async">
-        <mat-list-item *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.role ==='super' || (authService.user | async)?.uid === user.uid"><strong>{{user.firstName}}</strong> &nbsp; {{user.lastName}}&nbsp;
-        <a (click)="editClick(user.uid);" class="secondary-content">&nbsp;(Edit-Profile)</a>
+      <mat-list-item *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.role ==='super' || (authService.user | async)?.uid === user.uid"><strong>{{user.firstName}}</strong> &nbsp; {{user.lastName}}&nbsp;
+        <a (click)="editClick(user.uid);" class="secondary-content">&nbsp;(Profile)</a>
         <div *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.role ==='super'">
-            <a (click)="goFormAssign(user.uid);"class="secondary-content">&nbsp;&nbsp;(Form-Assignments)</a>
+            <a (click)="goFormAssign(user.uid);"class="secondary-content">&nbsp;&nbsp;(Form-Assign)</a>
             <a (click)="goFormHistory(user.uid);"class="secondary-content">&nbsp;&nbsp;(Form-History)</a>
-          </div>
-        <div>&nbsp;&nbsp;&nbsp;Active Forms:</div>
+        </div>
+        </mat-list-item>
+      <mat-list-item *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.role ==='super' || (authService.user | async)?.uid === user.uid">
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Active Forms:</div>
         <div *ngFor="let userForm of userForms">
           <a *ngIf="userForm.uid === user.uid" (click)="goToForm(user.uid,userForm.formId);" class="secondary-content">&nbsp;&nbsp;{{userForm.formName}}</a>
         </div>

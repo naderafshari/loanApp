@@ -54,7 +54,7 @@ export class FormReviewComponent implements OnInit {
                 value:    eval('obj.field' + i + '.value')
               });
             }
-            console.log(this.fields);
+            // console.log(this.fields);
           }
         });
       }
