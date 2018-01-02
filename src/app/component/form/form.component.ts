@@ -53,6 +53,7 @@ export class FormComponent implements OnInit {
           this.fields.push({
             index:    this.usedFields[i],
             name:     eval('obj.field' + this.usedFields[i] + '.name'),
+            required: eval('obj.field' + this.usedFields[i] + '.required'),
             type:     eval('obj.field' + this.usedFields[i] + '.type'),
             option1:  eval('obj.field' + this.usedFields[i] + '.option1'),
             option2:  eval('obj.field' + this.usedFields[i] + '.option2'),
@@ -63,6 +64,7 @@ export class FormComponent implements OnInit {
             value:    eval('obj.field' + this.usedFields[i] + '.value')
           });
         }
+console.log(this.fields);
       });
     });
   }
@@ -79,17 +81,31 @@ export class FormComponent implements OnInit {
   }
 
   updateFormData() {
-    if (this.formData != null ) {
-      this.formData.updateTime = new Date().toString();
-      /* Use somthing like this is you want to create a new record at every submit */
-       this.afs.doc(`users/${this.uid}`).collection('forms').doc(this.formData.updateTime).set(this.formData);
-       /* Or update and existing form... */
-      // this.afs.doc(`users/${this.uid}`).collection('forms').doc(this.formData.startTime).update(this.formData);
+    if (this.allRequireFields()) {
+      if (this.formData ) {
+        this.formData.updateTime = new Date().toString();
+        /* Use somthing like this is you want to create a new record at every submit */
+        this.afs.doc(`users/${this.uid}`).collection('forms').doc(this.formData.updateTime).set(this.formData);
+        /* Or update and existing form... */
+        // this.afs.doc(`users/${this.uid}`).collection('forms').doc(this.formData.startTime).update(this.formData);
+      } else {
+        alert('Cannot Update, Form not available!');
+      }
+      this.sub.unsubscribe();
+      this.router.navigateByUrl('/user-manage');
     } else {
-      alert('Cannot Update, Form not available!');
+      alert('Required field was not filled!');
     }
-    this.sub.unsubscribe();
-    this.router.navigateByUrl('/user-manage');
+  }
+
+  allRequireFields() {
+    for (let i = 0; i < this.formData.numOfFields; i++) {
+      const obj: Form = this.formData;
+      if (eval('obj.field' + this.usedFields[i] + '.required == true && obj.field' + this.usedFields[i] + '.value == ""') ) {
+        return false;
+      }
+    }
+    return true;
   }
 
   ngOnInit() {

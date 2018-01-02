@@ -17,6 +17,7 @@ import { MatNativeDateModule } from '@angular/material';
 import { MatTableModule } from '@angular/material';
 import { MatPaginatorModule } from '@angular/material';
 import { MatCheckboxModule } from '@angular/material';
+import { MatSlideToggleModule } from '@angular/material';
 
 @NgModule({
     imports: [
@@ -36,7 +37,8 @@ import { MatCheckboxModule } from '@angular/material';
         MatNativeDateModule,
         MatPaginatorModule,
         MatTableModule,
-        MatCheckboxModule
+        MatCheckboxModule,
+        MatSlideToggleModule
     ],
     exports: [
         MatButtonModule,
@@ -55,7 +57,8 @@ import { MatCheckboxModule } from '@angular/material';
         MatNativeDateModule,
         MatPaginatorModule,
         MatTableModule,
-        MatCheckboxModule
+        MatCheckboxModule,
+        MatSlideToggleModule
     ]
   })
   export class MaterialModule {}

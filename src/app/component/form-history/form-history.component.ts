@@ -81,19 +81,23 @@ export class FormHistoryComponent {
   }
 
   openDeleteDialog(): void {
-    if (this.authService.userAuthRole === 'admin') {
-      const dialogRef = this.dialog.open(DialogComponent, {
-        width: '250px',
-        data: 'You are about to Delete form record(s) for the selected user. There is no recovery once deleted. Are you sure?'
-      });
+    if (this.selection.selected[0]) {
+      if (this.authService.userAuthRole === 'admin') {
+        const dialogRef = this.dialog.open(DialogComponent, {
+          width: '250px',
+          data: 'You are about to Delete form record(s) for the selected user. There is no recovery once deleted. Are you sure?'
+        });
 
-      dialogRef.afterClosed().subscribe(result => {
-        if (result === 'Confirm') {
-          this.deleteSelection();
-        }
-      });
+        dialogRef.afterClosed().subscribe(result => {
+          if (result === 'Confirm') {
+            this.deleteSelection();
+          }
+        });
+      } else {
+        alert('No Delete privilages! Please contact the Administrator');
+      }
     } else {
-      alert('No Delete privilages! Please contact the Administrator');
+      alert('No item was selected! Please, select one item.');
     }
   }
 

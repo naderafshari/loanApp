@@ -19,8 +19,12 @@
         <textarea matInput [ngModel]='getName(field.index)' (ngModelChange)='setName($event,field.index)' placeholder="Field Description.."></textarea> 
       </mat-form-field>
 
+      <mat-slide-toggle [ngModel]='getRequired(field.index)' (ngModelChange)='setRequired($event,field.index)'>Required</mat-slide-toggle>
+
+      <br>
       <mat-form-field>
         <mat-select [ngModel]='getType(field.index)' (ngModelChange)='setType($event,field.index)' placeholder="Field Type..">
+          <mat-option>-- None --</mat-option>
           <mat-option value="textbox">text box</mat-option>
           <mat-option value="textarea">text area</mat-option>
           <mat-option value="select">pull down</mat-option>
@@ -51,6 +55,7 @@
           <input matInput [ngModel]='getOption(field.index,6)' (ngModelChange)='setOption($event,field.index,6)' placeholder="Select Option 6.."> 
         </mat-form-field>
       </div>
+      <hr>
     </div>
     <hr>
     <br>

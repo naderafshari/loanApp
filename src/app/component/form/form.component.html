@@ -6,28 +6,33 @@
   <br>
   <div *ngFor="let field of fields">
         <mat-form-field *ngIf="formData && field.type == 'textbox'">
-          <input matInput [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}}> 
+            <span *ngIf="field.required == true">*</span>
+            <input matInput [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}}>         
         </mat-form-field>
 
-        <mat-form-field *ngIf="formData && field.type == 'textarea'"> <p>{{field.name}}</p>
-            <textarea matInput [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}}> </textarea>
+        <mat-form-field *ngIf="formData && field.type == 'textarea'"> <span>{{field.name}}</span>
+          <span *ngIf="field.required == true">*</span>
+          <textarea matInput [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}}> </textarea>
         </mat-form-field>
 
         <mat-form-field *ngIf="formData && field.type == 'select'">
-            <mat-select [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}}>
-                <mat-option value={{field.option1}}>{{field.option1}}</mat-option>
-                <mat-option value={{field.option2}}>{{field.option2}}</mat-option>
-                <mat-option value={{field.option3}}>{{field.option3}}</mat-option>
-              </mat-select>
+          <span *ngIf="field.required == true">*</span>
+          <mat-select [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}}>
+            <mat-option value={{field.option1}}>{{field.option1}}</mat-option>
+            <mat-option value={{field.option2}}>{{field.option2}}</mat-option>
+            <mat-option value={{field.option3}}>{{field.option3}}</mat-option>
+          </mat-select>
         </mat-form-field>  
 
         <mat-form-field *ngIf="formData && field.type == 'date'">
-            <input matInput [matDatepicker]="picker" [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}}>
+            <span *ngIf="field.required == true">*</span>
+            <input matInput [matDatepicker]="picker" [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}} disabled>
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
+            <mat-datepicker touchUi="true" #picker disabled="false"></mat-datepicker>
         </mat-form-field>
 
         <div *ngIf="formData && field.type == 'checkbox'">
+          <span *ngIf="field.required == true">*</span>
           <input type="checkbox" [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' >{{field.name}}
         </div>
   </div>

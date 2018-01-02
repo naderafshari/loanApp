@@ -57,6 +57,7 @@ export class FormConfigComponent implements OnInit {
       this.fields.push({
         index:    this.usedFields[i],
         name:     eval('obj.field' + this.usedFields[i] + '.name'),
+        required: eval('obj.field' + this.usedFields[i] + '.required'),
         type:     eval('obj.field' + this.usedFields[i] + '.type'),
         option1:  eval('obj.field' + this.usedFields[i] + '.option1'),
         option2:  eval('obj.field' + this.usedFields[i] + '.option2'),
@@ -72,8 +73,9 @@ export class FormConfigComponent implements OnInit {
   addField() {
     const fieldToAdd: Field  = {
       name: '',
+      required: false,
       type: '',
-      option1: '',
+      option1: '----None----',
       option2: '',
       option3: '',
       option4: '',
@@ -196,6 +198,17 @@ export class FormConfigComponent implements OnInit {
   setName(name, i) {
     let obj: Form = this.form;
     eval('obj.field' + i + '.name = name');
+    this.form = obj;
+  }
+
+  getRequired(i) {
+    const obj: Form = this.form;
+    return eval('obj.field' + i + '.required');
+  }
+
+  setRequired(required, i) {
+    let obj: Form = this.form;
+    eval('obj.field' + i + '.required = required');
     this.form = obj;
   }
 
