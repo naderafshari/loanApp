@@ -8,8 +8,7 @@
       <input matInput [(ngModel)]="form.formName" placeholder="Form Name..."> 
     </mat-form-field>
     <br>
-    <button mat-raised-button (click)="addField()">Add Field</button>
-    <button mat-raised-button *ngIf="(authService.user | async)?.role == 'admin'" (click)="openDeleteAllDialog()">Delete All Fields</button>
+    <button mat-raised-button color="primary" *ngIf="(authService.user | async)?.role == 'admin'" (click)="openDeleteAllDialog()">Delete All Fields</button>
     <!--<button mat-raised-button (click)="openDeleteAllDialog()">Delete All Fields</button> -->
     <hr>
     <div *ngFor="let field of fields">
@@ -57,6 +56,7 @@
       </div>
       <hr>
     </div>
+    <button mat-raised-button color="primary" (click)="addField()">Add Field</button>
     <hr>
     <br>
     <button mat-raised-button color="primary" (click)="updateFormAndRoute()">Submit</button>

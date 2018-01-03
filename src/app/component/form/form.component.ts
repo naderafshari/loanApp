@@ -8,6 +8,9 @@ import 'rxjs/add/observable/forkJoin';
 import { UserInfo } from '../../model/user-info';
 import { Form, Field } from '../../model/form';
 import { Subscription } from 'rxjs/Subscription';
+import { Http, Headers } from '@angular/http';
+import 'rxjs/add/operator/toPromise';
+import { saveAs } from 'file-saver/FileSaver';
 
 @Component({
   selector: 'app-form',
@@ -64,7 +67,7 @@ export class FormComponent implements OnInit {
             value:    eval('obj.field' + this.usedFields[i] + '.value')
           });
         }
-console.log(this.fields);
+// console.log(this.fields);
       });
     });
   }
@@ -84,7 +87,7 @@ console.log(this.fields);
     if (this.allRequireFields()) {
       if (this.formData ) {
         this.formData.updateTime = new Date().toString();
-        /* Use somthing like this is you want to create a new record at every submit */
+        /* Use this if want to create a new record at every submit */
         this.afs.doc(`users/${this.uid}`).collection('forms').doc(this.formData.updateTime).set(this.formData);
         /* Or update and existing form... */
         // this.afs.doc(`users/${this.uid}`).collection('forms').doc(this.formData.startTime).update(this.formData);
@@ -108,6 +111,24 @@ console.log(this.fields);
     return true;
   }
 
+  saveFile() {
+    const fields = [];
+    for (let i = 0; i < this.formData.numOfFields; i++) {
+      const obj: Form = this.formData;
+      const name = eval('obj.field' + this.usedFields[i] + '.name');
+      const value = eval('obj.field' + this.usedFields[i] + '.value');
+      fields.push(
+        name, value     
+      );
+      // fields.push({
+      //  [name], value     
+      // });
+    }
+    const filename = `${this.formData.formName}` + `${this.formData.updateTime}`;
+    const blob = new Blob([JSON.stringify(fields)], { type: 'text/plain' });
+    saveAs(blob, filename);
+  }
+ 
   ngOnInit() {
   }
 

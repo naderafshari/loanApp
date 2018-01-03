@@ -8,7 +8,7 @@ import 'rxjs/add/observable/forkJoin';
 import { Form, Field } from '../../model/form';
 import { FormService } from '../../provider/form.service';
 import { Subscription } from 'rxjs/Subscription';
-// import { firestore } from 'firebase';
+import { firestore } from 'firebase';
 import { UserInfo } from './../../model/user-info';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { DialogComponent } from '../dialog/dialog.component';
@@ -93,22 +93,21 @@ export class FormConfigComponent implements OnInit {
   deleteField(index) {
     const fieldToDelete = `field${index}`;
     if (this.form) {
-// console.log(fieldToDelete);
       this.form.numOfFields--;
       this.form.updateTime = new Date().toString();
       delete this.form[fieldToDelete];
       this.updateFields();
       this.afs.collection('forms').doc(this.id).set(this.form);
-      // const tmp = new firestore.FieldPath(fieldToDelete);
-      // const FieldValue = require(fieldToDelete).firestore.FieldValue;
-      // const docRef = this.afs.collection('forms').doc(this.id);
-      // docRef.update({fieldToDelete: firestore.FieldValue.delete()})
-      // .then(() => {console.log('delete success');
-      // this.form.numOfFields--;
-      // this.updateForm();
-      // })
-      // .catch((err) => console.log(err));
-      // this.updateFields());
+      /*const docRef = this.afs.collection('forms').doc(this.id);
+      delete this.form[fieldToDelete];
+      this.form.numOfFields--;
+      this.updateFields();
+      docRef.update({[fieldToDelete]: firestore.FieldValue.delete()})
+      .then(() => {console.log('delete success');
+        this.form.updateTime = new Date().toString();
+        this.updateForm();
+      })
+      .catch((err) => console.log(err));*/
     } else {
       alert('Cannot Update, user not logged in!');
     }
