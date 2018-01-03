@@ -18,8 +18,8 @@
       <mat-list-item *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.role ==='super' || (authService.user | async)?.uid === user.uid"><strong>{{user.firstName}}</strong> &nbsp; {{user.lastName}}&nbsp;
         <a (click)="editClick(user.uid);" class="secondary-content">&nbsp;(Profile)</a>
         <div *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.role ==='super'">
-            <a (click)="goFormAssign(user.uid);"class="secondary-content">&nbsp;&nbsp;(Form-Assign)</a>
-            <a (click)="goFormHistory(user.uid);"class="secondary-content">&nbsp;&nbsp;(Form-History)</a>
+            <a (click)="goFormAssign(user.uid);"class="secondary-content">&nbsp;&nbsp;(Assign)</a>
+            <a (click)="goFormHistory(user.uid);"class="secondary-content">&nbsp;&nbsp;(History)</a>
         </div>
         </mat-list-item>
       <mat-list-item *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.role ==='super' || (authService.user | async)?.uid === user.uid">
