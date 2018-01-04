@@ -14,7 +14,8 @@
 </mat-card>
 <mat-card>
   <mat-card-content> &nbsp;&nbsp;&nbsp;Manage Users
-    <mat-list *ngFor="let user of users | async">
+    <input matInput [(ngModel)]="searchText" placeholder="Search by Name">
+    <mat-list *ngFor="let user of users | async | nameFilter : searchText">
       <mat-list-item *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.role ==='super' || (authService.user | async)?.uid === user.uid"><strong>{{user.firstName}}</strong> &nbsp; {{user.lastName}}&nbsp;
         <a (click)="editClick(user.uid);" class="secondary-content">&nbsp;(Profile)</a>
         <div *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.role ==='super'">

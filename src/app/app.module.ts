@@ -32,6 +32,7 @@ import { FormConfigComponent } from './component/form-config/form-config.compone
 import { FormAssignComponent } from './component/form-assign/form-assign.component';
 import { FormHistoryComponent } from './component/form-history/form-history.component';
 import { FormReviewComponent } from './component/form-review/form-review.component';
+import { NameFilterPipe } from './pipe/name-filter.pipe';
 
 
 @NgModule({
@@ -49,7 +50,8 @@ import { FormReviewComponent } from './component/form-review/form-review.compone
     FormConfigComponent,
     FormAssignComponent,
     FormHistoryComponent,
-    FormReviewComponent
+    FormReviewComponent,
+    NameFilterPipe
   ],
   imports: [
     BrowserModule,
