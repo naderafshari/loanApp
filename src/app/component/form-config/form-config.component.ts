@@ -20,12 +20,13 @@ import { DialogComponent } from '../dialog/dialog.component';
 })
 export class FormConfigComponent implements OnInit {
   form: Form;
-  form2: Form;
   userId: string;
   id: string;
-  fields: any[] = [];
+  fields: any[];
   sub: Subscription;
-  usedFields: any[] = [];
+  usedFields: any[];
+  options: any;
+  usedOptions: any[];
 
   constructor(private afs: AngularFirestore, public fs: FormService,
               private router: Router, private route: ActivatedRoute,
@@ -50,24 +51,42 @@ export class FormConfigComponent implements OnInit {
     .filter( fields => fields.charAt(1) === 'i')
     .filter( fields => fields.charAt(2) === 'e');
     this.usedFields = usedFields.map((x) => x.charAt(5) + x.charAt(6));
-// console.log(this.usedFields);
     this.fields = [];
+    this.usedOptions = [];
     for (let i = 0; i < this.form.numOfFields; i++) {
       const obj: Form = this.form;
+      const field: Field = eval('obj.field' + this.usedFields[i]);
+      const usedOptions = Object.keys(field.options);
+      this.usedOptions = usedOptions.map((x) => x.charAt(6) + x.charAt(7));
+      this.options = {};
+      for (let j = 0; j < field.numOfOptions; j++) {
+        const obj2: Field = field;
+        const option = eval('obj2.option' + this.usedOptions[j]);
+        const key = `option${this.usedOptions[j]}`;
+        this.options[key] = option;
+      }
+      const obj3: Form = this.form;
       this.fields.push({
-        index:    this.usedFields[i],
-        name:     eval('obj.field' + this.usedFields[i] + '.name'),
-        required: eval('obj.field' + this.usedFields[i] + '.required'),
-        type:     eval('obj.field' + this.usedFields[i] + '.type'),
-        option1:  eval('obj.field' + this.usedFields[i] + '.option1'),
-        option2:  eval('obj.field' + this.usedFields[i] + '.option2'),
-        option3:  eval('obj.field' + this.usedFields[i] + '.option3'),
-        option4:  eval('obj.field' + this.usedFields[i] + '.option4'),
-        option5:  eval('obj.field' + this.usedFields[i] + '.option5'),
-        option6:  eval('obj.field' + this.usedFields[i] + '.option6'),
-        value:    eval('obj.field' + this.usedFields[i] + '.value')
+        index:          this.usedFields[i],
+        name:           eval('obj3.field' + this.usedFields[i] + '.name'),
+        required:       eval('obj3.field' + this.usedFields[i] + '.required'),
+        type:           eval('obj3.field' + this.usedFields[i] + '.type'),
+        numOfOptions:   eval('obj3.field' + this.usedFields[i] + '.numOfOptions'),
+        options:        this.options,
+        value:          eval('obj3.field' + this.usedFields[i] + '.value'),
+        usedOptions:    this.usedOptions
       });
     }
+  }
+
+  addOption(index) {
+    console.log(index);    
+    const nextOptionId = `option${this.nextOptionSlot(0, 'up', index)}`;
+console.log(nextOptionId);    
+    this.form[`field${index}`].options[nextOptionId] = '';
+    this.form[`field${index}`].numOfOptions++;
+    this.form.updateTime = new Date().toString();
+    this.updateForm();
   }
 
   addField() {
@@ -75,12 +94,8 @@ export class FormConfigComponent implements OnInit {
       name: '',
       required: false,
       type: '',
-      option1: '----None----',
-      option2: '',
-      option3: '',
-      option4: '',
-      option5: '',
-      option6: '',
+      numOfOptions: 0,
+      options: {},
       value: ''
     };
     const nextFieldId = `field${this.nextSlot(0, 'up')}`;
@@ -175,6 +190,20 @@ export class FormConfigComponent implements OnInit {
     }
   }
 
+  nextOptionSlot(current, direction, index) {
+    let inc = 1;
+    if ( direction === 'down' ) {
+        inc = -1;
+    }
+    const next = current + inc;
+    for (let i = 0; i < this.fields[index].usedOptions.length; i++) {
+      if ( Number(this.fields[index].usedOptions[i]) === next ) {
+        return this.nextOptionSlot(next , direction, index );
+      }
+    }
+    return next ;
+  }
+
   nextSlot(current, direction) {
     let inc = 1;
     if ( direction === 'down' ) {
@@ -224,12 +253,12 @@ export class FormConfigComponent implements OnInit {
 
   getOption(i, j) {
     const obj: Form = this.form;
-    return eval('obj.field' + i + '.option' + j);
+    return eval('obj.field' + i + '.options.option' + j);
   }
 
   setOption(option, i, j) {
     let obj: Form = this.form;
-    eval('obj.field' + i + '.option' + j + ' = option');
+    eval('obj.field' + i + '.options.option' + j + ' = option');
     this.form = obj;
   }
 

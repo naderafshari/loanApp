@@ -2,13 +2,15 @@ export interface Field {
     name: string;
     required: boolean;
     type: string;
-    option1: string;
-    option2: string;
-    option3: string;
-    option4: string;
-    option5: string;
-    option6: string;
+    numOfOptions?: number;
+    options?: {};
     value: string;
+    option1?: string;
+    option2?: string;
+    option3?: string;
+    option4?: string;
+    option5?: string;
+    option6?: string;
 }
 
 export interface Form {

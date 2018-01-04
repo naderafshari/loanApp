@@ -118,10 +118,10 @@ export class FormComponent implements OnInit {
       const name = eval('obj.field' + this.usedFields[i] + '.name');
       const value = eval('obj.field' + this.usedFields[i] + '.value');
       fields.push(
-        name, value     
+        name, value
       );
       // fields.push({
-      //  [name], value     
+      //  [name], value
       // });
     }
     const filename = `${this.formData.formName}` + `${this.formData.updateTime}`;
