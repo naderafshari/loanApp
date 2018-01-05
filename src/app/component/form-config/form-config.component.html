@@ -11,7 +11,8 @@
     <button mat-raised-button color="primary" *ngIf="(authService.user | async)?.role == 'admin'" (click)="openDeleteAllDialog()">Delete All Fields</button>
     <!--<button mat-raised-button (click)="openDeleteAllDialog()">Delete All Fields</button> -->
     <hr>
-    <div *ngFor="let field of fields; let i = index">
+    <!--<div *ngFor="let field of fields; let i = index">-->
+    <div *ngFor="let field of fields">
       <button mat-raised-button *ngIf="(authService.user | async)?.role == 'admin'" (click)="openDeleteDialog(field.index)">Delete Field</button> 
       <!--<button mat-raised-button (click)="openDeleteDialog(field.index)">Delete Field</button>-->
       <mat-form-field>
@@ -35,11 +36,12 @@
 
       <br>
       <div *ngIf="getType(field.index) === 'select'">
-          <button mat-raised-button (click)="addOption(i)">Add Option</button> 
+          <button mat-raised-button color="primary" (click)="addOption(field.index,field.it)">Add Option</button> 
           <div *ngFor="let option of field.usedOptions">
           <mat-form-field>
             <input matInput [ngModel]='getOption(field.index,option)' (ngModelChange)='setOption($event,field.index,option)' placeholder="Select Option.."> 
           </mat-form-field>
+          <button mat-raised-button color="primary" (click)="deleteOption(field.index,option)">Delete Option</button>
         </div>
         <!-- <mat-form-field>
           <input matInput [ngModel]='getOption(field.index,1)' (ngModelChange)='setOption($event,field.index,1)' placeholder="Select Option 1.."> 

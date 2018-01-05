@@ -67,6 +67,7 @@ export class FormConfigComponent implements OnInit {
       }
       const obj3: Form = this.form;
       this.fields.push({
+        it:             i,
         index:          this.usedFields[i],
         name:           eval('obj3.field' + this.usedFields[i] + '.name'),
         required:       eval('obj3.field' + this.usedFields[i] + '.required'),
@@ -79,12 +80,22 @@ export class FormConfigComponent implements OnInit {
     }
   }
 
-  addOption(index) {
+  addOption(index, it) {
     console.log(index);    
-    const nextOptionId = `option${this.nextOptionSlot(0, 'up', index)}`;
-console.log(nextOptionId);    
+    console.log(it);    
+    const nextOptionId = `option${this.nextOptionSlot(0, 'up', it)}`;
+console.log(nextOptionId);
     this.form[`field${index}`].options[nextOptionId] = '';
     this.form[`field${index}`].numOfOptions++;
+    this.form.updateTime = new Date().toString();
+    this.updateForm();
+  }
+
+  deleteOption(index, i) {
+    console.log(index);    
+    console.log(i);
+    delete this.form[`field${index}`].options[`option${i}`];
+    this.form[`field${index}`].numOfOptions--;
     this.form.updateTime = new Date().toString();
     this.updateForm();
   }
@@ -190,15 +201,15 @@ console.log(nextOptionId);
     }
   }
 
-  nextOptionSlot(current, direction, index) {
+  nextOptionSlot(current, direction, it) {
     let inc = 1;
     if ( direction === 'down' ) {
         inc = -1;
     }
     const next = current + inc;
-    for (let i = 0; i < this.fields[index].usedOptions.length; i++) {
-      if ( Number(this.fields[index].usedOptions[i]) === next ) {
-        return this.nextOptionSlot(next , direction, index );
+    for (let j = 0; j < this.fields[it].usedOptions.length; j++) {
+      if ( Number(this.fields[it].usedOptions[j]) === next ) {
+        return this.nextOptionSlot(next , direction, it );
       }
     }
     return next ;
