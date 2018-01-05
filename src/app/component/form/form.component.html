@@ -13,17 +13,13 @@
       <textarea matInput required [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}}> </textarea>
     </mat-form-field>
 
-    <mat-form-field *ngIf="formData && field.type == 'select'" [hideRequiredMarker]="!field.required">
-      <mat-select [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}}>
-        <mat-option value={{field.option1}}>{{field.option1}}</mat-option>
-        <mat-option value={{field.option2}}>{{field.option2}}</mat-option>
-        <mat-option value={{field.option3}}>{{field.option3}}</mat-option>
-        <mat-option value={{field.option4}}>{{field.option4}}</mat-option>
-        <mat-option value={{field.option5}}>{{field.option5}}</mat-option>
-        <mat-option value={{field.option6}}>{{field.option6}}</mat-option>
-      </mat-select>
-    </mat-form-field>  
-
+      <mat-form-field *ngIf="formData && field.type == 'select'" [hideRequiredMarker]="!field.required">
+        <mat-select [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}}>
+          <div *ngFor="let option of field.options">
+            <mat-option value={{option}}>{{option}}</mat-option>
+          </div>
+        </mat-select>
+      </mat-form-field>  
     <mat-form-field *ngIf="formData && field.type == 'date'" [hideRequiredMarker]="!field.required">
         <input matInput required [matDatepicker]="picker" 
               [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}} disabled>
