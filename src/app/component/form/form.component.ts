@@ -28,8 +28,9 @@ export class FormComponent implements OnInit {
   formRef: AngularFirestoreCollection<Form>;
   fields: any[] = [];
   usedFields: any[];
-  options: any;
+  // options: any;
   usedOptions: any[];
+  optionsValues: any[];
 
   constructor(private afs: AngularFirestore,
     public authService: AuthService,
@@ -41,19 +42,16 @@ export class FormComponent implements OnInit {
       this.formId = params['fid'] || 0;
       if (this.uid) {
         this.formRef = this.afs.doc(`users/${this.uid}`).collection<Form>('forms', ref =>
-          ref.where('formId', '==', this.formId));//  .orderBy('startTime', 'desc').limit(1));
+          ref.where('formId', '==', this.formId));
         this.forms = this.formRef.valueChanges();
       }
       this.sub = this.forms.subscribe((data) => {
-        console.log(data);
-        //this.formData = data[0];
-        this.formData = data.find(form => {
-          form.startTime === new Date(Math.max.apply(null, data.map(function(e) 
-          {
-            return new Date(e.startTime);
-          }))).toString();
+        data.sort((a, b) => {
+          const dateA: number = new Date(a.updateTime).valueOf();
+          const dateB: number = new Date(b.updateTime).valueOf();
+          return dateB - dateA;
         });
-        
+        this.formData = data[0];
         const usedFields = Object.keys(this.formData)
         .filter( fields => fields.charAt(0) === 'f')
         .filter( fields => fields.charAt(1) === 'i')
@@ -64,27 +62,23 @@ export class FormComponent implements OnInit {
         for (let i = 0; i < this.formData.numOfFields; i++) {
           const obj: Form = this.formData;
           const field: Field = eval('obj.field' + this.usedFields[i]);
-console.log(field);
           const usedOptions = Object.keys(field.options);
           this.usedOptions = usedOptions.map((x) => x.charAt(6) + x.charAt(7));
-          this.options = {};
+          this.optionsValues = [];
           for (let j = 0; j < field.numOfOptions; j++) {
             const obj2: Field = field;
-            const option = eval('obj2.option' + this.usedOptions[j]);
-            const key = `option${this.usedOptions[j]}`;
-            this.options[key] = option;
+            const option = eval('obj2.options.option' + this.usedOptions[j]);
+            this.optionsValues.push(option);
           }
           const obj3: Form = this.formData;
           this.fields.push({
-            it:             i,
             index:          this.usedFields[i],
             name:           eval('obj3.field' + this.usedFields[i] + '.name'),
             required:       eval('obj3.field' + this.usedFields[i] + '.required'),
             type:           eval('obj3.field' + this.usedFields[i] + '.type'),
             numOfOptions:   eval('obj3.field' + this.usedFields[i] + '.numOfOptions'),
-            options:        this.options,
             value:          eval('obj3.field' + this.usedFields[i] + '.value'),
-            usedOptions:    this.usedOptions
+            optionsValues:   this.optionsValues
           });
         }
       });
@@ -147,7 +141,7 @@ console.log(field);
     const blob = new Blob([JSON.stringify(fields)], { type: 'text/plain' });
     saveAs(blob, filename);
   }
- 
+
   ngOnInit() {
   }
 

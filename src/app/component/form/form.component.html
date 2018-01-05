@@ -15,7 +15,7 @@
 
       <mat-form-field *ngIf="formData && field.type == 'select'" [hideRequiredMarker]="!field.required">
         <mat-select [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}}>
-          <div *ngFor="let option of field.options">
+          <div *ngFor="let option of field.optionsValues">
             <mat-option value={{option}}>{{option}}</mat-option>
           </div>
         </mat-select>

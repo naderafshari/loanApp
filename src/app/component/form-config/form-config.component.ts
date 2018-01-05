@@ -81,10 +81,9 @@ export class FormConfigComponent implements OnInit {
   }
 
   addOption(index, it) {
-    console.log(index);    
-    console.log(it);    
+    console.log(index);
+    console.log(it);
     const nextOptionId = `option${this.nextOptionSlot(0, 'up', it)}`;
-console.log(nextOptionId);
     this.form[`field${index}`].options[nextOptionId] = '';
     this.form[`field${index}`].numOfOptions++;
     this.form.updateTime = new Date().toString();
@@ -92,8 +91,6 @@ console.log(nextOptionId);
   }
 
   deleteOption(index, i) {
-    console.log(index);    
-    console.log(i);
     delete this.form[`field${index}`].options[`option${i}`];
     this.form[`field${index}`].numOfOptions--;
     this.form.updateTime = new Date().toString();
