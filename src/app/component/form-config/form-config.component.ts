@@ -86,6 +86,9 @@ export class FormConfigComponent implements OnInit {
           value:          eval('obj3.field' + this.usedFields[i] + '.value'),
           usedOptions:    this.usedOptions
         });
+        this.fields.sort((a, b) => {
+          return (Number(a.index) > Number(b.index) ? 1 : (Number(b.index) > Number(a.index) ? -1 : 0));
+        });
       }
     } else {
       this.usedOptions = [];
