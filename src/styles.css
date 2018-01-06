@@ -6,7 +6,7 @@ body {
 .form-container {
     background:white;
     padding:3.5em;
-    width:500px;
+    width:600px;
     position:fixed;
     left:50%;
     margin-left:-250px;
@@ -14,7 +14,7 @@ body {
 .user1-container {
     background:white;
     padding:3.5em;
-    width:1500px;
+    width:700px;
     position:fixed;
     left:50%;
     margin-left:-250px;
