@@ -1,17 +1,17 @@
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 body {
-    background:#E2E4E6;
+    background:#607D8B;
     padding-top:4em;
 }
 .form-container {
-    background:white;
+    background:#ECEFF1;
     padding:3.5em;
     width:600px;
     position:fixed;
     left:50%;
     margin-left:-250px;
 }
-.user1-container {
+.user-container {
     background:white;
     padding:3.5em;
     width:700px;
@@ -28,3 +28,17 @@ body {
 #goback span {
     font-size:1em;
 }
+
+/* Rules for sizing the icon. */
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }
+
+/* Rules for using icons as black on a light background. */
+.material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
+.material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }
+
+/* Rules for using icons as white on a dark background. */
+.material-icons.md-light { color: rgba(255, 255, 255, 1); }
+.material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }

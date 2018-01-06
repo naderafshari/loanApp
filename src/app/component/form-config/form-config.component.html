@@ -6,19 +6,25 @@
   </mat-form-field>
   <p>Last Updated: {{form.updateTime}}</p>
   <hr>
-  <button mat-raised-button color="primary" (click)="addField()">Add Field</button>
-  <button mat-raised-button color="warn" *ngIf="(authService.user | async)?.role == 'admin'" (click)="openDeleteAllDialog()">Delete All Fields</button>
+  <button mat-raised-button color="primary" (click)="addField()"><mat-icon>add</mat-icon>Field</button>
+  <button mat-raised-button color="warn" *ngIf="(authService.user | async)?.role == 'admin'" (click)="openDeleteAllDialog()">
+      <mat-icon>delete</mat-icon>All Fields</button>
   <!--<button mat-raised-button (click)="openDeleteAllDialog()">Delete All Fields</button> -->
   <hr>
   <div *ngFor="let field of fields">
-    <button mat-button class="mat-mini-fab" *ngIf="field.index > minUsedField" (click)="moveUp(field.index)"style="float: right;">Up</button> 
-    <button mat-button class="mat-mini-fab" *ngIf="field.index < maxUsedField"(click)="moveDown(field.index)"style="float: right;">Down</button> <br>
+    <button mat-button class="mat-mini-fab" *ngIf="field.index > minUsedField" (click)="moveUp(field.index)"style="float: right;">
+      <mat-icon>arrow_upward</mat-icon>
+    </button> 
+    <button mat-button class="mat-mini-fab" *ngIf="field.index < maxUsedField"(click)="moveDown(field.index)"style="float: right;">
+      <mat-icon>arrow_downward</mat-icon>
+    </button> <br>
     <mat-form-field>
       <textarea matInput [ngModel]='getName(field.index)' (ngModelChange)='setName($event,field.index)' placeholder="Field Description.."></textarea> 
     </mat-form-field>
     <!-- <mat-slide-toggle *ngIf="getType(field.index) !==  'checkbox'" [ngModel]='getRequired(field.index)' (ngModelChange)='setRequired($event,field.index)'>Required</mat-slide-toggle> -->
     <mat-slide-toggle [ngModel]='getRequired(field.index)' (ngModelChange)='setRequired($event,field.index)'>Required</mat-slide-toggle>
-    <button mat-raised-button color="warn" *ngIf="(authService.user | async)?.role == 'admin'" (click)="openDeleteDialog(field.index)">Delete Field</button> 
+    <button mat-raised-button color="warn" *ngIf="(authService.user | async)?.role == 'admin'" (click)="openDeleteDialog(field.index)">
+        <mat-icon>delete</mat-icon>Field</button> 
     <!--<button mat-raised-button (click)="openDeleteDialog(field.index)">Delete Field</button>-->
     <br>
     <mat-form-field>
@@ -34,17 +40,18 @@
 
     <br>
     <div *ngIf="getType(field.index) === 'select'">
-        <button mat-raised-button color="primary" (click)="addOption(field.index,field.it)">Add Option</button> 
+        <button mat-raised-button color="primary" (click)="addOption(field.index,field.it)"><mat-icon>add</mat-icon>Option</button> 
         <div *ngFor="let option of field.usedOptions">
         <mat-form-field >
-          <input matInput [ngModel]='getOption(field.index,option)' (ngModelChange)='setOption($event,field.index,option)' placeholder="Select Option.."> 
+          <input matInput [ngModel]='getOption(field.index,option)' (ngModelChange)='setOption($event,field.index,option)' 
+          placeholder="Enter Option.."> 
         </mat-form-field>
-        <button mat-raised-button color="warn" (click)="deleteOption(field.index,option)">Delete Option</button>
+        <button mat-raised-button color="warn" (click)="deleteOption(field.index,option)"><mat-icon>delete</mat-icon>OPtion</button>
       </div>
     </div>
     <hr>
   </div>
   <br>
-  <button mat-raised-button color="accent" (click)="updateFormAndRoute()">Submit</button>
+  <button mat-raised-button color="accent" (click)="updateFormAndRoute()"><mat-icon>input</mat-icon>Submit</button>
 </mat-card>
   

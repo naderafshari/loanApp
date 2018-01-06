@@ -9,4 +9,9 @@ export interface UserInfo {
   firstName?:    string;
   lastName?:     string;
   assignedForms?: {};
+  addr1Line1?:   string;
+  addr1Line2?:   string;
+  addr1City?:    string;
+  addr1State?:   string;
+  addr1Zip?:     string;
 }

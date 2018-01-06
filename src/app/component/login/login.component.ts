@@ -9,7 +9,7 @@ import * as firebase from 'firebase';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  error: any;
+  // error: any;
 
   constructor( public authService: AuthService, private router: Router) {
   }

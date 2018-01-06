@@ -22,5 +22,30 @@
     </mat-select>
   </mat-form-field>  
   <br>
+  <mat-form-field *ngIf="userInfo">
+    <input matInput [(ngModel)]="userInfo.phone1" placeholder="First Phone Number.."> 
+  </mat-form-field>
+  <mat-form-field *ngIf="userInfo">
+      <input matInput [(ngModel)]="userInfo.phone2" placeholder="Second Phone Number.."> 
+  </mat-form-field>
+  <br>
+  <mat-form-field *ngIf="userInfo">
+    <input matInput [(ngModel)]="userInfo.addr1Line1" placeholder="Address First Line.."> 
+  </mat-form-field>
+  <br>
+  <mat-form-field *ngIf="userInfo">
+    <input matInput [(ngModel)]="userInfo.addr1Line2" placeholder="Address Second Line.."> 
+  </mat-form-field>
+  <br>
+  <mat-form-field *ngIf="userInfo">
+    <input matInput [(ngModel)]="userInfo.addr1City" placeholder="City.."> 
+  </mat-form-field>
+  <mat-form-field *ngIf="userInfo">
+    <input matInput [(ngModel)]="userInfo.addr1State" placeholder="State.."> 
+  </mat-form-field>
+  <mat-form-field *ngIf="userInfo">
+    <input matInput [(ngModel)]="userInfo.addr1Zip" placeholder="Zip Code.."> 
+  </mat-form-field>
+          
   <button mat-raised-button color="primary" (click)="updateUser()">Submit</button>
 </mat-card>

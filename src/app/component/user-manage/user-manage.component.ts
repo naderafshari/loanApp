@@ -10,7 +10,7 @@ import { AuthService } from '../../provider/auth.service';
 import { UserInfo } from '../../model/user-info';
 import { Form } from '../../model/form';
 import { FormManageComponent } from '../form-manage/form-manage.component';
-import { NameFilterPipe }from '../../pipe/name-filter.pipe';
+import { NameFilterPipe } from '../../pipe/name-filter.pipe';
 
 @Component({
   selector: 'app-user-manage',

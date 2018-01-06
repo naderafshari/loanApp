@@ -24,11 +24,10 @@ export class FormComponent implements OnInit {
   sub: Subscription;
   uid: string;
   formId: string;
-  formData: Form;
+  form: Form;
   formRef: AngularFirestoreCollection<Form>;
-  fields: any[] = [];
+  fields: any[];
   usedFields: any[];
-  // options: any;
   usedOptions: any[];
   optionsValues: any[];
 
@@ -51,59 +50,61 @@ export class FormComponent implements OnInit {
           const dateB: number = new Date(b.updateTime).valueOf();
           return dateB - dateA;
         });
-        this.formData = data[0];
-        const usedFields = Object.keys(this.formData)
+        this.form = data[0];
+        const usedFields = Object.keys(this.form)
         .filter( fields => fields.charAt(0) === 'f')
         .filter( fields => fields.charAt(1) === 'i')
         .filter( fields => fields.charAt(2) === 'e');
         this.usedFields = usedFields.map((x) => x.charAt(5) + x.charAt(6));
-        this.fields = [];
-        this.usedOptions = [];
-        for (let i = 0; i < this.formData.numOfFields; i++) {
-          const obj: Form = this.formData;
-          const field: Field = eval('obj.field' + this.usedFields[i]);
-          const usedOptions = Object.keys(field.options);
-          this.usedOptions = usedOptions.map((x) => x.charAt(6) + x.charAt(7));
-          this.optionsValues = [];
-          for (let j = 0; j < field.numOfOptions; j++) {
-            const obj2: Field = field;
-            const option = eval('obj2.options.option' + this.usedOptions[j]);
-            this.optionsValues.push(option);
+        if (this.usedFields.length) {
+          this.fields = [];
+          this.usedOptions = [];
+          for (let i = 0; i < this.form.numOfFields; i++) {
+            const obj: Form = this.form;
+            const field: Field = eval('obj.field' + this.usedFields[i]);
+            const usedOptions = Object.keys(field.options);
+            this.usedOptions = usedOptions.map((x) => x.charAt(6) + x.charAt(7));
+            this.optionsValues = [];
+            for (let j = 0; j < field.numOfOptions; j++) {
+              const obj2: Field = field;
+              const option = eval('obj2.options.option' + this.usedOptions[j]);
+              this.optionsValues.push(option);
+            }
+            const obj3: Form = this.form;
+            this.fields.push({
+              index:          this.usedFields[i],
+              name:           eval('obj3.field' + this.usedFields[i] + '.name'),
+              required:       eval('obj3.field' + this.usedFields[i] + '.required'),
+              type:           eval('obj3.field' + this.usedFields[i] + '.type'),
+              numOfOptions:   eval('obj3.field' + this.usedFields[i] + '.numOfOptions'),
+              value:          eval('obj3.field' + this.usedFields[i] + '.value'),
+              optionsValues:   this.optionsValues
+            });
           }
-          const obj3: Form = this.formData;
-          this.fields.push({
-            index:          this.usedFields[i],
-            name:           eval('obj3.field' + this.usedFields[i] + '.name'),
-            required:       eval('obj3.field' + this.usedFields[i] + '.required'),
-            type:           eval('obj3.field' + this.usedFields[i] + '.type'),
-            numOfOptions:   eval('obj3.field' + this.usedFields[i] + '.numOfOptions'),
-            value:          eval('obj3.field' + this.usedFields[i] + '.value'),
-            optionsValues:   this.optionsValues
-          });
         }
       });
     });
   }
 
   getValue(i) {
-    const obj: Form = this.formData;
+    const obj: Form = this.form;
     return eval('obj.field' + i + '.value');
   }
 
   setValue(value, i) {
-    let obj: Form = this.formData;
+    let obj: Form = this.form;
     eval('obj.field' + i + '.value = value');
-    this.formData = obj;
+    this.form = obj;
   }
 
-  updateFormData() {
+  updateForm() {
     if (this.allRequireFields()) {
-      if (this.formData ) {
-        this.formData.updateTime = new Date().toString();
+      if (this.form ) {
+        this.form.updateTime = new Date().toString();
         /* Use this if want to create a new record at every submit */
-        this.afs.doc(`users/${this.uid}`).collection('forms').doc(this.formData.updateTime).set(this.formData);
+        this.afs.doc(`users/${this.uid}`).collection('forms').doc(this.form.updateTime).set(this.form);
         /* Or update and existing form... */
-        // this.afs.doc(`users/${this.uid}`).collection('forms').doc(this.formData.startTime).update(this.formData);
+        // this.afs.doc(`users/${this.uid}`).collection('forms').doc(this.form.startTime).update(this.form);
       } else {
         alert('Cannot Update, Form not available!');
       }
@@ -115,8 +116,8 @@ export class FormComponent implements OnInit {
   }
 
   allRequireFields() {
-    for (let i = 0; i < this.formData.numOfFields; i++) {
-      const obj: Form = this.formData;
+    for (let i = 0; i < this.form.numOfFields; i++) {
+      const obj: Form = this.form;
       if (eval('obj.field' + this.usedFields[i] + '.required == true && obj.field' + this.usedFields[i] + '.value == ""') ) {
         return false;
       }
@@ -126,8 +127,8 @@ export class FormComponent implements OnInit {
 
   saveFile() {
     const fields = [];
-    for (let i = 0; i < this.formData.numOfFields; i++) {
-      const obj: Form = this.formData;
+    for (let i = 0; i < this.form.numOfFields; i++) {
+      const obj: Form = this.form;
       const name = eval('obj.field' + this.usedFields[i] + '.name');
       const value = eval('obj.field' + this.usedFields[i] + '.value');
       fields.push(
@@ -137,7 +138,7 @@ export class FormComponent implements OnInit {
       //  [name], value
       // });
     }
-    const filename = `${this.formData.formName}` + `${this.formData.updateTime}`;
+    const filename = `${this.form.formName}` + `${this.form.updateTime}`;
     const blob = new Blob([JSON.stringify(fields)], { type: 'text/plain' });
     saveAs(blob, filename);
   }
