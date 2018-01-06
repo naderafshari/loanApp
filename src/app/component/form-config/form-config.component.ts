@@ -54,11 +54,14 @@ export class FormConfigComponent implements OnInit {
     .filter( fields => fields.charAt(2) === 'e');
     this.usedFields = usedFields.map((x) => x.charAt(5) + x.charAt(6));
     if (this.usedFields.length) {
+      this.usedFields.sort((a, b) => {
+       return (Number(a) > Number(b) ? 1 : (Number(b) > Number(a) ? -1 : 0));
+      });
       this.maxUsedField = this.usedFields.reduce((a, b) => {
-        return Math.max(a, b);
+        return Math.max(Number(a), Number(b));
       });
       this.minUsedField = this.usedFields.reduce((a, b) => {
-        return Math.min(a, b);
+        return Math.min(Number(a), Number(b));
       });
       this.fields = [];
       this.usedOptions = [];
@@ -67,6 +70,9 @@ export class FormConfigComponent implements OnInit {
         const field: Field = eval('obj.field' + this.usedFields[i]);
         const usedOptions = Object.keys(field.options);
         this.usedOptions = usedOptions.map((x) => x.charAt(6) + x.charAt(7));
+        this.usedOptions.sort((a, b) => {
+          return (Number(a) > Number(b) ? 1 : (Number(b) > Number(a) ? -1 : 0));
+        });
         this.options = {};
         for (let j = 0; j < field.numOfOptions; j++) {
           const obj2: Field = field;
@@ -85,9 +91,6 @@ export class FormConfigComponent implements OnInit {
           options:        this.options,
           value:          eval('obj3.field' + this.usedFields[i] + '.value'),
           usedOptions:    this.usedOptions
-        });
-        this.fields.sort((a, b) => {
-          return (Number(a.index) > Number(b.index) ? 1 : (Number(b.index) > Number(a.index) ? -1 : 0));
         });
       }
     } else {
@@ -224,6 +227,23 @@ export class FormConfigComponent implements OnInit {
       });
     } else {
       alert('No Delete privilages! Please contact the Administrator');
+    }
+  }
+
+  openSubmitDialog(index): void {
+    if (this.authService.userAuthRole === 'admin' || this.authService.userAuthRole === 'super') {
+      const dialogRef = this.dialog.open(DialogComponent, {
+        width: '250px',
+        data: 'You are about to submit changer.\n\nFor changes to take effect the Form has to be "Reassigned".\n\nAre you sure?'
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === 'Confirm') {
+          this.updateFormAndRoute();
+        }
+      });
+    } else {
+      alert('No Submit privilages! Please contact the Administrator');
     }
   }
 

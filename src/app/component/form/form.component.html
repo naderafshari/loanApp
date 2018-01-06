@@ -13,13 +13,14 @@
       <textarea matInput required [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}}> </textarea>
     </mat-form-field>
 
-      <mat-form-field *ngIf="form && field.type == 'select'" [hideRequiredMarker]="!field.required">
-        <mat-select [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}}>
-          <div *ngFor="let option of field.optionsValues">
-            <mat-option value={{option}}>{{option}}</mat-option>
-          </div>
-        </mat-select>
-      </mat-form-field>  
+    <mat-form-field *ngIf="form && field.type == 'select'" [hideRequiredMarker]="!field.required">
+      <mat-select [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}}>
+        <div *ngFor="let option of field.optionsValues">
+          <mat-option value={{option}}>{{option}}</mat-option>
+        </div>
+      </mat-select>
+    </mat-form-field>
+
     <mat-form-field *ngIf="form && field.type == 'date'" [hideRequiredMarker]="!field.required">
         <input matInput required [matDatepicker]="picker" 
               [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}} disabled>
@@ -33,5 +34,5 @@
   </div>
   <br>
   <button *ngIf="form" mat-raised-button color="primary" (click)="updateForm()">Submit</button>
-  <button *ngIf="form" mat-raised-button color="primary" (click)="saveFile()">Export</button>
+  <button *ngIf="form && (authService.user | async)?.role == 'admin'" mat-raised-button color="primary" (click)="saveFile()">Export</button>
 </mat-card>

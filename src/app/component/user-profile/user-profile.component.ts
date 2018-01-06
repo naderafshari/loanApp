@@ -46,8 +46,12 @@ export class UserProfileComponent implements OnInit {
 
   updateUser() {
     if (this.user && this.userInfo) {
-      this.afs.collection('users').doc(this.userInfo.uid).update(this.userInfo);
-      this.router.navigateByUrl('/user-manage');
+      if (this.allRequireFields()) {
+        this.afs.collection('users').doc(this.userInfo.uid).update(this.userInfo);
+        this.router.navigateByUrl('/user-manage');
+      } else {
+        alert('Required field was not filled!');
+      }
     } else {
       alert('Cannot Update, user not logged in!');
       this.router.navigateByUrl('/login');
@@ -83,6 +87,12 @@ export class UserProfileComponent implements OnInit {
         alert('Admin user cannot be deleted here! Contact system admin');
       }
     }
+  }
+  allRequireFields() {
+    if (this.userInfo.firstName === '' || this.userInfo.lastName === '') {
+      return false;
+    }
+    return true;
   }
 
 }
