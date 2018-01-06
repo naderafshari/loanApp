@@ -27,6 +27,8 @@ export class FormConfigComponent implements OnInit {
   usedFields: any[];
   options: any;
   usedOptions: any[];
+  maxUsedField: any;
+  minUsedField: any;
 
   constructor(private afs: AngularFirestore, public fs: FormService,
               private router: Router, private route: ActivatedRoute,
@@ -51,6 +53,12 @@ export class FormConfigComponent implements OnInit {
     .filter( fields => fields.charAt(1) === 'i')
     .filter( fields => fields.charAt(2) === 'e');
     this.usedFields = usedFields.map((x) => x.charAt(5) + x.charAt(6));
+    this.maxUsedField = this.usedFields.reduce((a, b) => {
+      return Math.max(a, b);
+    });
+    this.minUsedField = this.usedFields.reduce((a, b) => {
+      return Math.min(a, b);
+    });
     this.fields = [];
     this.usedOptions = [];
     for (let i = 0; i < this.form.numOfFields; i++) {
@@ -98,15 +106,15 @@ export class FormConfigComponent implements OnInit {
   }
 
   addField() {
+    const nextFieldId = `field${this.nextSlot(0, 'up')}`;
     const fieldToAdd: Field  = {
       name: '',
       required: false,
-      type: '',
+      type: '-- None --',
       numOfOptions: 0,
       options: {},
       value: ''
     };
-    const nextFieldId = `field${this.nextSlot(0, 'up')}`;
     this.form[nextFieldId] = fieldToAdd;
     this.form.numOfFields++;
     this.form.updateTime = new Date().toString();
@@ -146,22 +154,39 @@ export class FormConfigComponent implements OnInit {
     this.afs.collection('forms').doc(this.id).set(this.form);
   }
 
+  allRequireFields() {
+    // for (let i = 0; i < this.form.numOfFields; i++) {
+      // const obj: Form = this.form;
+      //if (eval('obj.field' + this.usedFields[i] + '.name == "" ') || this.form.formName === '') {
+      if (this.form.formName === '') {
+        return false;
+      }
+    // }
+    return true;
+  }
+
   updateForm() {
     if (this.form) {
       this.afs.collection('forms').doc(this.id).update(this.form).then(() => this.updateFields());
     } else {
-      alert('Cannot Update, user not logged in!');
+      alert('Cannot Update, form not available!');
     }
   }
 
   updateFormAndRoute() {
     if (this.form) {
-      this.afs.collection('forms').doc(this.id).update(this.form).then(() => this.updateFields());
+      if (this.allRequireFields()) {
+        this.afs.collection('forms').doc(this.id).update(this.form).then(() => this.updateFields());
+        this.sub.unsubscribe();
+        this.router.navigate(['/form-manage', this.userId]);
+      } else {
+        alert('Required field was not filled!');
+      }
     } else {
-      alert('Cannot Update, user not logged in!');
+      alert('Cannot Update, form not available!');
+      this.sub.unsubscribe();
+      this.router.navigate(['/form-manage', this.userId]);
     }
-    this.sub.unsubscribe();
-    this.router.navigate(['/form-manage', this.userId]);
   }
 
   openDeleteAllDialog(): void {
@@ -224,6 +249,64 @@ export class FormConfigComponent implements OnInit {
       }
     }
     return next ;
+  }
+
+  nextUsedSlot(current, direction) {
+    let inc = 1;
+    if ( direction === 'down' ) {
+        inc = -1;
+    }
+    const next = current + inc;
+    if (next > this.maxUsedField || next < this.minUsedField) {
+      return 'ERROR';
+    } else {
+      for (let i = 0; i < this.usedFields.length; i++) {
+        if ( Number(this.usedFields[i]) === next ) {
+          return next;
+        }
+      }
+      return this.nextUsedSlot(next , direction );
+    }
+  }
+
+  moveUp(index) {
+    const nextField = this.nextUsedSlot(Number(index), 'down');
+    if (nextField !== 'ERROR') {
+      const tmp = this.form[`field${nextField}`];
+      this.form[`field${nextField}`] = this.form[`field${index}`];
+      this.form[`field${index}`] = tmp;
+      this.updateForm();
+    }
+  }
+
+  moveDown(index) {
+    const nextField = this.nextUsedSlot(Number(index), 'up');
+    if (nextField !== 'ERROR') {
+      const tmp = this.form[`field${nextField}`];
+      this.form[`field${nextField}`] = this.form[`field${index}`];
+      this.form[`field${index}`] = tmp;
+      this.updateForm();
+    }
+  }
+
+  move(old_index, new_index) {
+    console.log(old_index);
+    console.log(new_index);
+    //this.fields.splice(new_index, 0, this.fields.splice(old_index, 1)[0]);
+     while (old_index < 0) {
+         old_index += this.fields.length;
+     }
+     while (new_index < 0) {
+         new_index += this.fields.length;
+     }
+     if (new_index >= this.fields.length) {
+         let k = new_index - this.fields.length;
+         while ((k--) + 1) {
+             this.fields.push(undefined);
+         }
+     }
+     this.fields.splice(new_index, 0, this.fields.splice(old_index, 1)[0]);
+    // // return this; // for testing purposes
   }
 
   getName(i) {

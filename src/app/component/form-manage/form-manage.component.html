@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card class="form-container">
   <mat-card-content>
     <a routerLink="/user-manage" id="goback">Go back</a>
     <br>
@@ -12,6 +12,6 @@
         </mat-list-item>
     </mat-list>
     <button mat-raised-button *ngIf="userInfo && userInfo.role == 'admin';"(click)="openDeleteAllDialog()">Delete All Forms</button>
-</mat-card-content>
+  </mat-card-content>
 </mat-card>
   

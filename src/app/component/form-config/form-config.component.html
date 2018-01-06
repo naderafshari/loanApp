@@ -1,51 +1,50 @@
-<mat-card *ngIf="form">
-    <a (click)="goBack()" id="goback">Go back/Cancel</a>
-    <br><br>
-    <hr>
-    <p>Last Updated: {{form.updateTime}}</p>
+<mat-card class="form-container" *ngIf="form">
+  <a (click)="goBack()" id="goback">Go back/Cancel</a>
+  <hr>
+  <mat-form-field>
+    <input matInput required [(ngModel)]="form.formName" placeholder="Form Name..."> 
+  </mat-form-field>
+  <p>Last Updated: {{form.updateTime}}</p>
+  <hr>
+  <button mat-raised-button color="primary" (click)="addField()">Add Field</button>
+  <button mat-raised-button color="warn" *ngIf="(authService.user | async)?.role == 'admin'" (click)="openDeleteAllDialog()">Delete All Fields</button>
+  <!--<button mat-raised-button (click)="openDeleteAllDialog()">Delete All Fields</button> -->
+  <hr>
+  <div *ngFor="let field of fields">
+    <button mat-button class="mat-mini-fab" *ngIf="field.index > minUsedField" (click)="moveUp(field.index)">Up</button> 
+    <button mat-button class="mat-mini-fab" *ngIf="field.index < maxUsedField"(click)="moveDown(field.index)">Down</button> <br>
+    <mat-form-field>
+      <textarea matInput [ngModel]='getName(field.index)' (ngModelChange)='setName($event,field.index)' placeholder="Field Description.."></textarea> 
+    </mat-form-field>
+    <!-- <mat-slide-toggle *ngIf="getType(field.index) !==  'checkbox'" [ngModel]='getRequired(field.index)' (ngModelChange)='setRequired($event,field.index)'>Required</mat-slide-toggle> -->
+    <mat-slide-toggle [ngModel]='getRequired(field.index)' (ngModelChange)='setRequired($event,field.index)'>Required</mat-slide-toggle>
+    <button mat-raised-button color="warn" *ngIf="(authService.user | async)?.role == 'admin'" (click)="openDeleteDialog(field.index)">Delete Field</button> 
+    <!--<button mat-raised-button (click)="openDeleteDialog(field.index)">Delete Field</button>-->
     <br>
     <mat-form-field>
-      <input matInput [(ngModel)]="form.formName" placeholder="Form Name..."> 
+      <mat-select [ngModel]='getType(field.index)' (ngModelChange)='setType($event,field.index)' placeholder="Field Type..">
+        <mat-option>-- None --</mat-option>
+        <mat-option value="textbox">  Text Box    </mat-option>
+        <mat-option value="textarea"> Text Area   </mat-option>
+        <mat-option value="select">   Pull down   </mat-option>
+        <mat-option value="date">     Date Picker </mat-option>
+        <mat-option value="checkbox"> Check Box   </mat-option>
+      </mat-select>
     </mat-form-field>
-    <br>
-    <button mat-raised-button color="warn" *ngIf="(authService.user | async)?.role == 'admin'" (click)="openDeleteAllDialog()">Delete All Fields</button>
-    <!--<button mat-raised-button (click)="openDeleteAllDialog()">Delete All Fields</button> -->
-    <hr>
-    <div *ngFor="let field of fields">
-      <mat-form-field>
-        <textarea matInput [ngModel]='getName(field.index)' (ngModelChange)='setName($event,field.index)' placeholder="Field Description.."></textarea> 
-      </mat-form-field>
-      <!-- <mat-slide-toggle *ngIf="getType(field.index) !==  'checkbox'" [ngModel]='getRequired(field.index)' (ngModelChange)='setRequired($event,field.index)'>Required</mat-slide-toggle> -->
-      <mat-slide-toggle [ngModel]='getRequired(field.index)' (ngModelChange)='setRequired($event,field.index)'>Required</mat-slide-toggle>
-      <button mat-raised-button color="warn" *ngIf="(authService.user | async)?.role == 'admin'" (click)="openDeleteDialog(field.index)">Delete Field</button> 
-      <!--<button mat-raised-button (click)="openDeleteDialog(field.index)">Delete Field</button>-->
-      <br>
-      <mat-form-field>
-        <mat-select [ngModel]='getType(field.index)' (ngModelChange)='setType($event,field.index)' placeholder="Field Type..">
-          <mat-option>-- None --</mat-option>
-          <mat-option value="textbox">  Text Box    </mat-option>
-          <mat-option value="textarea"> Text Area   </mat-option>
-          <mat-option value="select">   Pull down   </mat-option>
-          <mat-option value="date">     Date Picker </mat-option>
-          <mat-option value="checkbox"> Check Box   </mat-option>
-        </mat-select>
-      </mat-form-field>
 
-      <br>
-      <div *ngIf="getType(field.index) === 'select'">
-          <button mat-raised-button color="primary" (click)="addOption(field.index,field.it)">Add Option</button> 
-          <div *ngFor="let option of field.usedOptions">
-          <mat-form-field>
-            <input matInput [ngModel]='getOption(field.index,option)' (ngModelChange)='setOption($event,field.index,option)' placeholder="Select Option.."> 
-          </mat-form-field>
-          <button mat-raised-button color="warn" (click)="deleteOption(field.index,option)">Delete Option</button>
-        </div>
-      </div>
-      <hr>
-    </div>
-    <button mat-raised-button color="primary" (click)="addField()">Add Field</button>
-    <hr>
     <br>
-    <button mat-raised-button color="accent" (click)="updateFormAndRoute()">Submit</button>
-  </mat-card>
+    <div *ngIf="getType(field.index) === 'select'">
+        <button mat-raised-button color="primary" (click)="addOption(field.index,field.it)">Add Option</button> 
+        <div *ngFor="let option of field.usedOptions">
+        <mat-form-field >
+          <input matInput [ngModel]='getOption(field.index,option)' (ngModelChange)='setOption($event,field.index,option)' placeholder="Select Option.."> 
+        </mat-form-field>
+        <button mat-raised-button color="warn" (click)="deleteOption(field.index,option)">Delete Option</button>
+      </div>
+    </div>
+    <hr>
+  </div>
+  <br>
+  <button mat-raised-button color="accent" (click)="updateFormAndRoute()">Submit</button>
+</mat-card>
   

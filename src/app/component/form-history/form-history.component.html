@@ -1,14 +1,13 @@
 <mat-card>
-   <mat-card-content>
-        <a routerLink="/user-manage" id="goback">Go back</a>
-        <br>
-        <br>
+    <a routerLink="/user-manage" id="goback">Go back</a>
+    <hr>
+    <mat-card-content>
         <button mat-raised-button *ngIf="(authService.user | async)?.role == 'admin'" (click)="openDeleteDialog()">Delete Selected</button>
         <button mat-raised-button (click)="viewSelected()">View Selected</button>
    </mat-card-content>
 </mat-card>
         
-<div *ngIf="userInfo" class="form-container mat-elevation-z8"> Form History for: {{userInfo.firstName}} {{userInfo.lastName}}
+<div *ngIf="userInfo" class="mat-elevation-z8"> Form History for: {{userInfo.firstName}} {{userInfo.lastName}}
   <mat-table #table [dataSource]="dataSource" matSort>
 
     <ng-container matColumnDef="select" > 

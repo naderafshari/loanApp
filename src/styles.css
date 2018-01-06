@@ -3,3 +3,28 @@ body {
     background:#E2E4E6;
     padding-top:4em;
 }
+.form-container {
+    background:white;
+    padding:3.5em;
+    width:500px;
+    position:fixed;
+    left:50%;
+    margin-left:-250px;
+}
+.user1-container {
+    background:white;
+    padding:3.5em;
+    width:1500px;
+    position:fixed;
+    left:50%;
+    margin-left:-250px;
+}
+#goback {
+    font-weight:bold;
+    text-transform:uppercase;
+    font-size:.8em;
+    color:#3B8598;
+}
+#goback span {
+    font-size:1em;
+}
