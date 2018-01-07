@@ -51,7 +51,7 @@ body {
     background:white;
     padding:3.5em;
     width:500px;
-    position:fixed;
+    position:absolute;
     left:50%;
     margin-left:-250px;
 }

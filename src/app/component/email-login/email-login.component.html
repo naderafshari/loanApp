@@ -1,21 +1,8 @@
-
-<!--
-<h1 *ngIf="authService.user | async">Welcome {{ (authService.user | async)?.email }}!</h1>
-<div *ngIf="!(authService.user | async)">
-  <input type="text" [(ngModel)]="email" placeholder="email">
-  <input type="password" [(ngModel)]="password" placeholder="password">
-  <button (click)="login()" [disabled]="!email || !password">Login</button>
-  <p> 
-  <button (click)="goPasswordReset()">Reset Password</button>
-  </p>
-</div>
--->
-
 <div class="form-container">
   <a routerLink="/login" id="goback">Go back</a>
   <h2>Email Login</h2>
 
-  <span class="error" *ngIf="error" [@fallIn]='state'>{{ error }}</span>
+  <!--<span class="error" *ngIf="error" [@fallIn]='state'>{{ error }}</span>-->
 
   <form #formData='ngForm' (ngSubmit)="login(formData)">
 

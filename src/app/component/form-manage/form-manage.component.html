@@ -1,0 +1,17 @@
+<mat-card class="form-container">
+  <mat-card-content>
+    <a routerLink="/user-manage" id="goback">Go back</a>
+    <br>
+    <br>
+    <!-- <button mat-raised-button (click)="openDialog()">Create/Recreate first 10 Forms</button> -->
+    <button mat-raised-button (click)="addForm()">Add Form</button>
+    <mat-list *ngFor="let form of forms | async">
+        <mat-list-item><strong>{{form.formName}}</strong>
+          <a (click)="editClick(form.formId);" class="secondary-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Configure</a>
+          <a *ngIf="userInfo && userInfo.role == 'admin';"(click)="openDeleteDialog(form.formId);" class="secondary-content">&nbsp;&nbsp;&nbsp;Delete</a>
+        </mat-list-item>
+    </mat-list>
+    <button mat-raised-button *ngIf="userInfo && userInfo.role == 'admin';"(click)="openDeleteAllDialog()">Delete All Forms</button>
+  </mat-card-content>
+</mat-card>
+  

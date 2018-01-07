@@ -1,0 +1,53 @@
+<mat-card>
+    <a routerLink="/user-manage" id="goback">Go back</a>
+    <hr>
+    <mat-card-content>
+        <button mat-raised-button *ngIf="(authService.user | async)?.role == 'admin'" (click)="openDeleteDialog()">Delete Selected</button>
+        <button mat-raised-button (click)="viewSelected()">View Selected</button>
+   </mat-card-content>
+</mat-card>
+        
+<div *ngIf="userInfo" class="mat-elevation-z8"> Form History for: {{userInfo.firstName}} {{userInfo.lastName}}
+  <mat-table #table [dataSource]="dataSource" matSort>
+
+    <ng-container matColumnDef="select" > 
+        <mat-header-cell *matHeaderCellDef>
+            <mat-checkbox *ngIf="selection" (change)="$event ? masterToggle() : null"
+                [checked]="selection.hasValue() && isAllSelected()"
+                [indeterminate]="selection.hasValue() && !isAllSelected()">
+            </mat-checkbox>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+            <mat-checkbox (click)="$event.stopPropagation()"
+                (change)="$event ? selection.toggle(row) : null"
+                [checked]="selection.isSelected(row)">
+            </mat-checkbox>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="formId">
+            <mat-header-cell *matHeaderCellDef  mat-sort-header> Id </mat-header-cell>
+            <mat-cell *matCellDef="let formsInfo"> {{formsInfo.formId}} </mat-cell>
+    </ng-container>
+          
+    <ng-container matColumnDef="formName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+            <mat-cell *matCellDef="let formsInfo"> {{formsInfo.formName}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="startTime">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Assigned on </mat-header-cell>
+            <mat-cell *matCellDef="let formsInfo"> {{formsInfo.startTime}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="updateTime">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> LastUpdated </mat-header-cell>
+            <mat-cell *matCellDef="let formsInfo"> {{formsInfo.updateTime}} </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"> 
+                (click)="selection.toggle(row)"></mat-row>
+  </mat-table>
+  <mat-paginator #paginator
+                 [pageSize]="20"
+                 [pageSizeOptions]="[5, 10, 20, 50, 100]">
+  </mat-paginator>
+</div>

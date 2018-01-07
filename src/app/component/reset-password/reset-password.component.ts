@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../provider/auth.service';
-import { Router } from '@angular/router';   
+import { Router } from '@angular/router';
 import * as firebase from 'firebase';
 
 @Component({
@@ -10,18 +10,18 @@ import * as firebase from 'firebase';
 })
 export class ResetPasswordComponent implements OnInit {
 
-  constructor(public authService: AuthService, private router:Router) { }
-  
-  resetPassword(formData){
-    if(formData.valid) {
+  constructor(public authService: AuthService, private router: Router) { }
+
+  resetPassword(formData) {
+    if (formData.valid) {
         this.authService.resetPassword(formData.value.email)
         .then(
           () => {
-            alert("email sent");
+            alert('email sent');
             this.router.navigateByUrl('/email-login');
           }
-        ),
-        err => alert(err)
+        )
+        .catch((err) => alert(err));
       }
   }
 

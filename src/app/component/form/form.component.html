@@ -1,0 +1,38 @@
+<mat-card class="form-container">
+  <a routerLink="/user-manage" id="goback">Go back/Cancel</a>
+  <br>
+  <br>
+  <mat-list-item *ngIf="form">Last Updated: {{form.updateTime}}</mat-list-item>
+  <br>
+  <div *ngFor="let field of fields">
+    <mat-form-field *ngIf="form && field.type == 'textbox'"[hideRequiredMarker]="!field.required">
+        <input matInput required [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}}>         
+    </mat-form-field>
+
+    <mat-form-field *ngIf="form && field.type == 'textarea'"> <span>{{field.name}}</span>
+      <textarea matInput required [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}}> </textarea>
+    </mat-form-field>
+
+    <mat-form-field *ngIf="form && field.type == 'select'" [hideRequiredMarker]="!field.required">
+      <mat-select [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}}>
+        <div *ngFor="let option of field.optionsValues">
+          <mat-option value={{option}}>{{option}}</mat-option>
+        </div>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field *ngIf="form && field.type == 'date'" [hideRequiredMarker]="!field.required">
+        <input matInput required [matDatepicker]="picker" 
+              [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}} disabled>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker touchUi="true" #picker disabled="false"></mat-datepicker>
+    </mat-form-field>
+
+    <mat-checkbox *ngIf="form && field.type == 'checkbox'" 
+                  [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)'>{{field.name}}<span *ngIf="field.required">*</span>
+    </mat-checkbox>
+  </div>
+  <br>
+  <button *ngIf="form" mat-raised-button color="primary" (click)="updateForm()">Submit</button>
+  <button *ngIf="form && (authService.user | async)?.role == 'admin'" mat-raised-button color="primary" (click)="saveFile()">Export</button>
+</mat-card>
