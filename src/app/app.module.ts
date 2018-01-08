@@ -33,6 +33,7 @@ import { FormAssignComponent } from './component/form-assign/form-assign.compone
 import { FormHistoryComponent } from './component/form-history/form-history.component';
 import { FormReviewComponent } from './component/form-review/form-review.component';
 import { NameFilterPipe } from './pipe/name-filter.pipe';
+import { CalendarModule } from 'angular-calendar';
 
 
 @NgModule({
@@ -63,7 +64,8 @@ import { NameFilterPipe } from './pipe/name-filter.pipe';
     AngularFireAuthModule,
     AngularFirestoreModule,
     MaterialModule,
-    RouterModule.forRoot(router)
+    RouterModule.forRoot(router),
+    CalendarModule.forRoot()
   ],
   entryComponents: [
     DialogComponent

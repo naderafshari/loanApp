@@ -21,6 +21,9 @@ export const environment = {
     messagingSenderId: "1034156714224"*/
   }
 };
+//Google
+//CLIENT_ID: 541314828998-m7lpp330i53uc8mj8lcmbn8be3mev6sr.apps.googleusercontent.com
+//API_KEY: AIzaSyD_OPRVFpTUJ-FnkteFqiiCM2WWYTpDhJ8
 
 /* facebook stuff
 window.fbAsyncInit = function() {
