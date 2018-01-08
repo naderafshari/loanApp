@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { Routes, RouterModule } from '@angular/router';
 import * as firebase from 'firebase';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 import { environment } from '../environments/environment';
 import { MaterialModule } from './material/material.module';
@@ -34,6 +35,8 @@ import { FormHistoryComponent } from './component/form-history/form-history.comp
 import { FormReviewComponent } from './component/form-review/form-review.component';
 import { NameFilterPipe } from './pipe/name-filter.pipe';
 import { CalendarModule } from 'angular-calendar';
+import { DemoComponent } from './cal-module/demo/component';
+import { DateTimePickerComponent } from './cal-module/demo-utils/date-time-picker.component';
 
 
 @NgModule({
@@ -52,7 +55,9 @@ import { CalendarModule } from 'angular-calendar';
     FormAssignComponent,
     FormHistoryComponent,
     FormReviewComponent,
-    NameFilterPipe
+    NameFilterPipe,
+    DemoComponent,
+    DateTimePickerComponent
   ],
   imports: [
     BrowserModule,
@@ -65,7 +70,8 @@ import { CalendarModule } from 'angular-calendar';
     AngularFirestoreModule,
     MaterialModule,
     RouterModule.forRoot(router),
-    CalendarModule.forRoot()
+    CalendarModule.forRoot(),
+    NgbModule.forRoot()
   ],
   entryComponents: [
     DialogComponent

@@ -26,6 +26,7 @@ export class UserManageComponent implements OnInit {
   userForms: any[];
   userForm: any;
   usedForms: string[];
+  searchText: any;
 
   constructor(private afs: AngularFirestore, public dialog: MatDialog,
               public authService: AuthService, private router: Router,
