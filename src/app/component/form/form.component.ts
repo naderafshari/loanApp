@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import { saveAs } from 'file-saver/FileSaver';
+import emailMask from 'text-mask-addons/dist/emailMask';
 
 @Component({
   selector: 'app-form',
@@ -30,6 +31,12 @@ export class FormComponent implements OnInit {
   usedFields: any[];
   usedOptions: any[];
   optionsValues: any[];
+  maskCodes: any[] = [
+    [''],
+    ['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/],  // Phone Number
+    [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/],  // Date
+    [/\d/, /\d/, /\d/, /\d/, /\d/]   // Zip code
+  ];
 
   constructor(private afs: AngularFirestore,
     public authService: AuthService,
@@ -71,11 +78,22 @@ export class FormComponent implements OnInit {
               this.optionsValues.push(option);
             }
             const obj3: Form = this.form;
-            this.fields.push({
+            let mask = eval('obj3.field' + this.usedFields[i] + '.mask');
+            if (mask === 'USPhoneNumber') {
+              mask = this.maskCodes[1];
+            } else if (mask === 'USDate') {
+              mask = this.maskCodes[2];
+            } else if (mask === 'USZipCode') {
+              mask = this.maskCodes[3];
+            } else {
+              mask = this.maskCodes[0];
+            }
+          this.fields.push({
               index:          this.usedFields[i],
               name:           eval('obj3.field' + this.usedFields[i] + '.name'),
               required:       eval('obj3.field' + this.usedFields[i] + '.required'),
               type:           eval('obj3.field' + this.usedFields[i] + '.type'),
+              mask:           mask,
               numOfOptions:   eval('obj3.field' + this.usedFields[i] + '.numOfOptions'),
               value:          eval('obj3.field' + this.usedFields[i] + '.value'),
               optionsValues:   this.optionsValues

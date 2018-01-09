@@ -29,6 +29,7 @@ export class FormConfigComponent implements OnInit {
   usedOptions: any[];
   maxUsedField: any;
   minUsedField: any;
+  mask: string;
 
   constructor(private afs: AngularFirestore, public fs: FormService,
               private router: Router, private route: ActivatedRoute,
@@ -87,6 +88,7 @@ export class FormConfigComponent implements OnInit {
           name:           eval('obj3.field' + this.usedFields[i] + '.name'),
           required:       eval('obj3.field' + this.usedFields[i] + '.required'),
           type:           eval('obj3.field' + this.usedFields[i] + '.type'),
+          mask:           eval('obj3.field' + this.usedFields[i] + '.mask'),
           numOfOptions:   eval('obj3.field' + this.usedFields[i] + '.numOfOptions'),
           options:        this.options,
           value:          eval('obj3.field' + this.usedFields[i] + '.value'),
@@ -118,7 +120,8 @@ export class FormConfigComponent implements OnInit {
     const fieldToAdd: Field  = {
       name: '',
       required: false,
-      type: '-- None --',
+      type: '',
+      mask: '',
       numOfOptions: 0,
       options: {},
       value: ''
@@ -343,6 +346,17 @@ export class FormConfigComponent implements OnInit {
   setType(type, i) {
     let obj: Form = this.form;
     eval('obj.field' + i + '.type = type');
+    this.form = obj;
+  }
+
+  getMask(i) {
+    const obj: Form = this.form;
+    return eval('obj.field' + i + '.mask');
+  }
+
+  setMask(mask, i) {
+    let obj: Form = this.form;
+    eval('obj.field' + i + '.mask = mask');
     this.form = obj;
   }
 

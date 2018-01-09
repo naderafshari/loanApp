@@ -6,11 +6,14 @@
   <br>
   <div *ngFor="let field of fields">
     <mat-form-field *ngIf="form && field.type == 'textbox'"[hideRequiredMarker]="!field.required">
-        <input matInput required [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}}>         
+        <input *ngIf="field.mask != ''" [textMask]="{mask: field.mask}" matInput required 
+              [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}}>         
+        <input *ngIf="field.mask == ''" matInput required 
+                [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}}>         
     </mat-form-field>
 
     <mat-form-field *ngIf="form && field.type == 'textarea'"> <span>{{field.name}}</span>
-      <textarea matInput required [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}}> </textarea>
+      <textarea autosize matInput required [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}}> </textarea>
     </mat-form-field>
 
     <mat-form-field *ngIf="form && field.type == 'select'" [hideRequiredMarker]="!field.required">

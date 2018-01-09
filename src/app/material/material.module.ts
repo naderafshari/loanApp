@@ -19,6 +19,7 @@ import { MatPaginatorModule } from '@angular/material';
 import { MatCheckboxModule } from '@angular/material';
 import { MatSlideToggleModule } from '@angular/material';
 import { MatIconModule } from '@angular/material';
+import { MatRadioModule } from '@angular/material';
 
 @NgModule({
     imports: [
@@ -40,7 +41,8 @@ import { MatIconModule } from '@angular/material';
         MatTableModule,
         MatCheckboxModule,
         MatSlideToggleModule,
-        MatIconModule
+        MatIconModule,
+        MatRadioModule
     ],
     exports: [
         MatButtonModule,
@@ -61,7 +63,8 @@ import { MatIconModule } from '@angular/material';
         MatTableModule,
         MatCheckboxModule,
         MatSlideToggleModule,
-        MatIconModule
+        MatIconModule,
+        MatRadioModule
     ]
   })
   export class MaterialModule {}

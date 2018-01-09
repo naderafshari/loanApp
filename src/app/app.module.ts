@@ -34,6 +34,8 @@ import { FormAssignComponent } from './component/form-assign/form-assign.compone
 import { FormHistoryComponent } from './component/form-history/form-history.component';
 import { FormReviewComponent } from './component/form-review/form-review.component';
 import { NameFilterPipe } from './pipe/name-filter.pipe';
+import { Autosize } from 'ng-autosize';
+import { TextMaskModule } from 'angular2-text-mask';
 import { CalendarModule } from 'angular-calendar';
 import { DemoComponent } from './cal-module/demo/component';
 import { DateTimePickerComponent } from './cal-module/demo-utils/date-time-picker.component';
@@ -56,6 +58,7 @@ import { DateTimePickerComponent } from './cal-module/demo-utils/date-time-picke
     FormHistoryComponent,
     FormReviewComponent,
     NameFilterPipe,
+    Autosize,
     DemoComponent,
     DateTimePickerComponent
   ],
@@ -69,6 +72,7 @@ import { DateTimePickerComponent } from './cal-module/demo-utils/date-time-picke
     AngularFireAuthModule,
     AngularFirestoreModule,
     MaterialModule,
+    TextMaskModule,
     RouterModule.forRoot(router),
     CalendarModule.forRoot(),
     NgbModule.forRoot()
