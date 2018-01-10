@@ -121,7 +121,7 @@ export class FormConfigComponent implements OnInit {
       name: '',
       required: false,
       type: '',
-      mask: '',
+      mask: 'None',
       numOfOptions: 0,
       options: {},
       value: ''

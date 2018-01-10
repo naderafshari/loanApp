@@ -41,22 +41,22 @@
     <br>
     <div *ngIf="getType(field.index) === 'textbox'">
       <mat-radio-group [ngModel]='getMask(field.index)' (ngModelChange)='setMask($event,field.index)'>
-<!--        <mat-radio-button *ngFor="let mask of masks" [value]="mask"> {{mask}}</mat-radio-group>-->
-        <mat-radio-button value="">             None </mat-radio-button>
+      <!--<mat-radio-button *ngFor="let mask of masks" [value]="mask"> {{mask}}</mat-radio-group>-->
+        <mat-radio-button value="None">         Plain </mat-radio-button>
         <mat-radio-button value="USPhoneNumber">US Phone Number </mat-radio-button>
         <mat-radio-button value="USDate">       US Date         </mat-radio-button>
         <mat-radio-button value="USDollar">     US Dollar       </mat-radio-button>
         <mat-radio-button value="USZipCode">    US Zip Code     </mat-radio-button>
         <mat-radio-button value="Email">        Email           </mat-radio-button>
-        <mat-radio-button value="Percentage">   Percentage      </mat-radio-button>
       </mat-radio-group>
     </div>
+  
     <div *ngIf="getType(field.index) === 'select'">
-        <button mat-raised-button color="primary" (click)="addOption(field.index,field.it)"><mat-icon>add</mat-icon>Option</button> 
-        <div *ngFor="let option of field.usedOptions">
+      <button mat-raised-button color="primary" (click)="addOption(field.index,field.it)"><mat-icon>add</mat-icon>Option</button> 
+      <div *ngFor="let option of field.usedOptions">
         <mat-form-field >
           <input matInput [ngModel]='getOption(field.index,option)' (ngModelChange)='setOption($event,field.index,option)' 
-          placeholder="Enter Option.."> 
+            placeholder="Enter Option.."> 
         </mat-form-field>
         <button mat-raised-button color="warn" (click)="deleteOption(field.index,option)"><mat-icon>delete</mat-icon>Option</button>
       </div>
