@@ -1,3 +1,8 @@
+export interface Option {
+  value: string;
+  type: string;
+}
+
 export interface Field {
     name: string;
     required: boolean;

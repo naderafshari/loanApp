@@ -69,17 +69,20 @@ export class FormConfigComponent implements OnInit {
       for (let i = 0; i < this.form.numOfFields; i++) {
         const obj: Form = this.form;
         const field: Field = eval('obj.field' + this.usedFields[i]);
-        const usedOptions = Object.keys(field.options);
+        const usedOptions = Object.keys(field.options)
+        .filter( options => options.charAt(0) === 'o')
+        .filter( options => options.charAt(1) === 'p')
+        .filter( options => options.charAt(2) === 't');
         this.usedOptions = usedOptions.map((x) => x.charAt(6) + x.charAt(7));
         this.usedOptions.sort((a, b) => {
           return (Number(a) > Number(b) ? 1 : (Number(b) > Number(a) ? -1 : 0));
         });
         this.options = {};
         for (let j = 0; j < field.numOfOptions; j++) {
-          const obj2: Field = field;
+          const obj2 = field.options;
           const option = eval('obj2.option' + this.usedOptions[j]);
-          const key = `option${this.usedOptions[j]}`;
-          this.options[key] = option;
+          Object.assign(eval('obj2.option' + this.usedOptions[j]), option);
+          this.options = obj2;
         }
         const obj3: Form = this.form;
         this.fields.push({
@@ -104,7 +107,7 @@ export class FormConfigComponent implements OnInit {
 
   addOption(index, it) {
     const nextOptionId = `option${this.nextOptionSlot(0, 'up', it)}`;
-    this.form[`field${index}`].options[nextOptionId] = '';
+    this.form[`field${index}`].options[nextOptionId] = {value: '', type: ''};
     this.form[`field${index}`].numOfOptions++;
     this.updateFields();
   }
@@ -362,12 +365,12 @@ export class FormConfigComponent implements OnInit {
 
   getOption(i, j) {
     const obj: Form = this.form;
-    return eval('obj.field' + i + '.options.option' + j);
+    return eval('obj.field' + i + '.options.option' + j + '.value');
   }
 
   setOption(option, i, j) {
     let obj: Form = this.form;
-    eval('obj.field' + i + '.options.option' + j + ' = option');
+    eval('obj.field' + i + '.options.option' + j + '.value = option');
     this.form = obj;
   }
 

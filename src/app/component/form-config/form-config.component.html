@@ -23,8 +23,7 @@
     </mat-form-field>
     <!-- <mat-slide-toggle *ngIf="getType(field.index) !==  'checkbox'" [ngModel]='getRequired(field.index)' (ngModelChange)='setRequired($event,field.index)'>Required</mat-slide-toggle> -->
     <mat-slide-toggle [ngModel]='getRequired(field.index)' (ngModelChange)='setRequired($event,field.index)'>Required</mat-slide-toggle>
-    <button mat-raised-button color="warn" *ngIf="(authService.user | async)?.role == 'admin'" (click)="openDeleteDialog(field.index)">
-        <mat-icon>delete</mat-icon>Field</button> 
+    <a *ngIf="(authService.user | async)?.role == 'admin'" (click)="openDeleteDialog(field.index)" >&nbsp;&nbsp;&nbsp;<mat-icon>delete</mat-icon></a>
     <!--<button mat-raised-button (click)="openDeleteDialog(field.index)">Delete Field</button>-->
     <br>
     <mat-form-field>
@@ -53,12 +52,13 @@
   
     <div *ngIf="getType(field.index) === 'select'">
       <button mat-raised-button color="primary" (click)="addOption(field.index,field.it)"><mat-icon>add</mat-icon>Option</button> 
+      <button mat-raised-button color="primary" (click)="addStatesOption(field.index,field.it)"><mat-icon>add</mat-icon>US States</button> 
       <div *ngFor="let option of field.usedOptions">
         <mat-form-field >
           <input matInput [ngModel]='getOption(field.index,option)' (ngModelChange)='setOption($event,field.index,option)' 
             placeholder="Enter Option.."> 
         </mat-form-field>
-        <button mat-raised-button color="warn" (click)="deleteOption(field.index,option)"><mat-icon>delete</mat-icon>Option</button>
+        <a *ngIf="(authService.user | async)?.role == 'admin'" (click)="deleteOption(field.index,option)" >&nbsp;&nbsp;&nbsp;<mat-icon>delete</mat-icon></a>
       </div>
     </div>
     <hr>
