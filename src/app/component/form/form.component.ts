@@ -79,7 +79,8 @@ export class FormComponent implements OnInit {
           for (let i = 0; i < this.form.numOfFields; i++) {
             const obj: Form = this.form;
             const field: Field = eval('obj.field' + this.usedFields[i]);
-            const usedOptions = Object.keys(field.options);
+            const usedOptions = Object.keys(field.options)
+            .filter( fields => fields.charAt(0) === 'o');
             this.usedOptions = usedOptions.map((x) => x.charAt(6) + x.charAt(7));
             this.optionsValues = [];
             for (let j = 0; j < field.numOfOptions; j++) {

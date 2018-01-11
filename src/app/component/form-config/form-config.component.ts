@@ -69,20 +69,26 @@ export class FormConfigComponent implements OnInit {
       for (let i = 0; i < this.form.numOfFields; i++) {
         const obj: Form = this.form;
         const field: Field = eval('obj.field' + this.usedFields[i]);
+        const obj1 = field.options;
+        const optionType = eval('obj1.type');
         const usedOptions = Object.keys(field.options)
-        .filter( options => options.charAt(0) === 'o')
-        .filter( options => options.charAt(1) === 'p')
-        .filter( options => options.charAt(2) === 't');
+        .filter( fields => fields.charAt(0) === 'o');
         this.usedOptions = usedOptions.map((x) => x.charAt(6) + x.charAt(7));
         this.usedOptions.sort((a, b) => {
           return (Number(a) > Number(b) ? 1 : (Number(b) > Number(a) ? -1 : 0));
         });
         this.options = {};
+        this.options['type'] = optionType;
         for (let j = 0; j < field.numOfOptions; j++) {
-          const obj2 = field.options;
+          const obj2: Field= field;
           const option = eval('obj2.option' + this.usedOptions[j]);
-          Object.assign(eval('obj2.option' + this.usedOptions[j]), option);
-          this.options = obj2;
+          const key = `option${this.usedOptions[j]}`;
+          this.options[key] = option;
+        }
+        /** To force the html to only show one option as the non custom label */
+        if ( optionType !== 'custom') {
+          this.usedOptions.length = 0;
+          this.usedOptions[0] = '1';
         }
         const obj3: Form = this.form;
         this.fields.push({
@@ -105,9 +111,18 @@ export class FormConfigComponent implements OnInit {
     }
   }
 
+  addStatesOption(index,it) {
+    const nextOptionId = `option${this.nextOptionSlot(0, 'up', it)}`;
+    this.form[`field${index}`].options[nextOptionId] = 'Alabama';
+    this.form[`field${index}`].options['type'] = 'USStates';
+    this.form[`field${index}`].numOfOptions = 1;
+    this.updateFields();
+  }
+
   addOption(index, it) {
     const nextOptionId = `option${this.nextOptionSlot(0, 'up', it)}`;
-    this.form[`field${index}`].options[nextOptionId] = {value: '', type: ''};
+    this.form[`field${index}`].options[nextOptionId] = '';
+    this.form[`field${index}`].options['type'] = 'custom';
     this.form[`field${index}`].numOfOptions++;
     this.updateFields();
   }
@@ -115,6 +130,9 @@ export class FormConfigComponent implements OnInit {
   deleteOption(index, i) {
     delete this.form[`field${index}`].options[`option${i}`];
     this.form[`field${index}`].numOfOptions--;
+    if (this.form[`field${index}`].numOfOptions == 0) {
+      this.form[`field${index}`].options['type'] = 'custom';
+    }
     this.updateFields();
   }
 
@@ -365,12 +383,15 @@ export class FormConfigComponent implements OnInit {
 
   getOption(i, j) {
     const obj: Form = this.form;
-    return eval('obj.field' + i + '.options.option' + j + '.value');
+    if (eval('obj.field' + i + '.options.type') === 'USStates') {
+      return 'US States'
+    }
+    return eval('obj.field' + i + '.options.option' + j);
   }
 
   setOption(option, i, j) {
     let obj: Form = this.form;
-    eval('obj.field' + i + '.options.option' + j + '.value = option');
+    eval('obj.field' + i + '.options.option' + j + ' = option');
     this.form = obj;
   }
 

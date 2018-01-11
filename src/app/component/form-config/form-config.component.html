@@ -49,10 +49,10 @@
         <mat-radio-button value="Email">        Email           </mat-radio-button>
       </mat-radio-group>
     </div>
-  
+    
     <div *ngIf="getType(field.index) === 'select'">
-      <button mat-raised-button color="primary" (click)="addOption(field.index,field.it)"><mat-icon>add</mat-icon>Option</button> 
-      <button mat-raised-button color="primary" (click)="addStatesOption(field.index,field.it)"><mat-icon>add</mat-icon>US States</button> 
+      <button *ngIf="field.options.type === 'custom'" mat-raised-button color="primary" (click)="addOption(field.index,field.it)"><mat-icon>add</mat-icon>Option</button> 
+      <button *ngIf="field.numOfOptions == 0" mat-raised-button color="primary" (click)="addStatesOption(field.index,field.it)"><mat-icon>add</mat-icon>US States</button> 
       <div *ngFor="let option of field.usedOptions">
         <mat-form-field >
           <input matInput [ngModel]='getOption(field.index,option)' (ngModelChange)='setOption($event,field.index,option)' 
