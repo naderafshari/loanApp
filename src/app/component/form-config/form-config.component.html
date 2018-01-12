@@ -1,15 +1,22 @@
 <mat-card class="form-container" *ngIf="form">
   <a (click)="goBack()" id="goback">Go back/Cancel</a>
   <hr>
+  <mat-sidenav-container style="position: fixed; margin-left:-150px; left: 50%;">
+    <mat-sidenav mode="side" opened="true"></mat-sidenav>
+    <mat-sidenav-content>
+      <div fxFlex></div>
+      <button mat-raised-button color="primary" (click)="addField()">
+        <mat-icon>add</mat-icon>Field</button>
+      <button mat-raised-button color="warn" *ngIf="(authService.user | async)?.role == 'admin'" (click)="openDeleteAllDialog()">
+        <mat-icon>delete</mat-icon>All Fields</button>
+      <button mat-raised-button color="accent" (click)="openSubmitDialog()">
+        <mat-icon>input</mat-icon>Submit</button>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
   <mat-form-field>
     <input matInput required [(ngModel)]="form.formName" placeholder="Form Name..."> 
   </mat-form-field>
   <p>Last Updated: {{form.updateTime}}</p>
-  <hr>
-  <button mat-raised-button color="primary" (click)="addField()"><mat-icon>add</mat-icon>Field</button>
-  <button mat-raised-button color="warn" *ngIf="(authService.user | async)?.role == 'admin'" (click)="openDeleteAllDialog()">
-      <mat-icon>delete</mat-icon>All Fields</button>
-  <!--<button mat-raised-button (click)="openDeleteAllDialog()">Delete All Fields</button> -->
   <hr>
   <div *ngFor="let field of fields">
     <button mat-button class="mat-mini-fab" *ngIf="field.index > minUsedField" (click)="moveUp(field.index)"style="float: right;">
@@ -51,8 +58,9 @@
     </div>
     
     <div *ngIf="getType(field.index) === 'select'">
-      <button *ngIf="field.options.type === 'custom'" mat-raised-button color="primary" (click)="addOption(field.index,field.it)"><mat-icon>add</mat-icon>Option</button> 
+      <button *ngIf="field.options.type === 'custom'" mat-raised-button color="primary" (click)="addOption(field.index,field.it)"><mat-icon>add</mat-icon>Custom Option</button> 
       <button *ngIf="field.numOfOptions == 0" mat-raised-button color="primary" (click)="addStatesOption(field.index,field.it)"><mat-icon>add</mat-icon>US States</button> 
+      <button *ngIf="field.numOfOptions == 0" mat-raised-button color="primary" (click)="addCountriesOption(field.index,field.it)"><mat-icon>add</mat-icon>Countries</button> 
       <div *ngFor="let option of field.usedOptions">
         <mat-form-field >
           <input matInput [ngModel]='getOption(field.index,option)' (ngModelChange)='setOption($event,field.index,option)' 
@@ -64,6 +72,5 @@
     <hr>
   </div>
   <br>
-  <button mat-raised-button color="accent" (click)="openSubmitDialog()"><mat-icon>input</mat-icon>Submit</button>
 </mat-card>
   

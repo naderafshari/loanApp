@@ -53,7 +53,7 @@ export class UserManageComponent implements OnInit {
                   this.usedForms.forEach( e => {
                     /* Find the latest of each form of each user ( user's forms collection )and
                      * push it to userForms array along with the uid of the user if the form is assigned */
-                    this.userForm = forms.filter(form => form.formId === e).reverse()[0];
+                    this.userForm = forms.filter(form => form.formId === e).sort(this.compare)[0];
                     if (this.userForm) {
                       if (user.assignedForms[e] === 'true') {
                         this.userForm.uid = user.uid;
@@ -71,6 +71,14 @@ export class UserManageComponent implements OnInit {
     });
   }
 
+  compare(a,b) {
+    if (a.updateTime < b.updateTime)
+      return -1;
+    if (a.updateTime > b.updateTime)
+      return 1;
+    return 0;
+  }
+  
   editClick(uid) {
     this.router.navigate(['/user-profile', uid]);
   }

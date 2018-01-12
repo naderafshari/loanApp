@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material';
+import { MatMenuModule } from '@angular/material';
+import { MatSidenavModule } from '@angular/material';
 import { MatButtonModule } from '@angular/material';
 import { MatDialogModule } from '@angular/material';
 import { MatTooltipModule } from '@angular/material';
@@ -25,6 +27,8 @@ import { MatRadioModule } from '@angular/material';
     imports: [
         MatButtonModule,
         MatCardModule,
+        MatMenuModule,
+        MatSidenavModule,        
         MatDialogModule,
         MatTooltipModule,
         MatSnackBarModule,
@@ -47,6 +51,8 @@ import { MatRadioModule } from '@angular/material';
     exports: [
         MatButtonModule,
         MatCardModule,
+        MatMenuModule,
+        MatSidenavModule,
         MatDialogModule,
         MatTooltipModule,
         MatSnackBarModule,

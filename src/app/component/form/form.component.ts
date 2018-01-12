@@ -81,12 +81,15 @@ export class FormComponent implements OnInit {
             const field: Field = eval('obj.field' + this.usedFields[i]);
             const usedOptions = Object.keys(field.options)
             .filter( fields => fields.charAt(0) === 'o');
-            this.usedOptions = usedOptions.map((x) => x.charAt(6) + x.charAt(7));
+            this.usedOptions = usedOptions.map((x) => x.charAt(6) + x.charAt(7) + x.charAt(8));
             this.optionsValues = [];
             for (let j = 0; j < field.numOfOptions; j++) {
               const obj2: Field = field;
               const option = eval('obj2.options.option' + this.usedOptions[j]);
               this.optionsValues.push(option);
+            }
+            if (eval('obj2.options.type !== "custom"')) {
+              this.optionsValues.sort();
             }
             const obj3: Form = this.form;
             this.fields.push({

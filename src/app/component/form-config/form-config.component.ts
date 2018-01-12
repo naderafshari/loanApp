@@ -5,7 +5,7 @@ import { AuthService } from '../../provider/auth.service';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/forkJoin';
-import { Form, Field } from '../../model/form';
+import { Form, Field, USStatesClass, CountriesClass } from '../../model/form';
 import { FormService } from '../../provider/form.service';
 import { Subscription } from 'rxjs/Subscription';
 import { firestore } from 'firebase';
@@ -73,7 +73,7 @@ export class FormConfigComponent implements OnInit {
         const optionType = eval('obj1.type');
         const usedOptions = Object.keys(field.options)
         .filter( fields => fields.charAt(0) === 'o');
-        this.usedOptions = usedOptions.map((x) => x.charAt(6) + x.charAt(7));
+        this.usedOptions = usedOptions.map((x) => x.charAt(6) + x.charAt(7) + x.charAt(8));
         this.usedOptions.sort((a, b) => {
           return (Number(a) > Number(b) ? 1 : (Number(b) > Number(a) ? -1 : 0));
         });
@@ -112,10 +112,18 @@ export class FormConfigComponent implements OnInit {
   }
 
   addStatesOption(index,it) {
-    const nextOptionId = `option${this.nextOptionSlot(0, 'up', it)}`;
-    this.form[`field${index}`].options[nextOptionId] = 'Alabama';
-    this.form[`field${index}`].options['type'] = 'USStates';
-    this.form[`field${index}`].numOfOptions = 1;
+    const usStatesCLass: USStatesClass = new USStatesClass();
+    const usStates = usStatesCLass.usStates;
+    this.form[`field${index}`].options = usStates;
+    this.form[`field${index}`].numOfOptions = 59;
+    this.updateFields();
+  }
+
+  addCountriesOption(index,it) {
+    const countriesCLass: CountriesClass = new CountriesClass();
+    const countries = countriesCLass.countries;
+    this.form[`field${index}`].options = countries;
+    this.form[`field${index}`].numOfOptions = 198;
     this.updateFields();
   }
 
@@ -128,9 +136,12 @@ export class FormConfigComponent implements OnInit {
   }
 
   deleteOption(index, i) {
-    delete this.form[`field${index}`].options[`option${i}`];
-    this.form[`field${index}`].numOfOptions--;
-    if (this.form[`field${index}`].numOfOptions == 0) {
+    if (this.form[`field${index}`].options.type === 'custom') {
+      delete this.form[`field${index}`].options[`option${i}`];
+      this.form[`field${index}`].numOfOptions--;
+    } else {
+      this.form[`field${index}`].options = {};
+      this.form[`field${index}`].numOfOptions = 0;
       this.form[`field${index}`].options['type'] = 'custom';
     }
     this.updateFields();
@@ -144,7 +155,7 @@ export class FormConfigComponent implements OnInit {
       type: '',
       mask: 'None',
       numOfOptions: 0,
-      options: {},
+      options: {type: 'custom'},
       value: ''
     };
     this.form[nextFieldId] = fieldToAdd;
@@ -209,14 +220,15 @@ export class FormConfigComponent implements OnInit {
         this.form.updateTime = new Date().toString();
         this.afs.collection('forms').doc(this.id).set(this.form).then(() => this.updateFields());
         this.sub.unsubscribe();
-        this.router.navigate(['/form-manage', this.userId]);
+        this.router.navigateByUrl('/user-manage');
       } else {
         alert('Required field was not filled!');
       }
     } else {
       alert('Cannot Update, form not available!');
       this.sub.unsubscribe();
-      this.router.navigate(['/form-manage', this.userId]);
+      this.router.navigateByUrl('/user-manage');
+      // this.router.navigate(['/form-manage', this.userId]);
     }
   }
 
@@ -385,6 +397,8 @@ export class FormConfigComponent implements OnInit {
     const obj: Form = this.form;
     if (eval('obj.field' + i + '.options.type') === 'USStates') {
       return 'US States'
+    } else if (eval('obj.field' + i + '.options.type') === 'Countries') {
+      return 'Countries'
     }
     return eval('obj.field' + i + '.options.option' + j);
   }
