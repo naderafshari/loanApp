@@ -4,9 +4,10 @@
   <br>
   <mat-list-item *ngIf="form">Last Updated: {{form.updateTime}}</mat-list-item>
   <br>
-  <div *ngFor="let field of fields">
+  <span *ngFor="let field of fields">
     <mat-form-field *ngIf="form && field.type == 'textbox'"[hideRequiredMarker]="!field.required">
-        <input [textMask]="field.mask?{mask: field.mask}:{mask: false}" matInput required 
+      <input matInput required 
+              [textMask]="field.mask?{mask: field.mask}:{mask: false}"  
               [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' >
               <mat-placeholder>{{field.name}}</mat-placeholder>
     </mat-form-field>
@@ -25,15 +26,15 @@
 
     <mat-form-field *ngIf="form && field.type == 'date'" [hideRequiredMarker]="!field.required">
         <input matInput required [matDatepicker]="picker" 
-              [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}} disabled>
+          [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}} disabled>
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker touchUi="true" #picker disabled="false"></mat-datepicker>
     </mat-form-field>
 
     <mat-checkbox *ngIf="form && field.type == 'checkbox'" 
-                  [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)'>{{field.name}}<span *ngIf="field.required">*</span>
+      [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)'>{{field.name}}<span *ngIf="field.required">*</span>
     </mat-checkbox>
-  </div>
+  </span>
   <br>
   <button *ngIf="form" mat-raised-button color="primary" (click)="updateForm()">Submit</button>
   <button *ngIf="form && (authService.user | async)?.role == 'admin'" mat-raised-button color="primary" (click)="saveFile()">Export</button>

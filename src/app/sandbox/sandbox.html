@@ -1,0 +1,6 @@
+<div *ngIf="form && field.type == 'textbox'">
+    <input id="txt" type="text" onkeypress="this.style.width = ((this.value.length + 2) * 8) + 'px';" 
+    [textMask]="field.mask?{mask: field.mask}:{mask: false}" 
+    [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' >
+</div>
+  
