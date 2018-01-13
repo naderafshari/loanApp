@@ -142,11 +142,8 @@ export class AuthService {
 
   logout() {
     return this.firebaseAuth.auth.signOut()
-    .then( () => {
-        this.firebaseAuth.authState.subscribe(() =>
-          this.router.navigateByUrl('/login'));
-      })
-      .catch(err => alert('logout failed: ' + err));
+    .then( () => this.router.navigateByUrl('/login'))
+    .catch(err => alert('logout failed: ' + err));
   }
 
   deleteAuthCurrentUser() {
