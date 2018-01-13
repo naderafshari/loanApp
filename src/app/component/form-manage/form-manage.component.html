@@ -4,14 +4,13 @@
     <br>
     <br>
     <!-- <button mat-raised-button (click)="openDialog()">Create/Recreate first 10 Forms</button> -->
-    <button mat-raised-button  color="primary" (click)="addForm()"><mat-icon>add</mat-icon>Add Form</button>
-    <button mat-raised-button  color="warn" *ngIf="userInfo && userInfo.role == 'admin';"(click)="openDeleteAllDialog()"><mat-icon>delete</mat-icon>Delete All Forms</button>
+    <button mat-raised-button  color="primary" (click)="addForm()"><mat-icon>add</mat-icon>Form</button>
+    <button mat-raised-button  color="warn" *ngIf="userInfo && userInfo.role == 'admin';"(click)="openDeleteAllDialog()"><mat-icon>delete</mat-icon>All Forms</button>
     <mat-list *ngFor="let form of forms | async">
         <mat-list-item><strong>{{form.formName}}</strong>
-          <a (click)="editClick(form.formId);" class="secondary-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>input</mat-icon></a>
+          <a (click)="editClick(form.formId);" class="secondary-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>create</mat-icon></a>
           <a *ngIf="userInfo && userInfo.role == 'admin';"(click)="openDeleteDialog(form.formId);" class="secondary-content">&nbsp;&nbsp;&nbsp;<mat-icon>delete</mat-icon></a>
         </mat-list-item>
       </mat-list>
   </mat-card-content>
 </mat-card>
-  

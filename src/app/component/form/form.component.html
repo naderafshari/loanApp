@@ -10,12 +10,12 @@
               [textMask]="field.mask?{mask: field.mask}:{mask: false}"  
               [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' >
               <mat-placeholder>{{field.name}}</mat-placeholder>
-      <span matTooltip={{field.toolTip}}> <mat-icon *ngIf="field.toolTip">info</mat-icon></span>
+      <span matTooltip={{field.toolTip}}> <mat-icon *ngIf="field.toolTip">help</mat-icon></span>
     </mat-form-field>
 
     <mat-form-field *ngIf="form && field.type == 'textarea'" [hideRequiredMarker]="!field.required"> 
       <span>{{field.name}}</span> 
-      <span matTooltip={{field.toolTip}}> <mat-icon *ngIf="field.toolTip">info</mat-icon></span>
+      <span matTooltip={{field.toolTip}}> <mat-icon *ngIf="field.toolTip">help</mat-icon></span>
       <textarea autosize matInput required [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)'> </textarea>
     </mat-form-field>
 
@@ -25,13 +25,13 @@
           <mat-option value={{option}}>{{option}}</mat-option>
         </div>
       </mat-select>
-      <span matTooltip={{field.toolTip}}> <mat-icon *ngIf="field.toolTip">info</mat-icon></span>
+      <span matTooltip={{field.toolTip}}> <mat-icon *ngIf="field.toolTip">help</mat-icon></span>
     </mat-form-field>
 
     <div *ngIf="form && field.type == 'radio'">{{field.name}}:
       <mat-radio-group [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' 
         style="display: inline-flex;flex-direction: column;">
-        <span matTooltip={{field.toolTip}}> <mat-icon *ngIf="field.toolTip">info</mat-icon></span>
+        <span matTooltip={{field.toolTip}}> <mat-icon *ngIf="field.toolTip">help</mat-icon></span>
         <div *ngFor="let choice of field.choicesValues">
           <mat-radio-button value={{choice}}>{{choice}}</mat-radio-button>
         </div>
@@ -41,14 +41,14 @@
     <mat-form-field *ngIf="form && field.type == 'date'" [hideRequiredMarker]="!field.required">
       <input matInput required [matDatepicker]="picker" 
         [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}} disabled>
-      <span matTooltip={{field.toolTip}}> <mat-icon *ngIf="field.toolTip">info</mat-icon></span>
+      <span matTooltip={{field.toolTip}}> <mat-icon *ngIf="field.toolTip">help</mat-icon></span>
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker touchUi="true" #picker disabled="false"></mat-datepicker>
     </mat-form-field>
 
     <mat-checkbox *ngIf="form && field.type == 'checkbox'" 
       [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)'>{{field.name}}<span *ngIf="field.required">*</span>
-      <span matTooltip={{field.toolTip}}> <mat-icon *ngIf="field.toolTip">info</mat-icon></span>
+      <span matTooltip={{field.toolTip}}> <mat-icon *ngIf="field.toolTip">help</mat-icon></span>
     </mat-checkbox>
   </span>
   <br>
