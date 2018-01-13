@@ -172,7 +172,7 @@ export class FormConfigComponent implements OnInit {
   addChoice(index, it) {
     const nextChoiceId = `choice${this.nextChoiceSlot(0, 'up', it)}`;
     this.form[`field${index}`].choices[nextChoiceId] = '';
-    this.form[`field${index}`].numOfChoises++;
+    this.form[`field${index}`].numOfChoices++;
     this.updateFields();
   }
 
