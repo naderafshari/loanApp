@@ -83,8 +83,8 @@ export class FormConfigComponent implements OnInit {
         this.options = {};
         this.options['type'] = optionType;
         for (let j = 0; j < field.numOfOptions; j++) {
-          const obj2: Field= field;
-          const option = eval('obj2.option' + this.usedOptions[j]);
+          const obj2: Field = field;
+          const option = eval('obj2.options.option' + this.usedOptions[j]);
           const key = `option${this.usedOptions[j]}`;
           this.options[key] = option;
         }
@@ -102,8 +102,8 @@ export class FormConfigComponent implements OnInit {
         });
         this.choices = {};
         for (let j = 0; j < field.numOfChoices; j++) {
-          const obj2: Field= field;
-          const choice = eval('obj2.choice' + this.usedChoices[j]);
+          const obj2: Field = field;
+          const choice = eval('obj2.choices.choice' + this.usedChoices[j]);
           const key = `choice${this.usedChoices[j]}`;
           this.choices[key] = choice;
         }

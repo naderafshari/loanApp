@@ -32,7 +32,9 @@ export class FormComponent implements OnInit {
   fields: any[];
   usedFields: any[];
   usedOptions: any[];
+  usedChoices: any[];
   optionsValues: any[];
+  choicesValues: any[];
 
   constructor(private afs: AngularFirestore,
     public authService: AuthService,
@@ -43,9 +45,9 @@ export class FormComponent implements OnInit {
         prefix: '$',
         suffix: '',
         allowDecimal: 'true'
-      })
+      });
       const maskCodes = {
-      'None':           "",
+      'None':           '',
       'USPhoneNumber':  ['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/],  // Phone Number
       'USDate':         [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/],  // Date
       'USDollar':       numberMask, // US DOllar with decimal
@@ -81,7 +83,7 @@ export class FormComponent implements OnInit {
             const field: Field = eval('obj.field' + this.usedFields[i]);
             const usedOptions = Object.keys(field.options)
             .filter( fields => fields.charAt(0) === 'o');
-            if (usedOptions.length != 0) {
+            if (usedOptions.length !== 0) {
               this.usedOptions = usedOptions.map((x) => x.charAt(6) + x.charAt(7) + x.charAt(8));
               this.optionsValues = [];
               for (let j = 0; j < field.numOfOptions; j++) {
@@ -93,6 +95,20 @@ export class FormComponent implements OnInit {
                 this.optionsValues.sort();
               }
             }
+
+            const usedChoices = Object.keys(field.choices)
+            .filter( fields => fields.charAt(0) === 'c');
+            this.usedChoices = usedChoices.map((x) => x.charAt(6) + x.charAt(7));
+            this.usedChoices.sort((a, b) => {
+              return (Number(a) > Number(b) ? 1 : (Number(b) > Number(a) ? -1 : 0));
+            });
+            this.choicesValues = [];
+            for (let j = 0; j < field.numOfChoices; j++) {
+              const obj2: Field = field;
+              const choice = eval('obj2.choices.choice' + this.usedChoices[j]);
+              this.choicesValues.push(choice);
+            }
+
             const obj3: Form = this.form;
             this.fields.push({
               index:          this.usedFields[i],
@@ -102,7 +118,8 @@ export class FormComponent implements OnInit {
               mask:           maskCodes[eval('obj3.field' + this.usedFields[i] + '.mask')],
               numOfOptions:   eval('obj3.field' + this.usedFields[i] + '.numOfOptions'),
               value:          eval('obj3.field' + this.usedFields[i] + '.value'),
-              optionsValues:   this.optionsValues
+              optionsValues:  this.optionsValues,
+              choicesValues:  this.choicesValues
             });
           }
         }

@@ -24,6 +24,15 @@
       </mat-select>
     </mat-form-field>
 
+    <div *ngIf="form && field.type == 'radio'">{{field.name}}:
+      <mat-radio-group [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' 
+        style="display: inline-flex;flex-direction: column;">
+        <div *ngFor="let choice of field.choicesValues">
+          <mat-radio-button value={{choice}}>{{choice}}</mat-radio-button>
+        </div>
+      </mat-radio-group>
+    </div>
+
     <mat-form-field *ngIf="form && field.type == 'date'" [hideRequiredMarker]="!field.required">
         <input matInput required [matDatepicker]="picker" 
           [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}} disabled>
