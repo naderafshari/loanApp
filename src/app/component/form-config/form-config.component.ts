@@ -119,6 +119,7 @@ export class FormConfigComponent implements OnInit {
           numOfOptions:   eval('obj3.field' + this.usedFields[i] + '.numOfOptions'),
           numOfChoices:   eval('obj3.field' + this.usedFields[i] + '.numOfChoices'),
           value:          eval('obj3.field' + this.usedFields[i] + '.value'),
+          toolTip:        eval('obj3.field' + this.usedFields[i] + '.toolTip'),
           options:        this.options,
           choices:        this.choices,
           usedOptions:    this.usedOptions,
@@ -133,7 +134,7 @@ export class FormConfigComponent implements OnInit {
     }
   }
 
-  addStatesOption(index,it) {
+  addStatesOption(index, it) {
     const usStatesCLass: USStatesClass = new USStatesClass();
     const usStates = usStatesCLass.usStates;
     this.form[`field${index}`].options = usStates;
@@ -141,7 +142,7 @@ export class FormConfigComponent implements OnInit {
     this.updateFields();
   }
 
-  addCountriesOption(index,it) {
+  addCountriesOption(index, it) {
     const countriesCLass: CountriesClass = new CountriesClass();
     const countries = countriesCLass.countries;
     this.form[`field${index}`].options = countries;
@@ -193,6 +194,7 @@ export class FormConfigComponent implements OnInit {
       options: {type: 'custom'},
       numOfChoices: 0,
       choices: {},
+      toolTip: '',
       value: ''
     };
     this.form[nextFieldId] = fieldToAdd;
@@ -408,6 +410,17 @@ export class FormConfigComponent implements OnInit {
   setName(name, i) {
     let obj: Form = this.form;
     eval('obj.field' + i + '.name = name');
+    this.form = obj;
+  }
+
+  getToolTip(i) {
+    const obj: Form = this.form;
+    return eval('obj.field' + i + '.toolTip');
+  }
+
+  setToolTip(toolTip, i) {
+    let obj: Form = this.form;
+    eval('obj.field' + i + '.toolTip = toolTip');
     this.form = obj;
   }
 

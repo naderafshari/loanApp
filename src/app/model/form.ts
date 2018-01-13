@@ -7,7 +7,8 @@ export interface Field {
     numOfChoices?: number;
     options?: {};
     choices?: {};
-    value: string;
+    value?: string;
+    toolTip?: string;
 }
 
 export interface Form {

@@ -118,6 +118,7 @@ export class FormComponent implements OnInit {
               mask:           maskCodes[eval('obj3.field' + this.usedFields[i] + '.mask')],
               numOfOptions:   eval('obj3.field' + this.usedFields[i] + '.numOfOptions'),
               value:          eval('obj3.field' + this.usedFields[i] + '.value'),
+              toolTip:        eval('obj3.field' + this.usedFields[i] + '.toolTip'),
               optionsValues:  this.optionsValues,
               choicesValues:  this.choicesValues
             });
