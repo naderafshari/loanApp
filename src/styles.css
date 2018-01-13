@@ -9,10 +9,10 @@ body {
 .form-container {
     background:#ECEFF1;
     padding:3.5em;
-    width:620px;
+    width:650px;
     position:fixed;
     left:50%;
-    margin-left:-400px;
+    margin-left:-250px;
 }
 .user-container {
     background:white;
@@ -20,7 +20,7 @@ body {
     width:700px;
     position:fixed;
     left:50%;
-    margin-left:-400px;
+    margin-left:-250px;
 }
 #goback {
     font-weight:bold;

@@ -1,17 +1,19 @@
 <mat-card class="user-container">
-  <a routerLink="/mwl-demo-component" id="goback"><mat-icon>today</mat-icon>Calendar</a>
-
   <mat-card-header>
     <a *ngIf="authService.user | async" id="goback" (click)="logout()">Logout</a>
     <!--<button mat-raised-button color="primary" *ngIf="authService.user | async" (click)="logout()" >Logout</button> -->
   </mat-card-header>
   <hr>
+  <a routerLink="/mwl-demo-component" id="goback"><mat-icon>today</mat-icon>&nbsp;&nbsp;Calendar</a>
+  <hr>
   <mat-card-content>
     <mat-list  *ngFor="let user of users | async">
       <mat-list-item *ngIf = "((authService.user | async)?.role ==='admin' || (authService.user | async)?.role ==='super') &&  (authService.user | async)?.uid === user.uid;" >
-        <a (click)="goFormManage(user.uid);"class="secondary-content"><mat-icon>subject</mat-icon>&nbsp;Manage/Configre Form Templates</a>
+        <a (click)="goFormManage(user.uid);"class="secondary-content">
+          <mat-icon>create</mat-icon>&nbsp;&nbsp;Manage/Configre Form Templates</a>
       </mat-list-item>
     </mat-list>
+  <hr>
   </mat-card-content>
   <mat-card-content>
     <div *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.role ==='super'">
@@ -20,21 +22,23 @@
     <mat-form-field *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.role ==='super'"><mat-icon>search</mat-icon>
       <input matInput [(ngModel)]="searchText"><!-- placeholder="Search by Name">-->
     </mat-form-field>
+    <hr>
     <mat-list *ngFor="let user of users | async | nameFilter : searchText">
     <mat-list-item *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.role ==='super' || (authService.user | async)?.uid === user.uid">
         <mat-icon>face</mat-icon>&nbsp;<strong>{{user.firstName}}</strong> &nbsp; {{user.lastName}}&nbsp;
-      <a (click)="editClick(user.uid);" class="secondary-content">&nbsp;(Profile)</a>
+      <a (click)="editClick(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>accessibility</mat-icon></a>
       <div *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.role ==='super'">
-        <a (click)="goFormAssign(user.uid);"class="secondary-content">&nbsp;&nbsp;(Assign)</a>
-        <a (click)="goFormHistory(user.uid);"class="secondary-content">&nbsp;&nbsp;(History)</a>
+        <a (click)="goFormAssign(user.uid);"class="secondary-content">&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>assignment</mat-icon></a>
+        <a (click)="goFormHistory(user.uid);"class="secondary-content">&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>history</mat-icon></a>
       </div>
       </mat-list-item>
       <mat-list-item *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.role ==='super' || (authService.user | async)?.uid === user.uid">
-        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Active Forms:</div>
+        <mat-icon>subject</mat-icon>
         <div *ngFor="let userForm of userForms">
           <a *ngIf="userForm.uid === user.uid" (click)="goToForm(user.uid,userForm.formId);" class="secondary-content">&nbsp;&nbsp;{{userForm.formName}}</a>
         </div>
       </mat-list-item>
+      <hr>
     </mat-list>
   </mat-card-content>
 </mat-card>
