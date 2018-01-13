@@ -26,7 +26,9 @@ export class FormConfigComponent implements OnInit {
   sub: Subscription;
   usedFields: any[];
   options: any;
+  choices: any;
   usedOptions: any[];
+  usedChoices: any[];
   maxUsedField: any;
   minUsedField: any;
   mask: string;
@@ -66,6 +68,7 @@ export class FormConfigComponent implements OnInit {
       });
       this.fields = [];
       this.usedOptions = [];
+      this.usedChoices = [];
       for (let i = 0; i < this.form.numOfFields; i++) {
         const obj: Form = this.form;
         const field: Field = eval('obj.field' + this.usedFields[i]);
@@ -90,6 +93,21 @@ export class FormConfigComponent implements OnInit {
           this.usedOptions.length = 0;
           this.usedOptions[0] = '1';
         }
+
+        const usedChoices = Object.keys(field.choices)
+        .filter( fields => fields.charAt(0) === 'c');
+        this.usedChoices = usedChoices.map((x) => x.charAt(6) + x.charAt(7));
+        this.usedChoices.sort((a, b) => {
+          return (Number(a) > Number(b) ? 1 : (Number(b) > Number(a) ? -1 : 0));
+        });
+        this.choices = {};
+        for (let j = 0; j < field.numOfChoices; j++) {
+          const obj2: Field= field;
+          const choice = eval('obj2.choice' + this.usedChoices[j]);
+          const key = `choice${this.usedChoices[j]}`;
+          this.choices[key] = choice;
+        }
+
         const obj3: Form = this.form;
         this.fields.push({
           it:             i,
@@ -99,14 +117,18 @@ export class FormConfigComponent implements OnInit {
           type:           eval('obj3.field' + this.usedFields[i] + '.type'),
           mask:           eval('obj3.field' + this.usedFields[i] + '.mask'),
           numOfOptions:   eval('obj3.field' + this.usedFields[i] + '.numOfOptions'),
-          options:        this.options,
+          numOfChoices:   eval('obj3.field' + this.usedFields[i] + '.numOfChoices'),
           value:          eval('obj3.field' + this.usedFields[i] + '.value'),
-          usedOptions:    this.usedOptions
+          options:        this.options,
+          choices:        this.choices,
+          usedOptions:    this.usedOptions,
+          usedChoices:    this.usedChoices
         });
       }
     } else {
       this.usedOptions = [];
       this.options = {};
+      this.choices = {};
       this.fields = [];
     }
   }
@@ -147,6 +169,19 @@ export class FormConfigComponent implements OnInit {
     this.updateFields();
   }
 
+  addChoice(index, it) {
+    const nextChoiceId = `choice${this.nextChoiceSlot(0, 'up', it)}`;
+    this.form[`field${index}`].choices[nextChoiceId] = '';
+    this.form[`field${index}`].numOfChoises++;
+    this.updateFields();
+  }
+
+  deleteChoice(index, i) {
+    delete this.form[`field${index}`].choices[`choice${i}`];
+    this.form[`field${index}`].numOfChoices--;
+    this.updateFields();
+  }
+
   addField() {
     const nextFieldId = `field${this.nextAvailSlot(0, 'up')}`;
     const fieldToAdd: Field  = {
@@ -156,6 +191,8 @@ export class FormConfigComponent implements OnInit {
       mask: 'None',
       numOfOptions: 0,
       options: {type: 'custom'},
+      numOfChoices: 0,
+      choices: {},
       value: ''
     };
     this.form[nextFieldId] = fieldToAdd;
@@ -297,6 +334,20 @@ export class FormConfigComponent implements OnInit {
     return next ;
   }
 
+  nextChoiceSlot(current, direction, it) {
+    let inc = 1;
+    if ( direction === 'down' ) {
+        inc = -1;
+    }
+    const next = current + inc;
+    for (let j = 0; j < this.fields[it].usedChoices.length; j++) {
+      if ( Number(this.fields[it].usedChoices[j]) === next ) {
+        return this.nextChoiceSlot(next , direction, it );
+      }
+    }
+    return next ;
+  }
+
   nextAvailSlot(current, direction) {
     let inc = 1;
     if ( direction === 'down' ) {
@@ -406,6 +457,17 @@ export class FormConfigComponent implements OnInit {
   setOption(option, i, j) {
     let obj: Form = this.form;
     eval('obj.field' + i + '.options.option' + j + ' = option');
+    this.form = obj;
+  }
+
+  getChoice(i, j) {
+    const obj: Form = this.form;
+    return eval('obj.field' + i + '.choices.choice' + j);
+  }
+
+  setChoice(choice, i, j) {
+    let obj: Form = this.form;
+    eval('obj.field' + i + '.choices.choice' + j + ' = choice');
     this.form = obj;
   }
 

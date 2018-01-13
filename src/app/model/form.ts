@@ -4,7 +4,9 @@ export interface Field {
     type: string;
     mask?: string;
     numOfOptions?: number;
+    numOfChoices?: number;
     options?: {};
+    choices?: {};
     value: string;
 }
 

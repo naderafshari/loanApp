@@ -38,9 +38,10 @@
         <mat-option>-- None --</mat-option>
         <mat-option value="textbox">  Text Box    </mat-option>
         <mat-option value="textarea"> Text Area   </mat-option>
-        <mat-option value="select">   Pull down   </mat-option>
+        <mat-option value="select">   Pull Down   </mat-option>
         <mat-option value="date">     Date Picker </mat-option>
         <mat-option value="checkbox"> Check Box   </mat-option>
+        <mat-option value="radio">    Radio Button</mat-option>
       </mat-select>
     </mat-form-field>
 
@@ -69,8 +70,18 @@
         <a *ngIf="(authService.user | async)?.role == 'admin'" (click)="deleteOption(field.index,option)" >&nbsp;&nbsp;&nbsp;<mat-icon>delete</mat-icon></a>
       </div>
     </div>
+
+    <div *ngIf="getType(field.index) === 'radio'">
+      <button mat-raised-button color="primary" (click)="addChoice(field.index,field.it)"><mat-icon>add</mat-icon>Choice</button>
+      <div *ngFor="let choice of field.usedChoices">
+        <mat-form-field >
+          <input matInput [ngModel]='getChoice(field.index,choice)' (ngModelChange)='setChoice($event,field.index,choice)'
+            placeholder="Enter Choice..">
+        </mat-form-field>
+        <a *ngIf="(authService.user | async)?.role == 'admin'" (click)="deleteChoice(field.index,choice)" >&nbsp;&nbsp;&nbsp;<mat-icon>delete</mat-icon></a>
+      </div>
+    </div>
     <hr>
   </div>
-  <br>
 </mat-card>
   

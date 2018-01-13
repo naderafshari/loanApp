@@ -45,12 +45,6 @@ export class FormReviewComponent implements OnInit {
                 index:    i,
                 name:     eval('obj.field' + i + '.name'),
                 type:     eval('obj.field' + i + '.type'),
-                option1:  eval('obj.field' + i + '.option1'),
-                option2:  eval('obj.field' + i + '.option2'),
-                option3:  eval('obj.field' + i + '.option3'),
-                option4:  eval('obj.field' + i + '.option4'),
-                option5:  eval('obj.field' + i + '.option5'),
-                option6:  eval('obj.field' + i + '.option6'),
                 value:    eval('obj.field' + i + '.value')
               });
             }
