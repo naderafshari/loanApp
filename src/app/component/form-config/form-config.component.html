@@ -13,7 +13,9 @@
       <button mat-raised-button color="primary" (click)="addField()">
         <mat-icon>add</mat-icon>Field</button>
       <button mat-raised-button color="accent" (click)="openSubmitDialog()">
-        <mat-icon>input</mat-icon>Submit</button>
+        Save</button>
+      <button mat-raised-button color="accent" (click)="openSubmitReassignDialog()">
+        Save & Reassign</button>
     </mat-sidenav-content>
   </mat-sidenav-container>
   <button mat-raised-button color="warn" *ngIf="(authService.user | async)?.role == 'admin'" (click)="openDeleteAllDialog()">

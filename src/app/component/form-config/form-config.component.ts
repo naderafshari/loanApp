@@ -246,15 +246,6 @@ export class FormConfigComponent implements OnInit {
 
   updateForm() {
     if (this.form) {
-      this.form.updateTime = new Date().toString();
-      this.afs.collection('forms').doc(this.id).set(this.form).then(() => this.updateFields());
-    } else {
-      alert('Cannot Update, form not available!');
-    }
-  }
-
-  updateFormAndRoute() {
-    if (this.form) {
       if (this.allRequireFields()) {
         this.form.updateTime = new Date().toString();
         this.afs.collection('forms').doc(this.id).set(this.form).then(() => this.updateFields());
@@ -271,6 +262,24 @@ export class FormConfigComponent implements OnInit {
     }
   }
 
+  updateFormAndReAssign() {
+    if (this.form) {
+      if (this.allRequireFields()) {
+        this.form.updateTime = new Date().toString();
+        this.afs.collection('forms').doc(this.id).set(this.form).then(() => this.updateFields());
+        this.fs.reAssignFormAllUsers(this.form.formId)
+        this.sub.unsubscribe();
+        this.router.navigateByUrl('/user-manage');
+      } else {
+        alert('Required field was not filled!');
+      }
+    } else {
+      alert('Cannot Update, form not available!');
+      this.sub.unsubscribe();
+      this.router.navigateByUrl('/user-manage');
+      // this.router.navigate(['/form-manage', this.userId]);
+    }
+  }
   openDeleteAllDialog(): void {
     if (this.authService.userAuthRole === 'admin') {
       const dialogRef = this.dialog.open(DialogComponent, {
@@ -305,6 +314,23 @@ export class FormConfigComponent implements OnInit {
     }
   }
 
+  openSubmitReassignDialog(index): void {
+    if (this.authService.userAuthRole === 'admin' || this.authService.userAuthRole === 'super') {
+      const dialogRef = this.dialog.open(DialogComponent, {
+        width: '250px',
+        data: 'You are about to submit changer.\n\nA fresh copy of the updated Form will be "Reassigned" to all user whom are assigned this Form.\n\nAre you sure?'
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === 'Confirm') {
+          this.updateFormAndReAssign();
+        }
+      });
+    } else {
+      alert('No Submit privilages! Please contact the Administrator');
+    }
+  }
+
   openSubmitDialog(index): void {
     if (this.authService.userAuthRole === 'admin' || this.authService.userAuthRole === 'super') {
       const dialogRef = this.dialog.open(DialogComponent, {
@@ -314,7 +340,7 @@ export class FormConfigComponent implements OnInit {
 
       dialogRef.afterClosed().subscribe(result => {
         if (result === 'Confirm') {
-          this.updateFormAndRoute();
+          this.updateForm();
         }
       });
     } else {
