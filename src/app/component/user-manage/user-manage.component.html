@@ -4,7 +4,7 @@
     <!--<button mat-raised-button color="primary" *ngIf="authService.user | async" (click)="logout()" >Logout</button> -->
   </mat-card-header>
   <hr>
-  <a routerLink="/mwl-demo-component" id="goback"><mat-icon>today</mat-icon>&nbsp;&nbsp;Calendar</a>
+  <a routerLink="/scheduler" id="goback"><mat-icon>today</mat-icon>&nbsp;&nbsp;Calendar</a>
   <hr>
   <mat-card-content>
     <mat-list  *ngFor="let user of users | async">

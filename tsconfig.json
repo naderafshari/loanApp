@@ -15,5 +15,12 @@
       "es2017",
       "dom"
     ]
-  }
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "files": [
+      // For all widgets used, add the relevant .ts file.
+      "node_modules/jqwidgets-scripts/jqwidgets-ts/angular_jqxgrid.ts"
+  ]
 }

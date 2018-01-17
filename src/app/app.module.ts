@@ -18,6 +18,7 @@ import { FormService } from './provider/form.service';
 import { AuthGuard } from './guard/auth.guard';
 import { AdminGuard } from './guard/admin.guard';
 import { router } from './app.routes';
+import { jqxSchedulerComponent } from 'jqwidgets-scripts/jqwidgets-ts/angular_jqxscheduler';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './component/login/login.component';
@@ -39,6 +40,7 @@ import { TextMaskModule } from 'angular2-text-mask';
 import { CalendarModule } from 'angular-calendar';
 import { DemoComponent } from './cal-module/demo/component';
 import { DateTimePickerComponent } from './cal-module/demo-utils/date-time-picker.component';
+import { SchedulerComponent } from './component/scheduler/scheduler.component';
 
 
 @NgModule({
@@ -60,7 +62,9 @@ import { DateTimePickerComponent } from './cal-module/demo-utils/date-time-picke
     NameFilterPipe,
     Autosize,
     DemoComponent,
-    DateTimePickerComponent
+    DateTimePickerComponent,
+    jqxSchedulerComponent,
+    SchedulerComponent
   ],
   imports: [
     BrowserModule,
