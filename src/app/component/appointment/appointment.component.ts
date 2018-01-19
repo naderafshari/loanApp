@@ -3,11 +3,11 @@ import { jqxSchedulerComponent } from 'jqwidgets-scripts/jqwidgets-ts/angular_jq
 import { jqxButtonComponent } from 'jqwidgets-scripts/jqwidgets-ts/angular_jqxbuttons';
 
 @Component({
-  selector: 'app-scheduler',
-  templateUrl: './scheduler.component.html',
-  styleUrls: ['./scheduler.component.css']
+  selector: 'app-appointment',
+  templateUrl: './appointment.component.html',
+  styleUrls: ['./appointment.component.css']
 })
-export class SchedulerComponent implements OnInit, AfterViewInit {
+export class AppointmentComponent implements OnInit, AfterViewInit {
 
   @ViewChild("schedulerReference") scheduler: jqxSchedulerComponent;
 

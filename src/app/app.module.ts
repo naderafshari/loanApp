@@ -41,6 +41,7 @@ import { CalendarModule } from 'angular-calendar';
 import { DemoComponent } from './cal-module/demo/component';
 import { DateTimePickerComponent } from './cal-module/demo-utils/date-time-picker.component';
 import { SchedulerComponent } from './component/scheduler/scheduler.component';
+import { AppointmentComponent } from './component/appointment/appointment.component';
 
 
 @NgModule({
@@ -64,7 +65,8 @@ import { SchedulerComponent } from './component/scheduler/scheduler.component';
     DemoComponent,
     DateTimePickerComponent,
     jqxSchedulerComponent,
-    SchedulerComponent
+    SchedulerComponent,
+    AppointmentComponent
   ],
   imports: [
     BrowserModule,
