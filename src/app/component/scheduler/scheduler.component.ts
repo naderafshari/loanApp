@@ -1,6 +1,13 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { jqxSchedulerComponent } from 'jqwidgets-scripts/jqwidgets-ts/angular_jqxscheduler';
 import { jqxButtonComponent } from 'jqwidgets-scripts/jqwidgets-ts/angular_jqxbuttons';
+import { Router, ActivatedRoute } from '@angular/router';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
+import { AuthService } from '../../provider/auth.service';
+import { UserInfo } from '../../model/user-info';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+import { Calendar, DataClass } from '../../model/calendar';
 
 @Component({
   selector: 'app-scheduler',
@@ -8,8 +15,16 @@ import { jqxButtonComponent } from 'jqwidgets-scripts/jqwidgets-ts/angular_jqxbu
   styleUrls: ['./scheduler.component.css']
 })
 export class SchedulerComponent implements OnInit, AfterViewInit {
+  uid: string;
+  cal:  Observable<Calendar[]>;
 
   @ViewChild("schedulerReference") scheduler: jqxSchedulerComponent;
+
+  constructor(private afs: AngularFirestore, public authService: AuthService,
+    private router: Router, private route: ActivatedRoute) {
+        this.uid = authService.currentUserId;
+        this.cal = this.afs.collection<Calendar>(`calendar/${this.uid}`).valueChanges();
+  }
 
   ngAfterViewInit(): void 
   {
@@ -55,19 +70,11 @@ export class SchedulerComponent implements OnInit, AfterViewInit {
 
       return appointments;
   }
-
+  dataFieldsClass = new DataClass;
   source =
   {
       dataType: "array",
-      dataFields: [
-          { name: "id", type: "string" },
-          { name: "description", type: "string" },
-          { name: "location", type: "string" },
-          { name: "subject", type: "string" },
-          { name: "calendar", type: "string" },
-          { name: "start", type: "date" },
-          { name: "end", type: "date" }
-      ],
+      dataFields: this.dataFieldsClass.dataFields,
       id: "id",
       localData: this.generateAppointments()
   }
