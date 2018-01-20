@@ -16,71 +16,110 @@ import { Calendar, DataClass } from '../../model/calendar';
 })
 export class SchedulerComponent implements OnInit, AfterViewInit {
   uid: string;
-  cal:  Observable<Calendar[]>;
+  cal:  Observable<any>;
+  dataAdapter: any;
+  schedulerSettings: any;
+  dataFieldsClass = new DataClass;
+  source :any;
+  sub: any;
+  printButton: any = null;
 
   @ViewChild("schedulerReference") scheduler: jqxSchedulerComponent;
 
   constructor(private afs: AngularFirestore, public authService: AuthService,
     private router: Router, private route: ActivatedRoute) {
-        this.uid = authService.currentUserId;
-        this.cal = this.afs.collection<Calendar>(`calendar/${this.uid}`).valueChanges();
-  }
+    }
 
   ngAfterViewInit(): void 
   {
-      this.scheduler.createComponent(this.schedulerSettings);
-      this.scheduler.ensureAppointmentVisible("id1");
+    this.uid = this.authService.currentUserId;
+    if (this.uid) {
+        this.cal = this.afs.doc(`calendar/${this.uid}`).valueChanges();
+        this.sub = this.cal.subscribe( (cal) => {
+            this.dataFieldsClass = new DataClass;
+            this.source =
+            {
+                dataType: this.dataFieldsClass.dataType,
+                dataFields: this.dataFieldsClass.dataFields,
+                id: this.dataFieldsClass.id,
+                localData: cal.slots//this.generateCannedSlots()
+            }
+            this.dataAdapter = new jqx.dataAdapter(this.source);
+            
+            this.schedulerSettings =
+            {
+                date: new jqx.date(2016, 11, 23),
+                width: 800,
+                height: 600,
+                source: this.dataAdapter,
+                view: "weekView",
+                showLegend: true,
+                appointmentDataFields: this.appointmentDataFields,
+                editDialogCreate: this.editDialogCreate,
+                editDialogOpen: this.editDialogOpen,
+                editDialogClose: this.editDialogClose,
+                resources:
+                {
+                    colorScheme: "scheme05",
+                    dataField: "calendar",
+                    source: new jqx.dataAdapter(this.source)
+                },
+                views:
+                [
+                    "dayView",
+                    "weekView",
+                    "monthView"
+                ]
+            };
+            this.scheduler.createComponent(this.schedulerSettings);
+            this.scheduler.ensureAppointmentVisible("id1");                
+       });
+    }
   }
-   
-  generateAppointments(): any
+  
+  generateCannedSlots(): any
   {
-      let appointments = new Array();
-
-      let appointment1 = {
-          id: "id1", description: "George brings projector for presentations.", location: "", subject: "Quarterly Project Review Meeting", calendar: "Room 1",
+      let slot1 = {
+          id: "id1", description: "George brings projector for presentations.", location: "TBD", subject: "Quarterly Project Review Meeting", calendar: "Therapist 1",
           start: new Date(2016, 10, 23, 9, 0, 0), end: new Date(2016, 10, 23, 16, 0, 0)
       };
-      let appointment2 = {
-          id: "id2", description: "", location: "", subject: "IT Group Mtg.", calendar: "Room 2",
+      let slot2 = {
+          id: "id2", description: "", location: "SP Room1", subject: "IT Group Mtg.", calendar: "Therapist 2",
           start: new Date(2016, 10, 24, 10, 0, 0), end: new Date(2016, 10, 24, 15, 0, 0)
       };
-      let appointment3 = {
-          id: "id3", description: "", location: "", subject: "Course Social Media", calendar: "Room 3",
+      let slot3 = {
+          id: "id3", description: "", location: "OR Room2", subject: "Course Social Media", calendar: "Therapist 3",
           start: new Date(2016, 10, 27, 11, 0, 0), end: new Date(2016, 10, 27, 13, 0, 0)
       };
-      let appointment4 = {
-          id: "id4", description: "", location: "", subject: "New Projects Planning", calendar: "Room 2",
+      let slot4 = {
+          id: "id4", description: "", location: "SP Room3", subject: "New Projects Planning", calendar: "Therapist 2",
           start: new Date(2016, 10, 23, 16, 0, 0), end: new Date(2016, 10, 23, 18, 0, 0)
       };
-      let appointment5 = {
-          id: "id5", description: "", location: "", subject: "Interview with James", calendar: "Room 1",
+      let slot5 = {
+          id: "id5", description: "", location: "SP Room2", subject: "Interview with James", calendar: "Therapist 1",
           start: new Date(2016, 10, 25, 15, 0, 0), end: new Date(2016, 10, 25, 17, 0, 0)
       };
-      let appointment6 = {
-          id: "id6", description: "", location: "", subject: "Interview with Nancy", calendar: "Room 4",
+      let slot6 = {
+          id: "id6", description: "", location: "OR Room1", subject: "Interview with Nancy", calendar: "Therapist 4",
           start: new Date(2016, 10, 26, 14, 0, 0), end: new Date(2016, 10, 26, 16, 0, 0)
       };
 
-      appointments.push(appointment1);
-      appointments.push(appointment2);
-      appointments.push(appointment3);
-      appointments.push(appointment4);
-      appointments.push(appointment5);
-      appointments.push(appointment6);
-
-      return appointments;
+      const slots = {
+          slot1: slot1,
+          slot2: slot2,
+          slot3: slot3,
+          slot4: slot4,
+          slot5: slot5,
+          slot6: slot6
+        }
+      const calRef: AngularFirestoreDocument<any> = this.afs.doc(`calendar/${this.uid}`);
+      calRef.set({
+          calId: `${this.uid}`,
+          slots: slots
+        });
+  
+      return slots;
   }
-  dataFieldsClass = new DataClass;
-  source =
-  {
-      dataType: "array",
-      dataFields: this.dataFieldsClass.dataFields,
-      id: "id",
-      localData: this.generateAppointments()
-  }
-
-  dataAdapter = new jqx.dataAdapter(this.source);
-  printButton: any = null;
 
   // called when the dialog is craeted.
   editDialogCreate = (dialog, fields, editAppointment) => {
@@ -96,7 +135,7 @@ export class SchedulerComponent implements OnInit, AfterViewInit {
     fields.locationLabel.html("Where");
     fields.fromLabel.html("Start");
     fields.toLabel.html("End");
-    fields.resourceLabel.html("Room");
+    fields.resourceLabel.html("Therapist");
 
     let buttonElement = document.createElement("BUTTON");
     buttonElement.innerText = 'Print';
@@ -223,32 +262,6 @@ export class SchedulerComponent implements OnInit, AfterViewInit {
       status: 'status'
     };
 
-  // schedulerSettings: jqwidgets.SchedulerOptions =
-  schedulerSettings: any =
-  {
-      date: new jqx.date(2016, 11, 23),
-      width: 800,
-      height: 600,
-      source: this.dataAdapter,
-      view: "weekView",
-      showLegend: true,
-      appointmentDataFields: this.appointmentDataFields,
-      editDialogCreate: this.editDialogCreate,
-      editDialogOpen: this.editDialogOpen,
-      editDialogClose: this.editDialogClose,
-      resources:
-      {
-          colorScheme: "scheme05",
-          dataField: "calendar",
-          source: new jqx.dataAdapter(this.source)
-      },
-      views:
-      [
-          "dayView",
-          "weekView",
-          "monthView"
-      ]
-  };
 
    onAppointmentDelete(event: any): void {
       let appointment = event.args.appointment;

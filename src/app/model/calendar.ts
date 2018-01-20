@@ -17,6 +17,8 @@ export interface Slot {
 }
 
 export class DataClass {
+  dataType = "object";
+  id = "id";
   dataFields = [
     { name: "id",           type: "string" },
     { name: "description",  type: "string" },

@@ -41,6 +41,10 @@ export class AuthService {
         role: 'user',
         assignedForms: {}
     };
+    // const calRef: AngularFirestoreDocument<any> = this.afs.doc(`calendar/${userAuth.uid}`);
+    // calRef.set({calId: `${userAuth.uid}`});
+    const appmtRef: AngularFirestoreDocument<any> = this.afs.doc(`appointment/${userAuth.uid}`);
+    appmtRef.set({calId: `${userAuth.uid}`});
     return userRef.set(AuthData);
   }
 
@@ -120,6 +124,16 @@ export class AuthService {
 }
 
   upsert(value) {
+    const appmtRef: AngularFirestoreDocument<any> = this.afs.doc(`appointment/${value.uid}`);
+    appmtRef.update({calId: `${value.uid}`})
+    .catch(() => {
+      appmtRef.set({calId: `${value.uid}`})      
+    })
+    const calRef: AngularFirestoreDocument<any> = this.afs.doc(`calendar/${value.uid}`);
+    calRef.update({calId: `${value.uid}`})
+    .catch(() => {
+      calRef.set({calId: `${value.uid}`})      
+    })
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${value.uid}`);
     userRef.update({'uid': value.uid})
     .then(() => this.router.navigateByUrl('/user-manage'))
