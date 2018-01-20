@@ -71,14 +71,16 @@ export class UserManageComponent implements OnInit {
     });
   }
 
-  compare(a,b) {
-    if (a.updateTime < b.updateTime)
+  compare(a, b) {
+    if (a.updateTime < b.updateTime) {
       return -1;
-    if (a.updateTime > b.updateTime)
+    }
+    if (a.updateTime > b.updateTime) {
       return 1;
+    }
     return 0;
   }
-  
+
   editClick(uid) {
     this.router.navigate(['/user-profile', uid]);
   }

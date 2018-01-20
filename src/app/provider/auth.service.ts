@@ -44,14 +44,14 @@ export class AuthService {
     // const calRef: AngularFirestoreDocument<any> = this.afs.doc(`calendar/${userAuth.uid}`);
     // calRef.set({calId: `${userAuth.uid}`});
     const appmtRef: AngularFirestoreDocument<any> = this.afs.doc(`appointment/${userAuth.uid}`);
-    appmtRef.set({calId: `${userAuth.uid}`});
+    appmtRef.set({calId: `${userAuth.uid}`, numOfSlots: 0});
     return userRef.set(AuthData);
   }
 
   // Returns true if user is logged in
   get authenticated(): boolean {
     return this.firebaseAuth.authState !== null;
-    //return this.user !== null; //same thing
+    // return this.user !== null; //same thing
   }
 
   get userAuthRole(): string {
@@ -61,7 +61,7 @@ export class AuthService {
   // Returns current user data
   get currentUser(): any {
       return this.authenticated ? this.firebaseAuth.authState : null;
-//      return this.authenticated ? this.user : null; if a user has a login but no user doc, this don't work
+      // return this.authenticated ? this.user : null; if a user has a login but no user doc, this don't work
   }
 
   // Returns
@@ -76,7 +76,7 @@ export class AuthService {
 
   // Returns current user UID
   get currentUserId(): any {
-    //return this.authenticated ? this.userInfo.uid : '';
+    // return this.authenticated ? this.userInfo.uid : '';
     return this.authenticated ? this.firebaseAuth.auth.currentUser.uid : '';
   }
 
@@ -127,13 +127,13 @@ export class AuthService {
     const appmtRef: AngularFirestoreDocument<any> = this.afs.doc(`appointment/${value.uid}`);
     appmtRef.update({calId: `${value.uid}`})
     .catch(() => {
-      appmtRef.set({calId: `${value.uid}`})      
-    })
+      appmtRef.set({calId: `${value.uid}`, numOfSlots: 0});
+    });
     const calRef: AngularFirestoreDocument<any> = this.afs.doc(`calendar/${value.uid}`);
     calRef.update({calId: `${value.uid}`})
     .catch(() => {
-      calRef.set({calId: `${value.uid}`})      
-    })
+      calRef.set({calId: `${value.uid}`, numOfSlots: 0});
+    });
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${value.uid}`);
     userRef.update({'uid': value.uid})
     .then(() => this.router.navigateByUrl('/user-manage'))

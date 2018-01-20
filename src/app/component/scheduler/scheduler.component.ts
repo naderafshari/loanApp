@@ -7,7 +7,7 @@ import { AuthService } from '../../provider/auth.service';
 import { UserInfo } from '../../model/user-info';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { Calendar, DataClass } from '../../model/calendar';
+import { Calendar, Slot, DataClass } from '../../model/calendar';
 
 @Component({
   selector: 'app-scheduler',
@@ -17,42 +17,54 @@ import { Calendar, DataClass } from '../../model/calendar';
 export class SchedulerComponent implements OnInit, AfterViewInit {
   uid: string;
   cal:  Observable<any>;
+  calendar: any;
+  usedSlots: any[];
+  maxUsedSlot: any;
+  minUsedSlot: any;
   dataAdapter: any;
   schedulerSettings: any;
   dataFieldsClass = new DataClass;
-  source :any;
+  source: any;
   sub: any;
   printButton: any = null;
+  appointmentDataFields: any = {
+    from: 'start',
+      to: 'end',
+      id: 'id',
+      description: 'description',
+      location: 'location',
+      subject: 'subject',
+      resourceId: 'calendar',
+      style: 'style',
+      status: 'status'
+    };
 
-  @ViewChild("schedulerReference") scheduler: jqxSchedulerComponent;
+  @ViewChild('schedulerReference') scheduler: jqxSchedulerComponent;
 
   constructor(private afs: AngularFirestore, public authService: AuthService,
     private router: Router, private route: ActivatedRoute) {
     }
 
-  ngAfterViewInit(): void 
-  {
+  ngAfterViewInit(): void {
     this.uid = this.authService.currentUserId;
     if (this.uid) {
         this.cal = this.afs.doc(`calendar/${this.uid}`).valueChanges();
         this.sub = this.cal.subscribe( (cal) => {
+            this.calendar = cal;
             this.dataFieldsClass = new DataClass;
-            this.source =
-            {
+            this.source = {
                 dataType: this.dataFieldsClass.dataType,
                 dataFields: this.dataFieldsClass.dataFields,
                 id: this.dataFieldsClass.id,
-                localData: cal.slots//this.generateCannedSlots()
-            }
+                localData: cal.slots// this.generateCannedSlots()
+            };
             this.dataAdapter = new jqx.dataAdapter(this.source);
-            
-            this.schedulerSettings =
-            {
+            this.schedulerSettings = {
                 date: new jqx.date(2016, 11, 23),
                 width: 800,
                 height: 600,
                 source: this.dataAdapter,
-                view: "weekView",
+                view: 'weekView',
                 showLegend: true,
                 appointmentDataFields: this.appointmentDataFields,
                 editDialogCreate: this.editDialogCreate,
@@ -60,69 +72,105 @@ export class SchedulerComponent implements OnInit, AfterViewInit {
                 editDialogClose: this.editDialogClose,
                 resources:
                 {
-                    colorScheme: "scheme05",
-                    dataField: "calendar",
+                    colorScheme: 'scheme05',
+                    dataField: 'calendar',
                     source: new jqx.dataAdapter(this.source)
                 },
                 views:
                 [
-                    "dayView",
-                    "weekView",
-                    "monthView"
+                    'dayView',
+                    'weekView',
+                    'monthView'
                 ]
             };
             this.scheduler.createComponent(this.schedulerSettings);
-            this.scheduler.ensureAppointmentVisible("id1");                
+            this.scheduler.ensureAppointmentVisible('id1');
+
+            const usedSlots = Object.keys(this.calendar.slots)
+            .filter( slots => slots.charAt(0) === 's');
+            this.usedSlots = usedSlots.map((x) => x.charAt(4) + x.charAt(5) + x.charAt(6));
+            if (this.usedSlots.length) {
+              this.usedSlots.sort((a, b) => {
+               return (Number(a) > Number(b) ? 1 : (Number(b) > Number(a) ? -1 : 0));
+              });
+              this.maxUsedSlot = this.usedSlots.reduce((a, b) => {
+                return Math.max(Number(a), Number(b));
+              });
+              this.minUsedSlot = this.usedSlots.reduce((a, b) => {
+                return Math.min(Number(a), Number(b));
+              });
+            }
+            // console.log(this.usedSlots);
        });
     }
   }
-  
-  generateCannedSlots(): any
-  {
-      let slot1 = {
-          id: "id1", description: "George brings projector for presentations.", location: "TBD", subject: "Quarterly Project Review Meeting", calendar: "Therapist 1",
-          start: new Date(2016, 10, 23, 9, 0, 0), end: new Date(2016, 10, 23, 16, 0, 0)
-      };
-      let slot2 = {
-          id: "id2", description: "", location: "SP Room1", subject: "IT Group Mtg.", calendar: "Therapist 2",
-          start: new Date(2016, 10, 24, 10, 0, 0), end: new Date(2016, 10, 24, 15, 0, 0)
-      };
-      let slot3 = {
-          id: "id3", description: "", location: "OR Room2", subject: "Course Social Media", calendar: "Therapist 3",
-          start: new Date(2016, 10, 27, 11, 0, 0), end: new Date(2016, 10, 27, 13, 0, 0)
-      };
-      let slot4 = {
-          id: "id4", description: "", location: "SP Room3", subject: "New Projects Planning", calendar: "Therapist 2",
-          start: new Date(2016, 10, 23, 16, 0, 0), end: new Date(2016, 10, 23, 18, 0, 0)
-      };
-      let slot5 = {
-          id: "id5", description: "", location: "SP Room2", subject: "Interview with James", calendar: "Therapist 1",
-          start: new Date(2016, 10, 25, 15, 0, 0), end: new Date(2016, 10, 25, 17, 0, 0)
-      };
-      let slot6 = {
-          id: "id6", description: "", location: "OR Room1", subject: "Interview with Nancy", calendar: "Therapist 4",
-          start: new Date(2016, 10, 26, 14, 0, 0), end: new Date(2016, 10, 26, 16, 0, 0)
-      };
 
-      const slots = {
-          slot1: slot1,
-          slot2: slot2,
-          slot3: slot3,
-          slot4: slot4,
-          slot5: slot5,
-          slot6: slot6
-        }
-      const calRef: AngularFirestoreDocument<any> = this.afs.doc(`calendar/${this.uid}`);
-      calRef.set({
-          calId: `${this.uid}`,
-          slots: slots
-        });
-  
-      return slots;
+  addSlot(slot) {
+    const nextSlotId = `slot${this.nextAvailSlot(0, 'up')}`;
+    this.calendar.slots[nextSlotId] = slot;
+    this.calendar.numOfSlots++;
+    this.calendar.updateTime = new Date().toString();
+    this.calendar.startTime = new Date().toString();
+    const calRef: AngularFirestoreDocument<any> = this.afs.doc(`calendar/${this.uid}`);
+    calRef.update(this.calendar);
   }
 
-  // called when the dialog is craeted.
-  editDialogCreate = (dialog, fields, editAppointment) => {
+  updateCalendar() {
+    this.calendar.updateTime = new Date().toString();
+    const calRef: AngularFirestoreDocument<any> = this.afs.doc(`calendar/${this.uid}`);
+    calRef.update(this.calendar);
+  }
+
+  onAppointmentDelete(event: any): void {
+    const appointment = event.args.appointment;
+    // console.log('appointmentDelete is raised');
+    // console.log(appointment.originalData);
+    for (let i = 0; i < this.calendar.numOfSlots; i++) {
+        const obj: Calendar = this.calendar.slots;
+        if ( eval('obj.slot' + this.usedSlots[i] + '.id') === appointment.originalData.id ) {
+                // console.log(`slot${this.usedSlots[i]}`);
+                delete this.calendar.slots[`slot${this.usedSlots[i]}`];
+                this.calendar.numOfSlots--;
+                this.updateCalendar();
+        }
+    }
+}
+
+onAppointmentAdd(event: any): void {
+    const appointment = event.args.appointment;
+    console.log('appointmentAdd is raised');
+    console.log(appointment.originalData);
+    this.addSlot(appointment.originalData);
+}
+
+onAppointmentDoubleClick(event: any): void {
+    const appointment = event.args.appointment;
+    console.log('appointmentDoubleClick is raised');
+    console.log(appointment.originalData);
+}
+
+onAppointmentChange(event: any): void {
+    const appointment = event.args.appointment;
+    // console.log('appointmentChange is raised');
+    // console.log(appointment.originalData);
+    for (let i = 0; i < this.calendar.numOfSlots; i++) {
+        const obj: Calendar = this.calendar.slots;
+        if ( eval('obj.slot' + this.usedSlots[i] + '.id') === appointment.originalData.id ) {
+                // console.log(`slot${this.usedSlots[i]}`);
+                this.calendar.slots[`slot${this.usedSlots[i]}`] = appointment.originalData;
+                this.updateCalendar();
+        }
+    }
+}
+
+onCellClick(event: any): void {
+    const cell = event.args.cell;
+    console.log('cellClick is raised');
+    console.log(cell);
+}
+
+// called when the dialog is craeted.
+editDialogCreate = (dialog, fields, editAppointment) => {
     // hide repeat option
     fields.repeatContainer.hide();
     // hide status option
@@ -131,13 +179,13 @@ export class SchedulerComponent implements OnInit, AfterViewInit {
     fields.timeZoneContainer.hide();
     // hide color option
     fields.colorContainer.hide();
-    fields.subjectLabel.html("Title");
-    fields.locationLabel.html("Where");
-    fields.fromLabel.html("Start");
-    fields.toLabel.html("End");
-    fields.resourceLabel.html("Therapist");
+    fields.subjectLabel.html('Title');
+    fields.locationLabel.html('Where');
+    fields.fromLabel.html('Start');
+    fields.toLabel.html('End');
+    fields.resourceLabel.html('Therapist');
 
-    let buttonElement = document.createElement("BUTTON");
+    const buttonElement = document.createElement('BUTTON');
     buttonElement.innerText = 'Print';
     buttonElement.style.cssFloat = 'right';
     buttonElement.style.marginLeft = '5px';
@@ -145,43 +193,43 @@ export class SchedulerComponent implements OnInit, AfterViewInit {
 
     fields.buttons[0].appendChild(buttonElement);
 
-    let printButton: jqwidgets.jqxButton = jqwidgets.createInstance('#PrintButton', 'jqxButton', {
+    const printButton: jqwidgets.jqxButton = jqwidgets.createInstance('#PrintButton', 'jqxButton', {
         width: 50,
         height: 25
     });
 
     this.printButton = printButton;
 
-    printButton.addEventHandler('click', function () {
-        let appointment = editAppointment;
+    printButton.addEventHandler('click', () => {
+        const appointment = editAppointment;
         if (!appointment && printButton.disabled) {
             return;
         }
 
-        let appointmentContent =
-            "<table class='printTable'>" +
-            "<tr>" +
-            "<td class='label'>Title</td>" +
-            "<td>" + fields.subject.val() + "</td>" +
-            "</tr>" +
-            "<tr>" +
-            "<td class='label'>Start</td>" +
-            "<td>" + fields.from.val() + "</td>" +
-            "</tr>" +
-            "<tr>" +
-            "<td class='label'>End</td>" +
-            "<td>" + fields.to.val() + "</td>" +
-            "</tr>" +
-            "<tr>" +
-            "<td class='label'>Where</td>" +
-            "<td>" + fields.location.val() + "</td>" +
-            "</tr>" +
-            "<tr>" +
-            "<td class='label'>Calendar</td>" +
-            "<td>" + fields.resource.val() + "</td>" +
-            "</tr>"
-            + "</table>";
-        let newWindow = window.open('', '', 'width=800, height=500'),
+        const appointmentContent =
+            '<table class=\'printTable\'>' +
+            '<tr>' +
+            '<td class=\'label\'>Title</td>' +
+            '<td>' + fields.subject.val() + '</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td class=\'label\'>Start</td>' +
+            '<td>' + fields.from.val() + '</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td class=\'label\'>End</td>' +
+            '<td>' + fields.to.val() + '</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td class=\'label\'>Where</td>' +
+            '<td>' + fields.location.val() + '</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td class=\'label\'>Calendar</td>' +
+            '<td>' + fields.resource.val() + '</td>' +
+            '</tr>'
+            + '</table>';
+        const newWindow = window.open('', '', 'width=800, height=500'),
             document = newWindow.document.open(),
             pageContent =
                 '<!DOCTYPE html>\n' +
@@ -207,13 +255,12 @@ export class SchedulerComponent implements OnInit, AfterViewInit {
         try {
             document.write(pageContent);
             document.close();
-        }
-        catch (error) {
+        } catch (error) {
         }
         newWindow.print();
     });
-    
-  };
+
+  }
 
   /**
   * called when the dialog is opened. Returning true as a result disables the built-in handler.
@@ -224,11 +271,10 @@ export class SchedulerComponent implements OnInit, AfterViewInit {
   editDialogOpen = (dialog, fields, editAppointment) => {
     if (!editAppointment && this.printButton) {
         this.printButton.setOptions({ disabled: true });
-    }
-    else if (editAppointment && this.printButton) {
+    } else if (editAppointment && this.printButton) {
         this.printButton.setOptions({ disabled: false });
     }
-  };
+  }
 
   /**
   * called when the dialog is closed.
@@ -237,7 +283,7 @@ export class SchedulerComponent implements OnInit, AfterViewInit {
   * @param {Object} the selected appointment instance or NULL when the dialog is opened from cells selection.
   */
   editDialogClose = (dialog, fields, editAppointment) => {
-  };
+  }
 
   /**
   * called when a key is pressed while the dialog is on focus. Returning true or false as a result disables the built-in keyDown handler.
@@ -247,51 +293,81 @@ export class SchedulerComponent implements OnInit, AfterViewInit {
   * @param {jQuery.Event Object} the keyDown event.
   */
   editDialogKeyDown = (dialog, fields, editAppointment, event) => {
-  };
+  }
 
-  appointmentDataFields: any =
-  {
-    from: "start",
-      to: "end",
-      id: "id",
-      description: "description",
-      location: "location",
-      subject: "subject",
-      resourceId: "calendar",
-      style: 'style',
-      status: 'status'
+  nextAvailSlot(current, direction) {
+    let inc = 1;
+    if ( direction === 'down' ) {
+        inc = -1;
+    }
+    const next = current + inc;
+    for (let i = 0; i < this.usedSlots.length; i++) {
+      if ( Number(this.usedSlots[i]) === next ) {
+        return this.nextAvailSlot(next , direction );
+      }
+    }
+    return next ;
+  }
+
+  nextUsedSlot(current, direction) {
+    let inc = 1;
+    if ( direction === 'down' ) {
+        inc = -1;
+    }
+    const next = current + inc;
+    if (next > this.maxUsedSlot || next < this.minUsedSlot) {
+      return 'ERROR';
+    } else {
+      for (let i = 0; i < this.usedSlots.length; i++) {
+        if ( Number(this.usedSlots[i]) === next ) {
+          return next;
+        }
+      }
+      return this.nextUsedSlot(next , direction );
+    }
+  }
+
+  generateCannedSlots(): any {
+    const slot1 = {
+        id: 'id1', description: 'George brings projector ', location: 'TBD', subject: 'Quarterly Project', calendar: 'Therapist 1',
+        start: new Date(2016, 10, 23, 9, 0, 0), end: new Date(2016, 10, 23, 16, 0, 0)
+    };
+    const slot2 = {
+        id: 'id2', description: '', location: 'SP Room1', subject: 'IT Group Mtg.', calendar: 'Therapist 2',
+        start: new Date(2016, 10, 24, 10, 0, 0), end: new Date(2016, 10, 24, 15, 0, 0)
+    };
+    const slot3 = {
+        id: 'id3', description: '', location: 'OR Room2', subject: 'Course Social Media', calendar: 'Therapist 3',
+        start: new Date(2016, 10, 27, 11, 0, 0), end: new Date(2016, 10, 27, 13, 0, 0)
+    };
+    const slot4 = {
+        id: 'id4', description: '', location: 'SP Room3', subject: 'New Projects Planning', calendar: 'Therapist 2',
+        start: new Date(2016, 10, 23, 16, 0, 0), end: new Date(2016, 10, 23, 18, 0, 0)
+    };
+    const slot5 = {
+        id: 'id5', description: '', location: 'SP Room2', subject: 'Interview with James', calendar: 'Therapist 1',
+        start: new Date(2016, 10, 25, 15, 0, 0), end: new Date(2016, 10, 25, 17, 0, 0)
+    };
+    const slot6 = {
+        id: 'id6', description: '', location: 'OR Room1', subject: 'Interview with Nancy', calendar: 'Therapist 4',
+        start: new Date(2016, 10, 26, 14, 0, 0), end: new Date(2016, 10, 26, 16, 0, 0)
     };
 
-
-   onAppointmentDelete(event: any): void {
-      let appointment = event.args.appointment;
-      console.log('appointmentDelete is raised');
-      console.log(appointment.originalData);
-  };
-
-  onAppointmentAdd(event: any): void {
-      let appointment = event.args.appointment;
-      console.log('appointmentAdd is raised');
-      console.log(appointment.originalData);
-  };
-
-  onAppointmentDoubleClick(event: any): void {
-      let appointment = event.args.appointment;
-      console.log('appointmentDoubleClick is raised');
-      console.log(appointment.originalData);
-  };
-
-  onAppointmentChange(event: any): void {
-      let appointment = event.args.appointment;
-      console.log('appointmentChange is raised');
-      console.log(appointment.originalData);
-  };
-
-  onCellClick(event: any): void {
-      let cell = event.args.cell;
-      console.log('cellClick is raised');
-      console.log(cell);
-  };
+    const slots = {
+        slot1: slot1,
+        slot2: slot2,
+        slot3: slot3,
+        slot4: slot4,
+        slot5: slot5,
+        slot6: slot6
+    };
+    const calRef: AngularFirestoreDocument<any> = this.afs.doc(`calendar/${this.uid}`);
+    calRef.set({
+        calId: `${this.uid}`,
+        slots: slots
+    });
+    return slots;
+}
 
   ngOnInit() {
   }

@@ -7,25 +7,25 @@ export interface Calendar {
 }
 
 export interface Slot {
-  id:           string; 
+  id:           string;
   description?: string;
   location:     string;
-  subject?:     string; 
+  subject?:     string;
   calendar:     string;
   start:        string;
   end:          string;
 }
 
 export class DataClass {
-  dataType = "object";
-  id = "id";
+  dataType = 'object';
+  id = 'id';
   dataFields = [
-    { name: "id",           type: "string" },
-    { name: "description",  type: "string" },
-    { name: "location",     type: "string" },
-    { name: "subject",      type: "string" },
-    { name: "calendar",     type: "string" },
-    { name: "start",        type: "date" },
-    { name: "end",          type: "date" }
-  ]
+    { name: 'id',           type: 'string' },
+    { name: 'description',  type: 'string' },
+    { name: 'location',     type: 'string' },
+    { name: 'subject',      type: 'string' },
+    { name: 'calendar',     type: 'string' },
+    { name: 'start',        type: 'date' },
+    { name: 'end',          type: 'date' }
+  ];
 }
