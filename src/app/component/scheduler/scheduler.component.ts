@@ -8,6 +8,7 @@ import { UserInfo } from '../../model/user-info';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { Calendar, Slot, DataClass } from '../../model/calendar';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-scheduler',
@@ -104,7 +105,11 @@ export class SchedulerComponent implements OnInit, AfterViewInit {
        });
     }
   }
-
+  
+  private debounceAdd =     _.debounce((slot) => this.addSlot(slot),    1500, {});
+  private debounceDelete =  _.debounce((slot) => this.DeleteSlot(slot), 1500, {});
+  private debounceChange =  _.debounce((slot) => this.ChangeSlot(slot), 1500, {});
+    
   addSlot(slot) {
     const nextSlotId = `slot${this.nextAvailSlot(0, 'up')}`;
     this.calendar.slots[nextSlotId] = slot;
@@ -113,6 +118,28 @@ export class SchedulerComponent implements OnInit, AfterViewInit {
     this.calendar.startTime = new Date().toString();
     const calRef: AngularFirestoreDocument<any> = this.afs.doc(`calendar/${this.uid}`);
     calRef.update(this.calendar);
+  }
+
+  DeleteSlot(slot) {
+    for (let i = 0; i < this.calendar.numOfSlots; i++) {
+        const obj: Calendar = this.calendar.slots;
+        if ( eval('obj.slot' + this.usedSlots[i] + '.id') === slot.id ) {
+                delete this.calendar.slots[`slot${this.usedSlots[i]}`];
+                this.calendar.numOfSlots--;
+                this.updateCalendar();
+        }
+    }
+  }
+
+  ChangeSlot(slot)
+  {
+    for (let i = 0; i < this.calendar.numOfSlots; i++) {
+        const obj: Calendar = this.calendar.slots;
+        if ( eval('obj.slot' + this.usedSlots[i] + '.id') === slot.id ) {
+                this.calendar.slots[`slot${this.usedSlots[i]}`] = slot;
+                this.updateCalendar();
+        }
+    }
   }
 
   updateCalendar() {
@@ -125,42 +152,27 @@ export class SchedulerComponent implements OnInit, AfterViewInit {
     const appointment = event.args.appointment;
     // console.log('appointmentDelete is raised');
     // console.log(appointment.originalData);
-    for (let i = 0; i < this.calendar.numOfSlots; i++) {
-        const obj: Calendar = this.calendar.slots;
-        if ( eval('obj.slot' + this.usedSlots[i] + '.id') === appointment.originalData.id ) {
-                // console.log(`slot${this.usedSlots[i]}`);
-                delete this.calendar.slots[`slot${this.usedSlots[i]}`];
-                this.calendar.numOfSlots--;
-                this.updateCalendar();
-        }
-    }
+    this.debounceDelete(appointment.originalData);
 }
 
 onAppointmentAdd(event: any): void {
     const appointment = event.args.appointment;
-    console.log('appointmentAdd is raised');
-    console.log(appointment.originalData);
-    this.addSlot(appointment.originalData);
+    // console.log('appointmentAdd is raised');
+    // console.log(appointment.originalData);
+    this.debounceAdd(appointment.originalData);
 }
 
 onAppointmentDoubleClick(event: any): void {
     const appointment = event.args.appointment;
-    console.log('appointmentDoubleClick is raised');
-    console.log(appointment.originalData);
+    // console.log('appointmentDoubleClick is raised');
+    // console.log(appointment.originalData);
 }
 
 onAppointmentChange(event: any): void {
     const appointment = event.args.appointment;
     // console.log('appointmentChange is raised');
     // console.log(appointment.originalData);
-    for (let i = 0; i < this.calendar.numOfSlots; i++) {
-        const obj: Calendar = this.calendar.slots;
-        if ( eval('obj.slot' + this.usedSlots[i] + '.id') === appointment.originalData.id ) {
-                // console.log(`slot${this.usedSlots[i]}`);
-                this.calendar.slots[`slot${this.usedSlots[i]}`] = appointment.originalData;
-                this.updateCalendar();
-        }
-    }
+    this.debounceChange(appointment.originalData)
 }
 
 onCellClick(event: any): void {
