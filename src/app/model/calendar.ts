@@ -5,7 +5,7 @@ export interface Calendar {
   startTime?:   string;
   updateTime?:  string;
 }
-
+/*
 export interface Slot {
   id:           string;
   description?: string;
@@ -15,7 +15,7 @@ export interface Slot {
   start:        string;
   end:          string;
 }
-
+*/
 export class DataClass {
   dataType = 'object';
   id = 'id';
@@ -26,6 +26,7 @@ export class DataClass {
     { name: 'subject',      type: 'string' },
     { name: 'calendar',     type: 'string' },
     { name: 'start',        type: 'date' },
-    { name: 'end',          type: 'date' }
+    { name: 'end',          type: 'date' },
+    { name: 'status',       type: 'string'}
   ];
 }

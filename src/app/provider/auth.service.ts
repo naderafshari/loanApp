@@ -44,7 +44,7 @@ export class AuthService {
     // const calRef: AngularFirestoreDocument<any> = this.afs.doc(`calendar/${userAuth.uid}`);
     // calRef.set({calId: `${userAuth.uid}`});
     const appmtRef: AngularFirestoreDocument<any> = this.afs.doc(`appointment/${userAuth.uid}`);
-    appmtRef.set({calId: `${userAuth.uid}`, numOfSlots: 0});
+    appmtRef.set({calId: `${userAuth.uid}`, numOfSlots: 0, slots: {}});
     return userRef.set(AuthData);
   }
 
@@ -127,12 +127,12 @@ export class AuthService {
     const appmtRef: AngularFirestoreDocument<any> = this.afs.doc(`appointment/${value.uid}`);
     appmtRef.update({calId: `${value.uid}`})
     .catch(() => {
-      appmtRef.set({calId: `${value.uid}`, numOfSlots: 0});
+      appmtRef.set({calId: `${value.uid}`, numOfSlots: 0, slots: {}});
     });
     const calRef: AngularFirestoreDocument<any> = this.afs.doc(`calendar/${value.uid}`);
     calRef.update({calId: `${value.uid}`})
     .catch(() => {
-      calRef.set({calId: `${value.uid}`, numOfSlots: 0});
+      calRef.set({calId: `${value.uid}`, numOfSlots: 0, slots: {}});
     });
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${value.uid}`);
     userRef.update({'uid': value.uid})

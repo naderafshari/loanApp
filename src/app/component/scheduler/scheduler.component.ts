@@ -7,7 +7,7 @@ import { AuthService } from '../../provider/auth.service';
 import { UserInfo } from '../../model/user-info';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { Calendar, Slot, DataClass } from '../../model/calendar';
+import { Calendar, DataClass } from '../../model/calendar';
 import * as _ from 'lodash';
 
 @Component({
@@ -61,7 +61,7 @@ export class SchedulerComponent implements OnInit, AfterViewInit {
             };
             this.dataAdapter = new jqx.dataAdapter(this.source);
             this.schedulerSettings = {
-                date: new jqx.date(2016, 11, 23),
+                date: new jqx.date(new Date().toString()), //(2018, 1, 23),
                 width: 800,
                 height: 600,
                 source: this.dataAdapter,
@@ -85,7 +85,7 @@ export class SchedulerComponent implements OnInit, AfterViewInit {
                 ]
             };
             this.scheduler.createComponent(this.schedulerSettings);
-            this.scheduler.ensureAppointmentVisible('id1');
+            // this.scheduler.ensureAppointmentVisible('id1');
 
             const usedSlots = Object.keys(this.calendar.slots)
             .filter( slots => slots.charAt(0) === 's');
@@ -106,7 +106,7 @@ export class SchedulerComponent implements OnInit, AfterViewInit {
     }
   }
   
-  private debounceAdd =     _.debounce((slot) => this.addSlot(slot),    1500, {});
+  private debounceAdd    =  _.debounce((slot) => this.addSlot(slot),    1500, {});
   private debounceDelete =  _.debounce((slot) => this.DeleteSlot(slot), 1500, {});
   private debounceChange =  _.debounce((slot) => this.ChangeSlot(slot), 1500, {});
     
@@ -177,8 +177,8 @@ onAppointmentChange(event: any): void {
 
 onCellClick(event: any): void {
     const cell = event.args.cell;
-    console.log('cellClick is raised');
-    console.log(cell);
+    // console.log('cellClick is raised');
+    // console.log(cell);
 }
 
 // called when the dialog is craeted.
@@ -195,8 +195,10 @@ editDialogCreate = (dialog, fields, editAppointment) => {
     fields.locationLabel.html('Where');
     fields.fromLabel.html('Start');
     fields.toLabel.html('End');
-    fields.resourceLabel.html('Therapist');
-
+    fields.resourceLabel.html('Room');
+    // show resource option
+    fields.resourceContainer.show();
+    
     const buttonElement = document.createElement('BUTTON');
     buttonElement.innerText = 'Print';
     buttonElement.style.cssFloat = 'right';
@@ -341,27 +343,27 @@ editDialogCreate = (dialog, fields, editAppointment) => {
 
   generateCannedSlots(): any {
     const slot1 = {
-        id: 'id1', description: 'George brings projector ', location: 'TBD', subject: 'Quarterly Project', calendar: 'Therapist 1',
+        id: 'id1', description: 'George brings projector ', location: 'TBD', subject: 'Quarterly Project', calendar: 'Room 1',
         start: new Date(2016, 10, 23, 9, 0, 0), end: new Date(2016, 10, 23, 16, 0, 0)
     };
     const slot2 = {
-        id: 'id2', description: '', location: 'SP Room1', subject: 'IT Group Mtg.', calendar: 'Therapist 2',
+        id: 'id2', description: '', location: 'SP Room1', subject: 'IT Group Mtg.', calendar: 'Room 2',
         start: new Date(2016, 10, 24, 10, 0, 0), end: new Date(2016, 10, 24, 15, 0, 0)
     };
     const slot3 = {
-        id: 'id3', description: '', location: 'OR Room2', subject: 'Course Social Media', calendar: 'Therapist 3',
+        id: 'id3', description: '', location: 'OR Room2', subject: 'Course Social Media', calendar: 'Room 3',
         start: new Date(2016, 10, 27, 11, 0, 0), end: new Date(2016, 10, 27, 13, 0, 0)
     };
     const slot4 = {
-        id: 'id4', description: '', location: 'SP Room3', subject: 'New Projects Planning', calendar: 'Therapist 2',
+        id: 'id4', description: '', location: 'SP Room3', subject: 'New Projects Planning', calendar: 'Room 2',
         start: new Date(2016, 10, 23, 16, 0, 0), end: new Date(2016, 10, 23, 18, 0, 0)
     };
     const slot5 = {
-        id: 'id5', description: '', location: 'SP Room2', subject: 'Interview with James', calendar: 'Therapist 1',
+        id: 'id5', description: '', location: 'SP Room2', subject: 'Interview with James', calendar: 'Room 1',
         start: new Date(2016, 10, 25, 15, 0, 0), end: new Date(2016, 10, 25, 17, 0, 0)
     };
     const slot6 = {
-        id: 'id6', description: '', location: 'OR Room1', subject: 'Interview with Nancy', calendar: 'Therapist 4',
+        id: 'id6', description: '', location: 'OR Room1', subject: 'Interview with Nancy', calendar: 'Room 4',
         start: new Date(2016, 10, 26, 14, 0, 0), end: new Date(2016, 10, 26, 16, 0, 0)
     };
 
