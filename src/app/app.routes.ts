@@ -16,9 +16,6 @@ import { FormConfigComponent } from './component/form-config/form-config.compone
 import { FormAssignComponent } from './component/form-assign/form-assign.component';
 import { FormHistoryComponent } from './component/form-history/form-history.component';
 import { FormReviewComponent } from './component/form-review/form-review.component';
-import { SchedulerComponent } from './component/scheduler/scheduler.component';
-import { AppointmentComponent } from './component/appointment/appointment.component';
-import { DemoComponent } from './cal-module/demo/component';
 
 export const router: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -33,10 +30,7 @@ export const router: Routes = [
     { path: 'form-config/:id', component: FormConfigComponent, canActivate: [AdminGuard] },
     { path: 'form-assign/:uid', component: FormAssignComponent, canActivate: [AdminGuard] },
     { path: 'form-history/:uid', component: FormHistoryComponent, canActivate: [AdminGuard] },
-    { path: 'form-review/:uid/:tid', component: FormReviewComponent, canActivate: [AdminGuard] },
-    { path: 'mwl-demo-component', component: DemoComponent, canActivate: [AuthGuard] },
-    { path: 'scheduler', component: SchedulerComponent, canActivate: [AdminGuard] },
-    { path: 'appointment', component: AppointmentComponent, canActivate: [AuthGuard] }
+    { path: 'form-review/:uid/:tid', component: FormReviewComponent, canActivate: [AdminGuard] }
 ];
 
 export const routes: ModuleWithProviders = RouterModule.forRoot(router);

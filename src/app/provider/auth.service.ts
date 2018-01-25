@@ -7,6 +7,7 @@ import { Observable, Subject, BehaviorSubject } from 'rxjs/Rx';
 import { Router } from '@angular/router';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { UserInfo } from '../model/user-info';
+import { FormService } from './form.service';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +16,8 @@ export class AuthService {
   userDoc: Observable<{}>;
   userInfo: UserInfo;
 
-  constructor(private firebaseAuth: AngularFireAuth, private router: Router, private afs: AngularFirestore) {
+  constructor(private firebaseAuth: AngularFireAuth, private router: Router, 
+    private afs: AngularFirestore, private fs: FormService) {
 
     this.user = this.firebaseAuth.authState
     .switchMap(user => {
@@ -43,8 +45,9 @@ export class AuthService {
     };
     // const calRef: AngularFirestoreDocument<any> = this.afs.doc(`calendar/${userAuth.uid}`);
     // calRef.set({calId: `${userAuth.uid}`});
-    const appmtRef: AngularFirestoreDocument<any> = this.afs.doc(`appointment/${userAuth.uid}`);
-    appmtRef.set({calId: `${userAuth.uid}`, numOfSlots: 0, slots: {}});
+    if (this.fs.getForm('form1')) {
+      this.fs.assignForm('form1', userAuth.uid);
+    }
     return userRef.set(AuthData);
   }
 
@@ -124,16 +127,11 @@ export class AuthService {
 }
 
   upsert(value) {
-    const appmtRef: AngularFirestoreDocument<any> = this.afs.doc(`appointment/${value.uid}`);
-    appmtRef.update({calId: `${value.uid}`})
-    .catch(() => {
-      appmtRef.set({calId: `${value.uid}`, numOfSlots: 0, slots: {}});
-    });
-    const calRef: AngularFirestoreDocument<any> = this.afs.doc(`calendar/${value.uid}`);
-    calRef.update({calId: `${value.uid}`})
-    .catch(() => {
-      calRef.set({calId: `${value.uid}`, numOfSlots: 0, slots: {}});
-    });
+    //const appmtRef: AngularFirestoreDocument<any> = this.afs.doc(`appointment/${value.uid}`);
+    //appmtRef.update({calId: `${value.uid}`})
+    //.catch(() => {
+    //  appmtRef.set({calId: `${value.uid}`, numOfSlots: 0, slots: {}});
+    //});
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${value.uid}`);
     userRef.update({'uid': value.uid})
     .then(() => this.router.navigateByUrl('/user-manage'))
@@ -146,7 +144,12 @@ export class AuthService {
         'role': 'user',
         'assignedForms': {}
       })
-      .then( () => this.router.navigate(['/user-profile', value.uid]))
+      .then( () => {
+        if (this.fs.getForm('form1')) {
+          this.fs.assignForm('form1', value.uid);
+        }
+        this.router.navigate(['/user-profile', value.uid])
+      })
       .catch((err) => {
         console.log(err);
         alert(err);

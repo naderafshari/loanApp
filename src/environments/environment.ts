@@ -6,19 +6,12 @@
 export const environment = {
   production: false,
   firebase: {
-    apiKey: "AIzaSyCU-oq5v8QzbkN3LHxYmyCbGoyI4GeayRw",
-    authDomain: "nhcchiro123.firebaseapp.com",
-    databaseURL: "https://nhcchiro123.firebaseio.com",
-    projectId: "nhcchiro123",
+    apiKey: "AIzaSyBH90FyH-b3b4qzFQRBJknQP5D5HPPylOk",
+    authDomain: "carloanapp.firebaseapp.com",
+    databaseURL: "https://carloanapp.firebaseio.com",
+    projectId: "carloanapp",
     storageBucket: "",
-    messagingSenderId: "541314828998"
-    /*
-    apiKey: "AIzaSyDvBEdmdt51nTMgSxnk6J-AaBL6F21OGE8",
-    authDomain: "nhccpage.firebaseapp.com",
-    databaseURL: "https://nhccpage.firebaseio.com",
-    projectId: "nhccpage",
-    storageBucket: "nhccpage.appspot.com",
-    messagingSenderId: "1034156714224"*/
+    messagingSenderId: "707954220417"
   }
 };
 //Google
