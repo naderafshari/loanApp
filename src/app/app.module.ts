@@ -36,6 +36,7 @@ import { FormReviewComponent } from './component/form-review/form-review.compone
 import { NameFilterPipe } from './pipe/name-filter.pipe';
 import { Autosize } from 'ng-autosize';
 import { TextMaskModule } from 'angular2-text-mask';
+import { UserFunctionComponent } from './component/user-function/user-function.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { TextMaskModule } from 'angular2-text-mask';
     FormHistoryComponent,
     FormReviewComponent,
     NameFilterPipe,
-    Autosize
+    Autosize,
+    UserFunctionComponent
   ],
   imports: [
     BrowserModule,

@@ -6,8 +6,8 @@
 
   <form #formData='ngForm' (ngSubmit)="login(formData)">
 
-    <input matInput type="text"placeholder="Email address.." (ngModel)="email" name="email" required>
-    <input matInput type="password" placeholder="Password" (ngModel)="password" required>
+    <input matInput type="text" placeholder="Email address.." (ngModel)="email" name="email" required>
+    <input matInput type="password" placeholder="Password" (ngModel)="password" name="password" required>
 
     <button mat-raised-button color="primary" [disabled]="!formData.valid">Log in</button>
     <a routerLink="/signup" class="alc">Don't have an account?</a>

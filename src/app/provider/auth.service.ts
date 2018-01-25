@@ -97,12 +97,14 @@ export class AuthService {
     return this.firebaseAuth
     .auth
     .createUserWithEmailAndPassword(email, password)
-    .then( (value) => {
-      console.log('signup success');
-      let user:any = firebase.auth().currentUser;
+    .then( (user) => {
       user.sendEmailVerification().then(() => {
-        this.setUserAuthData(value, displayName)
-        .then(() => this.router.navigate(['/user-profile', value.uid]))
+        this.setUserAuthData(user, displayName)
+        .then(() =>  {
+          alert('A Verification Email was sent to your login email. After receiving the email, click on the provided link and log back in.');
+          // console.log('signup success for user: ', user);
+          this.logout();
+        })
         .catch(err => {
           console.log(err);
           alert(err);
@@ -137,7 +139,7 @@ export class AuthService {
         this.upsert(value.user);
       } else {
         value.user.sendEmailVerification().then(() => {
-          alert('The login email is not verified. Check your email for a verification email.');
+          alert('The login email is not verified. Verify your email with the Social media provider.');
           this.logout();
         })
       }
@@ -153,7 +155,14 @@ export class AuthService {
     //});
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
     userRef.update({'uid': user.uid})
-    .then(() => this.router.navigateByUrl('/user-manage'))
+    .then(() => {
+      if (user.lastName) {
+        // if personal info hasn't been collected yet
+        this.router.navigateByUrl('/user-manage');
+      } else {
+        this.router.navigateByUrl('/user-function');
+      }
+    })
     .catch(() => {
       userRef.set({
         'displayName': user.displayName,
@@ -167,7 +176,7 @@ export class AuthService {
         if (this.fs.getForm('form1')) {
           this.fs.assignForm('form1', user.uid);
         }
-        this.router.navigate(['/user-profile', user.uid])
+        this.router.navigateByUrl('/user-function');
       })
       .catch((err) => {
         console.log(err);
