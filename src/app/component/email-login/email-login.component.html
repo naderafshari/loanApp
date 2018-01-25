@@ -6,10 +6,10 @@
 
   <form #formData='ngForm' (ngSubmit)="login(formData)">
 
-    <input type="text" placeholder="Email address.." (ngModel)="email" name="email" class="txt" required>
-    <input type="password" placeholder="Password" (ngModel)="password" name="password" class="txt" required>
+    <input matInput type="text"placeholder="Email address.." (ngModel)="email" name="email" required>
+    <input matInput type="password" placeholder="Password" (ngModel)="password" required>
 
-    <button type="submit" [disabled]="!formData.valid" class="basic-btn">Log in</button>
+    <button mat-raised-button color="primary" [disabled]="!formData.valid">Log in</button>
     <a routerLink="/signup" class="alc">Don't have an account?</a>
     <a routerLink="/reset-password" class="alc">Forgot password?</a>
   </form>

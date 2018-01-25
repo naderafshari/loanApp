@@ -99,11 +99,14 @@ export class AuthService {
     .createUserWithEmailAndPassword(email, password)
     .then( (value) => {
       console.log('signup success');
-      this.setUserAuthData(value, displayName)
-      .then(() => this.router.navigate(['/user-profile', value.uid]))
-      .catch(err => {
-        console.log(err);
-        alert(err);
+      let user:any = firebase.auth().currentUser;
+      user.sendEmailVerification().then(() => {
+        this.setUserAuthData(value, displayName)
+        .then(() => this.router.navigate(['/user-profile', value.uid]))
+        .catch(err => {
+          console.log(err);
+          alert(err);
+        });
       });
     })
     .catch(err => {
@@ -116,39 +119,55 @@ export class AuthService {
     return this.firebaseAuth
       .auth
       .signInWithEmailAndPassword(email, password)
-      .then( (value) => this.upsert(value))
+      .then( (user) => {
+        if (user.emailVerified) {
+          this.upsert(user);
+        } else {
+          alert('The login email is not verified. Check your email for a verification email.');
+          this.logout();
+        }
+      })
       .catch( (err) => alert('Login failed! ' + err));
   }
 
   private socialSignIn(provider) {
     return this.firebaseAuth.auth.signInWithPopup(provider)
-    .then( (value) => this.upsert(value.user))
+    .then( (value) => {
+      if (value.user.emailVerified) {
+        this.upsert(value.user);
+      } else {
+        value.user.sendEmailVerification().then(() => {
+          alert('The login email is not verified. Check your email for a verification email.');
+          this.logout();
+        })
+      }
+    })
     .catch( (err) =>  alert('Login failed! ' + err));
-}
+  }
 
-  upsert(value) {
+  upsert(user) {
     //const appmtRef: AngularFirestoreDocument<any> = this.afs.doc(`appointment/${value.uid}`);
     //appmtRef.update({calId: `${value.uid}`})
     //.catch(() => {
     //  appmtRef.set({calId: `${value.uid}`, numOfSlots: 0, slots: {}});
     //});
-    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${value.uid}`);
-    userRef.update({'uid': value.uid})
+    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
+    userRef.update({'uid': user.uid})
     .then(() => this.router.navigateByUrl('/user-manage'))
     .catch(() => {
       userRef.set({
-        'displayName': value.displayName,
-        'email': value.email,
-        'uid': value.uid,
-        'photoURL': value.photoURL,
+        'displayName': user.displayName,
+        'email': user.email,
+        'uid': user.uid,
+        'photoURL': user.photoURL,
         'role': 'user',
         'assignedForms': {}
       })
       .then( () => {
         if (this.fs.getForm('form1')) {
-          this.fs.assignForm('form1', value.uid);
+          this.fs.assignForm('form1', user.uid);
         }
-        this.router.navigate(['/user-profile', value.uid])
+        this.router.navigate(['/user-profile', user.uid])
       })
       .catch((err) => {
         console.log(err);
