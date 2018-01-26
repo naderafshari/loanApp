@@ -1,20 +1,20 @@
-<mat-card class="form-container">
+<mat-card *ngIf="userInfo" class="form-container">
   <a routerLink="/user-manage" id="goback">Go back/Cancel</a>
   <br>
   <br>
-  <div *ngIf="(authService.user | async)?.role ==='admin' && userInfo">
+  <div *ngIf="(authService.user | async)?.role ==='admin'">
     <a (click)="openDialog(userInfo.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;Delete-Profile&nbsp;&nbsp;&nbsp;({{userInfo.email}})</a>
   </div>
   <br>
-  <mat-form-field *ngIf="userInfo">
+  <mat-form-field>
     <input matInput required [(ngModel)]="userInfo.firstName" placeholder="First Name.."> 
   </mat-form-field>
   
-  <mat-form-field *ngIf="userInfo">
+  <mat-form-field>
     <input matInput required [(ngModel)]="userInfo.lastName" placeholder="Last Name.."> 
   </mat-form-field>
 
-  <mat-form-field *ngIf="(authService.user | async)?.role ==='admin' && userInfo">
+  <mat-form-field *ngIf="(authService.user | async)?.role ==='admin'">
     <mat-select [(ngModel)]="userInfo.role" placeholder="Role">
       <mat-option value="admin">admin</mat-option>
       <mat-option value="super">super user</mat-option>
@@ -22,28 +22,28 @@
     </mat-select>
   </mat-form-field>  
   <br>
-  <mat-form-field *ngIf="userInfo">
+  <mat-form-field>
     <input matInput [(ngModel)]="userInfo.phone1" placeholder="First Phone Number.."> 
   </mat-form-field>
-  <mat-form-field *ngIf="userInfo">
+  <mat-form-field>
       <input matInput [(ngModel)]="userInfo.phone2" placeholder="Second Phone Number.."> 
   </mat-form-field>
   <br>
-  <mat-form-field *ngIf="userInfo">
+  <mat-form-field>
     <input matInput [(ngModel)]="userInfo.addr1Line1" placeholder="Address First Line.."> 
   </mat-form-field>
   <br>
-  <mat-form-field *ngIf="userInfo">
+  <mat-form-field>
     <input matInput [(ngModel)]="userInfo.addr1Line2" placeholder="Address Second Line.."> 
   </mat-form-field>
   <br>
-  <mat-form-field *ngIf="userInfo">
+  <mat-form-field>
     <input matInput [(ngModel)]="userInfo.addr1City" placeholder="City.."> 
   </mat-form-field>
-  <mat-form-field *ngIf="userInfo">
+  <mat-form-field>
     <input matInput [(ngModel)]="userInfo.addr1State" placeholder="State.."> 
   </mat-form-field>
-  <mat-form-field *ngIf="userInfo">
+  <mat-form-field>
     <input matInput [(ngModel)]="userInfo.addr1Zip" placeholder="Zip Code.."> 
   </mat-form-field>
           

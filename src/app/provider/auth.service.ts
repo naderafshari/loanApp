@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { UserInfo } from '../model/user-info';
 import { FormService } from './form.service';
+import { Subscription } from 'rxjs/Subscription';
 
 @Injectable()
 export class AuthService {
@@ -123,7 +124,11 @@ export class AuthService {
       .signInWithEmailAndPassword(email, password)
       .then( (user) => {
         if (user.emailVerified) {
-          this.upsert(user);
+          const sub: Subscription = this.afs.doc(`users/${user.uid}`).valueChanges().subscribe((data: UserInfo) => {
+            this.userInfo = data;
+            this.upsert(this.userInfo);
+            sub.unsubscribe();
+          });
         } else {
           alert('The login email is not verified. Check your email for a verification email.');
           this.logout();
@@ -135,9 +140,18 @@ export class AuthService {
   private socialSignIn(provider) {
     return this.firebaseAuth.auth.signInWithPopup(provider)
     .then( (value) => {
-      if (value.user.emailVerified) {
-        this.upsert(value.user);
-      } else {
+      if (value.user.emailVerified) { // social emails are typically validated
+        const sub: Subscription = this.afs.doc(`users/${value.user.uid}`).valueChanges()
+        .subscribe((data: UserInfo) => {
+          if (data) { // not first time
+            this.userInfo = data;
+            this.upsert(this.userInfo);
+          } else { // first time
+            this.upsert(value.user);
+          }
+          sub.unsubscribe();
+        });
+    } else {
         value.user.sendEmailVerification().then(() => {
           alert('The login email is not verified. Verify your email with the Social media provider.');
           this.logout();
@@ -153,10 +167,17 @@ export class AuthService {
     //.catch(() => {
     //  appmtRef.set({calId: `${value.uid}`, numOfSlots: 0, slots: {}});
     //});
+    const authData: UserInfo = {
+      'displayName': user.displayName,
+      'email': user.email,
+      'uid': user.uid,
+      'photoURL': user.photoURL,
+    }
+    console.log("Display Name: ", user.displayName);
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
-    userRef.update({'uid': user.uid})
+    userRef.update(authData)
     .then(() => {
-      if (user.lastName) {
+      if (this.userInfo.lastName) {
         // if personal info hasn't been collected yet
         this.router.navigateByUrl('/user-manage');
       } else {

@@ -1,3 +1,16 @@
-<p>
-  user-function works!
-</p>
+<mat-card class="form-container" *ngIf="userInfo;">
+  <mat-card-header>
+    <a id="goback" (click)="logout()">Logout</a>
+  </mat-card-header>
+  <hr>
+  <h3>Select your interest:</h3>
+  <mat-card-content>
+    <mat-radio-group [(ngModel)]="userInfo.function">
+      <mat-radio-button value="borrower">Borrower</mat-radio-button>
+      <mat-radio-button value="lender">Lender</mat-radio-button>
+    </mat-radio-group>
+    <!--<div >Your function is: {{userInfo.function}}</div>-->
+    <hr>
+      <a id="goback" (click)="clickNext()">&nbsp;&nbsp;Next</a>
+  </mat-card-content>
+</mat-card>

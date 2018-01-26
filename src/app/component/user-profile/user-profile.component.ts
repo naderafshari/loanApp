@@ -88,11 +88,12 @@ export class UserProfileComponent implements OnInit {
       }
     }
   }
+
   allRequireFields() {
-    if (this.userInfo.firstName === '' || this.userInfo.lastName === '') {
-      return false;
+    if (this.userInfo.firstName && this.userInfo.lastName) {
+      return true;
     }
-    return true;
+    return false;
   }
 
 }
