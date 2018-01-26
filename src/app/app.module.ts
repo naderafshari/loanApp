@@ -17,6 +17,8 @@ import { UserService } from './provider/user.service';
 import { FormService } from './provider/form.service';
 import { AuthGuard } from './guard/auth.guard';
 import { AdminGuard } from './guard/admin.guard';
+import { LenderGuard } from './guard/lender.guard';
+import { BorrowerGuard } from './guard/borrower.guard';
 import { router } from './app.routes';
 
 import { AppComponent } from './app.component';
@@ -75,7 +77,7 @@ import { UserFunctionComponent } from './component/user-function/user-function.c
   entryComponents: [
     DialogComponent
   ],
-  providers: [AuthService, UserService, FormService, AuthGuard, AdminGuard],
+  providers: [AuthService, UserService, FormService, AuthGuard, AdminGuard, LenderGuard, BorrowerGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
