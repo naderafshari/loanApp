@@ -10,7 +10,7 @@ export interface UserInfo {
   firstName?:    string;
   lastName?:     string;
   assignedForms?: {};
-  owned?:         {};
+  purchased?:     {};
   addr1Line1?:   string;
   addr1Line2?:   string;
   addr1City?:    string;

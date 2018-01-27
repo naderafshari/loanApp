@@ -10,7 +10,6 @@ import { UserInfo } from '../../model/user-info';
 import { Form } from '../../model/form';
 import { FormManageComponent } from '../form-manage/form-manage.component';
 import { NameFilterPipe } from '../../pipe/name-filter.pipe';
-import { userInfo } from 'os';
 
 @Component({
   selector: 'app-lender-portal',
@@ -20,14 +19,14 @@ import { userInfo } from 'os';
 export class LenderPortalComponent implements OnInit {
   usersCol: AngularFirestoreCollection<UserInfo>;
   userDoc: AngularFirestoreDocument<UserInfo>;
-  users: Observable<UserInfo[]>;
+  users: any;
   forms: Observable<{}>;
   userForms: any[];
   userForm: any;
   usedForms: string[];
   searchText: any;
   userInfo: UserInfo;
-  ownedUsers: any[];
+  purchasedUsers: any[];
 
   constructor(private afs: AngularFirestore, public dialog: MatDialog,
               public authService: AuthService, private router: Router,
@@ -36,13 +35,13 @@ export class LenderPortalComponent implements OnInit {
 
   ngOnInit() {
     this.afs.doc<UserInfo>(`users/${this.authService.currentUserId}`)
-    .valueChanges().subscribe((data)=> {
+    .valueChanges().subscribe((data) => {
       this.userInfo = data;
-      this.ownedUsers = [];
-      if (this.userInfo.owned) {
-        this.ownedUsers = Object.values(this.userInfo.owned);
+      this.purchasedUsers = [];
+      if (this.userInfo.purchased) {
+        this.purchasedUsers = Object.values(this.userInfo.purchased);
       }
-      console.log('owned users values: ', this.ownedUsers)
+      console.log('purchased users values: ', this.purchasedUsers);
     });
     this.afs.doc(`users/${this.authService.currentUserId}`).collection<Form>('forms')
     .valueChanges().subscribe((definedForms) => {
@@ -51,24 +50,28 @@ export class LenderPortalComponent implements OnInit {
         for (let i = 0; i < definedForms.length; i++) {
           this.usedForms.push(definedForms[i].formId);
         }
-        console.log("defined forms are: ", this.usedForms);
+        console.log('defined forms are: ', this.usedForms);
         this.userForms = [];
-        this.ownedUsers.forEach( userId => {
-              this.afs.collection<UserInfo>('users');
-              this.afs.doc(`users/${userId}`).collection<Form>('forms', ref => ref.where('formSource', '==', this.userInfo.uid))
-              .valueChanges().subscribe((forms) => {
-                if (forms) {
-                  this.usedForms.forEach( e => {
-                    /* Find the latest of each form of each user ( user's forms collection )and
-                     * push it to userForms array along with the uid of the user if the form is assigned */
-                    this.userForm = forms.filter(form => form.formId === e).sort(this.compare)[0];
-                    if (this.userForm) {
-                        this.userForms.push( this.userForm);
-                    }
-                  });
-                }
-                console.log("user forms are: ", this.userForms);
+        this.users = [];
+        this.purchasedUsers.forEach( userId => {
+          this.afs.doc(`users/${userId}`).collection<Form>('forms', ref => ref.where('formSource', '==', this.userInfo.uid))
+          .valueChanges().subscribe((forms) => {
+            if (forms) {
+              this.afs.doc<UserInfo>(`users/${userId}`).valueChanges().subscribe((data) => {
+                this.users.push(data);
+                this.usedForms.forEach( e => {
+                  /* Find the latest of each form of each user ( user's forms collection )and
+                    * push it to userForms array */
+                  this.userForm = forms.filter(form => form.formId === e).sort(this.compare)[0];
+                  if (this.userForm) {
+                    this.userForm.uid = userId;
+                    this.userForms.push(this.userForm);
+                  }
+                });
+                console.log('user forms are: ', this.userForms);
               });
+            }
+          });
         });
       }
     });

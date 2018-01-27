@@ -6,26 +6,26 @@
   <mat-card-content>
     <mat-list> 
       <mat-list-item *ngIf = "authService.user | async; let user" >
-        <a id="goback" (click)="goFormManage(user.uid);"class="secondary-content">
+        <a id="goback" (click)="goFormManage(user.uid);">
       <mat-icon>create</mat-icon>&nbsp;&nbsp;Manage/Configre Form Templates</a>
       <hr>
       </mat-list-item>
     </mat-list>
   </mat-card-content>
   <mat-card-content>
-    <mat-list>
+    <mat-list *ngFor="let user of users">
     <mat-list-item >
         <strong>{{user.displayName}}</strong> &nbsp;
-      <a (click)="editClick(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>person</mat-icon></a>
+      <a (click)="editClick(user.uid);" >&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>person</mat-icon></a>
       <div>
-        <a (click)="goFormAssign(user.uid);"class="secondary-content">&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>assignment</mat-icon></a>
-        <a (click)="goFormHistory(user.uid);"class="secondary-content">&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>history</mat-icon></a>
+        <a (click)="goFormAssign(user.uid);">&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>assignment</mat-icon></a>
+        <a (click)="goFormHistory(user.uid);">&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>history</mat-icon></a>
       </div>
       </mat-list-item>
       <mat-list-item >
         <mat-icon>subject</mat-icon>
         <div *ngFor="let userForm of userForms">
-          <a *ngIf="userForm.uid === user.uid" (click)="goToForm(user.uid,userForm.formId);" class="secondary-content">&nbsp;&nbsp;{{userForm.formName}}</a>
+          <a *ngIf="userForm.uid === user.uid" (click)="goToForm(user.uid,userForm.formId);" >&nbsp;&nbsp;{{userForm.formName}}</a>
         </div>
       </mat-list-item>
     </mat-list>

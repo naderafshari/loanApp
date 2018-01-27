@@ -29,17 +29,17 @@ export const router: Routes = [
     { path: 'signup', component: SignupComponent },
     { path: 'email-login', component: EmailLoginComponent },
     { path: 'reset-password', component: ResetPasswordComponent },
+    { path: 'user-function', component: UserFunctionComponent, canActivate: [AuthGuard] },
     { path: 'user-profile/:uid', component: UserProfileComponent, canActivate: [AuthGuard] },
     { path: 'user-manage', component: UserManageComponent, canActivate: [AuthGuard && AdminGuard] },
     { path: 'borrower-portal', component: BorrowerPortalComponent, canActivate: [AuthGuard && BorrowerGuard] },
     { path: 'lender-portal', component: LenderPortalComponent, canActivate: [AuthGuard && LenderGuard] },
-    { path: 'user-function', component: UserFunctionComponent, canActivate: [AuthGuard] },
     { path: 'form/:uid/:fid', component: FormComponent, canActivate: [AuthGuard] },
-    { path: 'form-manage/:uid', component: FormManageComponent, canActivate: [AdminGuard] },
-    { path: 'form-config/:id', component: FormConfigComponent, canActivate: [AdminGuard] },
-    { path: 'form-assign/:uid', component: FormAssignComponent, canActivate: [AdminGuard] },
-    { path: 'form-history/:uid', component: FormHistoryComponent, canActivate: [AdminGuard] },
-    { path: 'form-review/:uid/:tid', component: FormReviewComponent, canActivate: [AdminGuard] }
+    { path: 'form-manage/:uid', component: FormManageComponent, canActivate: [AdminGuard || LenderGuard] },
+    { path: 'form-config/:id', component: FormConfigComponent, canActivate: [AdminGuard || LenderGuard] },
+    { path: 'form-assign/:uid', component: FormAssignComponent, canActivate: [AdminGuard || LenderGuard] },
+    { path: 'form-history/:uid', component: FormHistoryComponent, canActivate: [AdminGuard || LenderGuard] },
+    { path: 'form-review/:uid/:tid', component: FormReviewComponent, canActivate: [AdminGuard || LenderGuard] }
 ];
 
 export const routes: ModuleWithProviders = RouterModule.forRoot(router);

@@ -43,7 +43,7 @@ export class AuthService {
         photoURL: userAuth.photoURL,
         role: 'user',
         assignedForms: {},
-        owned: {}
+        purchased: {}
     };
     // const calRef: AngularFirestoreDocument<any> = this.afs.doc(`calendar/${userAuth.uid}`);
     // calRef.set({calId: `${userAuth.uid}`});
@@ -201,7 +201,7 @@ export class AuthService {
         'photoURL': user.photoURL,
         'role': 'user',
         'assignedForms': {},
-        'owned': {}
+        'purchased': {}
       })
       .then( () => {
         if (this.fs.getForm('form1')) {
