@@ -10,22 +10,24 @@ import { UserInfo } from '../../model/user-info';
 import { Form } from '../../model/form';
 import { FormManageComponent } from '../form-manage/form-manage.component';
 import { NameFilterPipe } from '../../pipe/name-filter.pipe';
+import { userInfo } from 'os';
 
 @Component({
-  selector: 'app-user-manage',
-  templateUrl: './user-manage.component.html',
-  styleUrls: ['./user-manage.component.css']
+  selector: 'app-lender-portal',
+  templateUrl: './lender-portal.component.html',
+  styleUrls: ['./lender-portal.component.css']
 })
-export class UserManageComponent implements OnInit {
+export class LenderPortalComponent implements OnInit {
   usersCol: AngularFirestoreCollection<UserInfo>;
   userDoc: AngularFirestoreDocument<UserInfo>;
   users: Observable<UserInfo[]>;
-  userId: any;
   forms: Observable<{}>;
   userForms: any[];
   userForm: any;
   usedForms: string[];
   searchText: any;
+  userInfo: UserInfo;
+  ownedUsers: any[];
 
   constructor(private afs: AngularFirestore, public dialog: MatDialog,
               public authService: AuthService, private router: Router,
@@ -33,20 +35,27 @@ export class UserManageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.afs.collection<Form>('forms')
+    this.afs.doc<UserInfo>(`users/${this.authService.currentUserId}`)
+    .valueChanges().subscribe((data)=> {
+      this.userInfo = data;
+      this.ownedUsers = [];
+      if (this.userInfo.owned) {
+        this.ownedUsers = Object.values(this.userInfo.owned);
+      }
+      console.log('owned users values: ', this.ownedUsers)
+    });
+    this.afs.doc(`users/${this.authService.currentUserId}`).collection<Form>('forms')
     .valueChanges().subscribe((definedForms) => {
       if (definedForms) {
         this.usedForms = [];
         for (let i = 0; i < definedForms.length; i++) {
           this.usedForms.push(definedForms[i].formId);
         }
-        this.usersCol = this.afs.collection<UserInfo>('users');
-        this.users = this.usersCol.valueChanges();
+        console.log("defined forms are: ", this.usedForms);
         this.userForms = [];
-        this.users.subscribe((users) => {
-          if (users) {
-            users.forEach( user => {
-              this.afs.doc(`users/${user.uid}`).collection<Form>('forms')
+        this.ownedUsers.forEach( userId => {
+              this.afs.collection<UserInfo>('users');
+              this.afs.doc(`users/${userId}`).collection<Form>('forms', ref => ref.where('formSource', '==', this.userInfo.uid))
               .valueChanges().subscribe((forms) => {
                 if (forms) {
                   this.usedForms.forEach( e => {
@@ -54,17 +63,12 @@ export class UserManageComponent implements OnInit {
                      * push it to userForms array along with the uid of the user if the form is assigned */
                     this.userForm = forms.filter(form => form.formId === e).sort(this.compare)[0];
                     if (this.userForm) {
-                      if (user.assignedForms[e] === 'true') {
-                        this.userForm.uid = user.uid;
                         this.userForms.push( this.userForm);
-                      }
                     }
                   });
                 }
                 console.log("user forms are: ", this.userForms);
               });
-            });
-          }
         });
       }
     });

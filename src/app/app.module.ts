@@ -39,6 +39,8 @@ import { NameFilterPipe } from './pipe/name-filter.pipe';
 import { Autosize } from 'ng-autosize';
 import { TextMaskModule } from 'angular2-text-mask';
 import { UserFunctionComponent } from './component/user-function/user-function.component';
+import { LenderPortalComponent } from './component/lender-portal/lender-portal.component';
+import { BorrowerPortalComponent } from './component/borrower-portal/borrower-portal.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +60,9 @@ import { UserFunctionComponent } from './component/user-function/user-function.c
     FormReviewComponent,
     NameFilterPipe,
     Autosize,
-    UserFunctionComponent
+    UserFunctionComponent,
+    LenderPortalComponent,
+    BorrowerPortalComponent
   ],
   imports: [
     BrowserModule,

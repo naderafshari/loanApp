@@ -1,5 +1,5 @@
 <mat-card class="form-container">
-  <a routerLink="/user-manage" id="goback">Go back/Cancel</a>
+  <a (click)="goBack()" id="goback">Go back/Cancel</a>
   <br>
   <br>
   <mat-list-item *ngIf="form">Last Updated: {{form.updateTime}}</mat-list-item>

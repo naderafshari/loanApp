@@ -1,0 +1,19 @@
+<mat-card class="user-container">
+  <mat-card-header>
+    <a *ngIf="authService.user | async" id="goback" (click)="logout()">Logout</a>
+  </mat-card-header>
+  <hr>
+  <mat-card-content *ngIf = "userInfo">
+    <mat-list *ngIf = "(authService.user | async)?.uid === userInfo.uid">
+      <mat-list-item ><mat-icon>person</mat-icon><strong>{{userInfo.displayName}}</strong> &nbsp;
+        <a (click)="editClick(userInfo.uid);">&nbsp;&nbsp;&nbsp;<mat-icon>create</mat-icon></a>
+      </mat-list-item>
+      <mat-list-item >
+        <mat-icon>subject</mat-icon>
+        <div *ngFor="let userForm of userForms">
+          <a (click)="goToForm(userInfo.uid,userForm.formId);">&nbsp;&nbsp;{{userForm.formName}}</a>
+        </div>
+      </mat-list-item>
+    </mat-list>
+  </mat-card-content>
+</mat-card>

@@ -42,12 +42,13 @@ export class AuthService {
         displayName: displayName,
         photoURL: userAuth.photoURL,
         role: 'user',
-        assignedForms: {}
+        assignedForms: {},
+        owned: {}
     };
     // const calRef: AngularFirestoreDocument<any> = this.afs.doc(`calendar/${userAuth.uid}`);
     // calRef.set({calId: `${userAuth.uid}`});
     if (this.fs.getForm('form1')) {
-      this.fs.assignForm('form1', userAuth.uid);
+      this.fs.assignForm('form1', userAuth.uid, userAuth.uid);
     }
     return userRef.set(AuthData);
   }
@@ -173,14 +174,22 @@ export class AuthService {
       'uid': user.uid,
       'photoURL': user.photoURL,
     }
-    console.log("Display Name: ", user.displayName);
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
     userRef.update(authData)
     .then(() => {
       if (this.userInfo.lastName) {
         // if personal info hasn't been collected yet
-        this.router.navigateByUrl('/user-manage');
-      } else {
+        if (this.userInfo.role === 'admin') {
+          this.router.navigateByUrl('/user-manage');
+        } else if (this.userInfo.function === 'borrower') {
+          this.router.navigateByUrl('/borrower-portal');
+        } else if (this.userInfo.function === 'lender') {
+          this.router.navigateByUrl('/lender-portal');
+        } else {
+          this.router.navigateByUrl('/user-function');
+        }
+    } else {
+        // if last name is not set it means the signup process was not completed, go back to function
         this.router.navigateByUrl('/user-function');
       }
     })
@@ -191,11 +200,12 @@ export class AuthService {
         'uid': user.uid,
         'photoURL': user.photoURL,
         'role': 'user',
-        'assignedForms': {}
+        'assignedForms': {},
+        'owned': {}
       })
       .then( () => {
         if (this.fs.getForm('form1')) {
-          this.fs.assignForm('form1', user.uid);
+          this.fs.assignForm('form1', user.uid, user.uid);
         }
         this.router.navigateByUrl('/user-function');
       })

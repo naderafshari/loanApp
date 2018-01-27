@@ -267,7 +267,7 @@ export class FormConfigComponent implements OnInit {
       if (this.allRequireFields()) {
         this.form.updateTime = new Date().toString();
         this.afs.collection('forms').doc(this.id).set(this.form).then(() => this.updateFields());
-        this.fs.reAssignFormAllUsers(this.form.formId)
+        this.fs.reAssignFormAllUsers(this.form.formId, this.userId )
         this.sub.unsubscribe();
         this.router.navigateByUrl('/user-manage');
       } else {

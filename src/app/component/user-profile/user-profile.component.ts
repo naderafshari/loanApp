@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { AuthService } from '../../provider/auth.service';
@@ -21,9 +22,8 @@ export class UserProfileComponent implements OnInit {
   uidDialog: string;
 
   constructor(private afs: AngularFirestore,
-              public authService: AuthService,
-              private router: Router, private dialog: MatDialog,
-              private route: ActivatedRoute) {
+              public authService: AuthService, private location: Location,
+              private router: Router, private dialog: MatDialog, private route: ActivatedRoute) {
 
     this.route.params.subscribe(params => {
       this.uid = params['uid'] || 0;
@@ -41,14 +41,11 @@ export class UserProfileComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-  }
-
   updateUser() {
     if (this.user && this.userInfo) {
       if (this.allRequireFields()) {
         this.afs.collection('users').doc(this.userInfo.uid).update(this.userInfo);
-        this.router.navigateByUrl('/user-manage');
+        this.goBack();
       } else {
         alert('Required field was not filled!');
       }
@@ -80,7 +77,8 @@ export class UserProfileComponent implements OnInit {
             this.authService.deleteAuthCurrentUser();
             this.router.navigateByUrl('/login');
           } else {
-            this.router.navigateByUrl('/user-manage');
+            // this.router.navigateByUrl('/user-manage');
+            this.goBack()
           }
         });
       } else {
@@ -96,4 +94,10 @@ export class UserProfileComponent implements OnInit {
     return false;
   }
 
+  goBack() {
+    this.location.back();
+  }
+
+  ngOnInit() {
+  }
 }

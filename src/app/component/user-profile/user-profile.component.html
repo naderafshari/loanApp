@@ -1,5 +1,6 @@
 <mat-card *ngIf="userInfo" class="form-container">
-  <a routerLink="/user-manage" id="goback">Go back/Cancel</a>
+ <!--  <a routerLink="/user-manage" id="goback">Go back/Cancel</a> -->
+  <a (click)="goBack()" id="goback">Go back/Cancel</a>
   <br>
   <br>
   <div *ngIf="(authService.user | async)?.role ==='admin'">

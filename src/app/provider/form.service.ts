@@ -64,39 +64,40 @@ export class FormService {
     }
   }
   
-  assignForm(formId, uid) {
+  assignForm(formId, sourceUid, uid) {
     const form = this.afs.collection<Form>('forms', ref => ref.where('formId', '==', formId)).valueChanges();
     const sub1 = form.subscribe((data) => {
         let formData = data[0];
+        formData.formSource = sourceUid;
         formData.updateTime = new Date().toString();
         formData.startTime = new Date().toString();
         this.afs.doc(`users/${uid}`).collection('forms').doc(new Date().toString()).set(formData);
         sub1.unsubscribe();
      });
      const user = this.afs.collection<UserInfo>('users', ref => ref.where('uid', '==', uid)).valueChanges();
-     const sub2 = user.subscribe((data) => {
+     const sub = user.subscribe((data) => {
        const userInfo = data[0];
        if (userInfo) {
          userInfo.assignedForms[`${formId}`] = 'true';
          this.afs.collection('users').doc(userInfo.uid).update(userInfo);
        }
-       sub2.unsubscribe();
+       sub.unsubscribe();
       });
   }
 
   unAssignForm(formId, uid) {
     const user = this.afs.collection<UserInfo>('users', ref => ref.where('uid', '==', uid)).valueChanges();
-    const sub2 = user.subscribe((data) => {
+    const sub = user.subscribe((data) => {
       const userInfo = data[0];
       if (userInfo) {
         userInfo.assignedForms[`${formId}`] = 'false';
         this.afs.collection('users').doc(userInfo.uid).update(userInfo);
       }
-      sub2.unsubscribe();
+      sub.unsubscribe();
      });
   }
 
-  reAssignFormAllUsers(formId) {
+  reAssignFormAllUsers(formId, uid) {
     const user = this.afs.collection<UserInfo>('users').valueChanges();
     const sub2 = user.subscribe((data) => {
       const users = data;
@@ -105,6 +106,7 @@ export class FormService {
           const form = this.afs.collection<Form>('forms', ref => ref.where('formId', '==', formId)).valueChanges();
           const sub1 = form.subscribe((data) => {
               let formData = data[0];
+              formData.formSource = uid;
               formData.updateTime = new Date().toString();
               formData.startTime = new Date().toString();
               this.afs.doc(`users/${userInfo.uid}`).collection('forms').doc(new Date().toString()).set(formData);

@@ -14,6 +14,8 @@ import { ResetPasswordComponent } from './component/reset-password/reset-passwor
 import { UserProfileComponent } from './component/user-profile/user-profile.component';
 import { UserManageComponent } from './component/user-manage/user-manage.component';
 import { UserFunctionComponent } from './component/user-function/user-function.component';
+import { BorrowerPortalComponent } from './component/borrower-portal/borrower-portal.component';
+import { LenderPortalComponent } from './component/lender-portal/lender-portal.component';
 import { FormComponent } from './component/form/form.component';
 import { FormManageComponent } from './component/form-manage/form-manage.component';
 import { FormConfigComponent } from './component/form-config/form-config.component';
@@ -28,7 +30,9 @@ export const router: Routes = [
     { path: 'email-login', component: EmailLoginComponent },
     { path: 'reset-password', component: ResetPasswordComponent },
     { path: 'user-profile/:uid', component: UserProfileComponent, canActivate: [AuthGuard] },
-    { path: 'user-manage', component: UserManageComponent, canActivate: [AuthGuard && BorrowerGuard] },
+    { path: 'user-manage', component: UserManageComponent, canActivate: [AuthGuard && AdminGuard] },
+    { path: 'borrower-portal', component: BorrowerPortalComponent, canActivate: [AuthGuard && BorrowerGuard] },
+    { path: 'lender-portal', component: LenderPortalComponent, canActivate: [AuthGuard && LenderGuard] },
     { path: 'user-function', component: UserFunctionComponent, canActivate: [AuthGuard] },
     { path: 'form/:uid/:fid', component: FormComponent, canActivate: [AuthGuard] },
     { path: 'form-manage/:uid', component: FormManageComponent, canActivate: [AdminGuard] },

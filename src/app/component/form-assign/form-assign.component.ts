@@ -23,6 +23,7 @@ export class FormAssignComponent implements OnInit, OnDestroy {
   sub: Subscription;
 
   constructor(private afs: AngularFirestore,
+              private authService: AuthService,
               private router: Router,
               private route: ActivatedRoute,
               public fs: FormService) {
@@ -37,7 +38,7 @@ export class FormAssignComponent implements OnInit, OnDestroy {
   }
 
   assignClick(formId) {
-    this.fs.assignForm(formId, this.uid);
+    this.fs.assignForm(formId, this.authService.currentUserId, this.uid);
     alert('Form assigned successfully.');
     this.router.navigateByUrl('/user-manage');
   }

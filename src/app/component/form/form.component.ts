@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { AuthService } from '../../provider/auth.service';
@@ -36,10 +37,8 @@ export class FormComponent implements OnInit {
   optionsValues: any[];
   choicesValues: any[];
 
-  constructor(private afs: AngularFirestore,
-    public authService: AuthService,
-    private router: Router,
-    private route: ActivatedRoute) {
+  constructor(private afs: AngularFirestore, public authService: AuthService,
+    private router: Router,private location: Location, private route: ActivatedRoute) {
 
       const numberMask = createNumberMask({
         prefix: '$',
@@ -151,7 +150,7 @@ export class FormComponent implements OnInit {
         alert('Cannot Update, Form not available!');
       }
       this.sub.unsubscribe();
-      this.router.navigateByUrl('/user-manage');
+      this.goBack();
     } else {
       alert('Required field was not filled!');
     }
@@ -185,6 +184,10 @@ export class FormComponent implements OnInit {
     saveAs(blob, filename);
   }
 
+  goBack() {
+    this.location.back();
+  }
+  
   ngOnInit() {
   }
 
