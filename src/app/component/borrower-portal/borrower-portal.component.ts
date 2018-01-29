@@ -44,10 +44,10 @@ export class BorrowerPortalComponent implements OnInit, OnDestroy {
         .subscribe((data: UserInfo) => {
           this.userInfo = data;
           if (this.userInfo) {
-            this.userForms = [];
             this.sub2 = this.afs.doc(`users/${this.userInfo.uid}`).collection<Form>('forms')
             .valueChanges().subscribe((forms) => {
               if (forms) {
+                this.userForms = [];
                 this.usedForms.forEach( e => {
                   /* Find the latest of each form (user's forms collection) and
                     * push it to userForms array if the form is assigned */
@@ -59,7 +59,7 @@ export class BorrowerPortalComponent implements OnInit, OnDestroy {
                   }
                 });
               }
-            // console.log("user forms are: ", this.userForms);
+             // console.log("user forms are: ", this.userForms);
             });
           }
         });

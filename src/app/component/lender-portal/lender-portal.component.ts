@@ -51,7 +51,6 @@ export class LenderPortalComponent implements OnInit {
           this.usedForms.push(definedForms[i].formId);
         }
         // console.log('defined forms are: ', this.usedForms);
-        this.userForms = [];
         this.users = [];
         this.purchasedUsers.forEach( userId => {
           this.afs.doc(`users/${userId}`).collection<Form>('forms', ref => ref.where('formCreator', '==', this.userInfo.uid))
@@ -59,6 +58,7 @@ export class LenderPortalComponent implements OnInit {
             if (forms) {
               this.afs.doc<UserInfo>(`users/${userId}`).valueChanges().subscribe((user) => {
                 this.users.push(user);
+                this.userForms = [];
                 this.usedForms.forEach( e => {
                   /* Find the latest of each form of each user ( user's forms collection )and
                     * push it to userForms array */
