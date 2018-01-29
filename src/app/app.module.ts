@@ -15,10 +15,13 @@ import { MaterialModule } from './material/material.module';
 import { AuthService } from './provider/auth.service';
 import { UserService } from './provider/user.service';
 import { FormService } from './provider/form.service';
+import { LenderFormService } from './provider/lender-form.service';
 import { AuthGuard } from './guard/auth.guard';
 import { AdminGuard } from './guard/admin.guard';
 import { LenderGuard } from './guard/lender.guard';
 import { BorrowerGuard } from './guard/borrower.guard';
+import { BorrowerAdminGuard } from './guard/borrower-admin.guard';
+import { LenderAdminGuard } from './guard/lender-admin.guard';
 import { router } from './app.routes';
 
 import { AppComponent } from './app.component';
@@ -41,6 +44,10 @@ import { TextMaskModule } from 'angular2-text-mask';
 import { UserFunctionComponent } from './component/user-function/user-function.component';
 import { LenderPortalComponent } from './component/lender-portal/lender-portal.component';
 import { BorrowerPortalComponent } from './component/borrower-portal/borrower-portal.component';
+import { LenderFormConfigComponent } from './component/lender-form-config/lender-form-config.component';
+import { LenderFormManageComponent } from './component/lender-form-manage/lender-form-manage.component';
+import { LenderFormAssignComponent } from './component/lender-form-assign/lender-form-assign.component';
+import { LenderFormHistoryComponent } from './component/lender-form-history/lender-form-history.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +69,11 @@ import { BorrowerPortalComponent } from './component/borrower-portal/borrower-po
     Autosize,
     UserFunctionComponent,
     LenderPortalComponent,
-    BorrowerPortalComponent
+    BorrowerPortalComponent,
+    LenderFormConfigComponent,
+    LenderFormManageComponent,
+    LenderFormAssignComponent,
+    LenderFormHistoryComponent
   ],
   imports: [
     BrowserModule,
@@ -81,7 +92,8 @@ import { BorrowerPortalComponent } from './component/borrower-portal/borrower-po
   entryComponents: [
     DialogComponent
   ],
-  providers: [AuthService, UserService, FormService, AuthGuard, AdminGuard, LenderGuard, BorrowerGuard],
+  providers: [AuthService, UserService, FormService, LenderFormService,
+    AuthGuard, AdminGuard, LenderGuard, BorrowerGuard, BorrowerAdminGuard, LenderAdminGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

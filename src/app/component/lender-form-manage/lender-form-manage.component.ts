@@ -6,17 +6,16 @@ import { Observable } from 'rxjs/Observable';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { DialogComponent } from '../dialog/dialog.component';
 import { Form } from '../../model/form';
-import { FormConfigComponent } from '../form-config/form-config.component';
-import { FormService } from '../../provider/form.service';
+import { LenderFormService } from '../../provider/lender-form.service';
 import { AuthService } from '../../provider/auth.service';
 import { UserInfo } from '../../model/user-info';
 
 @Component({
-  selector: 'app-form-manage',
-  templateUrl: './form-manage.component.html',
-  styleUrls: ['./form-manage.component.css']
+  selector: 'app-lender-form-manage',
+  templateUrl: './lender-form-manage.component.html',
+  styleUrls: ['./lender-form-manage.component.css']
 })
-export class FormManageComponent implements OnInit {
+export class LenderFormManageComponent implements OnInit {
   formsCol: AngularFirestoreCollection<Form>;
   forms: Observable<Form[]>;
   usedForms: string[];
@@ -27,8 +26,8 @@ export class FormManageComponent implements OnInit {
   userInfo: UserInfo;
 
   constructor(private afs: AngularFirestore, private location: Location,
-    private router: Router,   private route: ActivatedRoute,
-    private fs: FormService,  public dialog: MatDialog ) {
+    private router: Router,   private route: ActivatedRoute, private authService: AuthService,
+    private lfs: LenderFormService,  public dialog: MatDialog ) {
     }
 
   ngOnInit() {
@@ -38,33 +37,34 @@ export class FormManageComponent implements OnInit {
         this.usersCol = this.afs.collection<UserInfo>('users', ref => ref.where('uid', '==', this.userId));
         this.users = this.usersCol.valueChanges();
         this.users.subscribe((users) => {
-          if (users) {this.userInfo = users[0];
+          if (users) {
+            this.userInfo = users[0];
+            /* Setting up for add form. To find next available
+            form, find the not-available ones first here (at init) */
+            this.formsCol = this.afs.doc(`users/${this.authService.currentUserId}`).collection<Form>('forms');
+            this.forms = this.formsCol.valueChanges();
+            this.forms.subscribe(forms => {
+              this.usedForms = [];
+              forms.forEach(form => {
+                this.usedForms.push(form.formId.charAt(4) + form.formId.charAt(5));
+              });
+            });
           }
-        });
-        /* Setting up for add form. To find next available
-        form, find the not-available ones first here (at init) */
-        this.formsCol = this.afs.collection<Form>('forms');
-        this.forms = this.formsCol.valueChanges();
-        this.forms.subscribe(forms => {
-          this.usedForms = [];
-          forms.forEach(form => {
-            this.usedForms.push(form.formId.charAt(4) + form.formId.charAt(5));
-          });
         });
       }
     });
   }
 
   createForms() {
-    this.fs.createAllForms();
+    // this.lfs.createAllForms();
   }
 
   editClick(id) {
-    this.router.navigate(['/form-config', id]);
+    this.router.navigate(['/lender-form-config', id]);
   }
 
   addForm() {
-      this.fs.addForm(this.nextSlot(0, 'up'));
+      this.lfs.addForm(this.nextSlot(0, 'up'));
   }
 
   nextSlot(current, direction) {
@@ -82,7 +82,7 @@ export class FormManageComponent implements OnInit {
   }
 
   openDeleteAllDialog(): void {
-    if (this.userInfo.role === 'admin') {
+    if (this.userInfo.function === 'lender') {
       const dialogRef = this.dialog.open(DialogComponent, {
         width: '250px',
         data: 'You are about to Delete the forms. Form Configurartion will be cleared and form will be removed. Are you sure?'
@@ -91,7 +91,7 @@ export class FormManageComponent implements OnInit {
       dialogRef.afterClosed().subscribe(result => {
         if (result === 'Confirm') {
           for (let i = 0; i < this.usedForms.length; i++) {
-            this.fs.deleteForm('form' + this.usedForms[i]);
+            this.lfs.deleteForm('form' + this.usedForms[i]);
           }
         }
       });
@@ -101,7 +101,7 @@ export class FormManageComponent implements OnInit {
   }
 
   openDeleteDialog(formId): void {
-    if (this.userInfo.role === 'admin') {
+    if (this.userInfo.function === 'lender') {
       const dialogRef = this.dialog.open(DialogComponent, {
         width: '250px',
         data: 'You are about to Delete the forms. Form Configurartion will be cleared and form will be removed. Are you sure?'
@@ -109,7 +109,7 @@ export class FormManageComponent implements OnInit {
 
       dialogRef.afterClosed().subscribe(result => {
         if (result === 'Confirm') {
-          this.fs.deleteForm(formId);
+          this.lfs.deleteForm(formId);
         }
       });
     } else {

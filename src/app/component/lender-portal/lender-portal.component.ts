@@ -41,7 +41,7 @@ export class LenderPortalComponent implements OnInit {
       if (this.userInfo.purchased) {
         this.purchasedUsers = Object.values(this.userInfo.purchased);
       }
-      console.log('purchased users values: ', this.purchasedUsers);
+      // console.log('purchased users values: ', this.purchasedUsers);
     });
     this.afs.doc(`users/${this.authService.currentUserId}`).collection<Form>('forms')
     .valueChanges().subscribe((definedForms) => {
@@ -50,25 +50,27 @@ export class LenderPortalComponent implements OnInit {
         for (let i = 0; i < definedForms.length; i++) {
           this.usedForms.push(definedForms[i].formId);
         }
-        console.log('defined forms are: ', this.usedForms);
+        // console.log('defined forms are: ', this.usedForms);
         this.userForms = [];
         this.users = [];
         this.purchasedUsers.forEach( userId => {
-          this.afs.doc(`users/${userId}`).collection<Form>('forms', ref => ref.where('formSource', '==', this.userInfo.uid))
+          this.afs.doc(`users/${userId}`).collection<Form>('forms', ref => ref.where('formCreator', '==', this.userInfo.uid))
           .valueChanges().subscribe((forms) => {
             if (forms) {
-              this.afs.doc<UserInfo>(`users/${userId}`).valueChanges().subscribe((data) => {
-                this.users.push(data);
+              this.afs.doc<UserInfo>(`users/${userId}`).valueChanges().subscribe((user) => {
+                this.users.push(user);
                 this.usedForms.forEach( e => {
                   /* Find the latest of each form of each user ( user's forms collection )and
                     * push it to userForms array */
                   this.userForm = forms.filter(form => form.formId === e).sort(this.compare)[0];
                   if (this.userForm) {
-                    this.userForm.uid = userId;
-                    this.userForms.push(this.userForm);
+                    if (user.assignedForms[e] === 'true') {
+                      this.userForm.uid = userId;
+                      this.userForms.push(this.userForm);
+                    }
                   }
                 });
-                console.log('user forms are: ', this.userForms);
+                // console.log('user forms are: ', this.userForms);
               });
             }
           });
@@ -96,10 +98,10 @@ export class LenderPortalComponent implements OnInit {
   }
 
   goFormManage(uid) {
-    this.router.navigate(['/form-manage', uid]);
+    this.router.navigate(['/lender-form-manage', uid]);
   }
   goFormAssign(uid) {
-    this.router.navigate(['/form-assign', uid]);
+    this.router.navigate(['/lender-form-assign', uid]);
   }
 
   goToForm(uid, formId) {
@@ -107,6 +109,6 @@ export class LenderPortalComponent implements OnInit {
   }
 
   goFormHistory(uid) {
-    this.router.navigate(['/form-history', uid]);
+    this.router.navigate(['/lender-form-history', uid]);
   }
 }

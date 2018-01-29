@@ -1,5 +1,5 @@
 <mat-card>
-    <a routerLink="/user-manage" id="goback">Go back</a>
+    <a (click)="goBack()" id="goback">Go back/Cancel</a>
     <hr>
     <mat-card-content>
         <button mat-raised-button *ngIf="(authService.user | async)?.role == 'admin'" (click)="openDeleteDialog()">Delete Selected</button>
@@ -29,10 +29,13 @@
             <mat-header-cell *matHeaderCellDef  mat-sort-header> Id </mat-header-cell>
             <mat-cell *matCellDef="let formsInfo"> {{formsInfo.formId}} </mat-cell>
     </ng-container>
-          
     <ng-container matColumnDef="formName">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
             <mat-cell *matCellDef="let formsInfo"> {{formsInfo.formName}} </mat-cell>
+    </ng-container>
+    <ng-container *ngIf="authUser && authUser.role === 'admin'" matColumnDef="formCreator">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+            <mat-cell *matCellDef="let formsInfo"> {{formsInfo.formCreator}} </mat-cell>
     </ng-container>
     <ng-container matColumnDef="startTime">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Assigned on </mat-header-cell>

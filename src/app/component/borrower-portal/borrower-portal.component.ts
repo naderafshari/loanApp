@@ -26,8 +26,8 @@ export class BorrowerPortalComponent implements OnInit, OnDestroy {
   sub2: Subscription;
   userInfo: UserInfo;
 
-  constructor(private afs: AngularFirestore, 
-              public authService: AuthService, 
+  constructor(private afs: AngularFirestore,
+              public authService: AuthService,
               private router: Router,
               private route: ActivatedRoute ) {
   }
@@ -59,7 +59,7 @@ export class BorrowerPortalComponent implements OnInit, OnDestroy {
                   }
                 });
               }
-            //console.log("user forms are: ", this.userForms);
+            // console.log("user forms are: ", this.userForms);
             });
           }
         });

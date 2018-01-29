@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { AuthService } from '../../provider/auth.service';
+import { LenderFormService } from '../../provider/lender-form.service';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/forkJoin';
@@ -16,12 +17,12 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { DialogComponent } from '../dialog/dialog.component';
 
 @Component({
-  selector: 'app-form-history',
-  templateUrl: './form-history.component.html',
-  styleUrls: ['./form-history.component.css']
+  selector: 'app-lender-form-history',
+  templateUrl: './lender-form-history.component.html',
+  styleUrls: ['./lender-form-history.component.css']
 })
 
-export class FormHistoryComponent implements OnDestroy {
+export class LenderFormHistoryComponent implements OnDestroy {
   uid: string;
   formData: Form;
   userDoc: Observable<{}>;
@@ -56,15 +57,13 @@ export class FormHistoryComponent implements OnDestroy {
           this.sub2 = this.userDoc.subscribe((data: UserInfo) => {
             this.userInfo = data;
             if (this.userInfo) {
-                // see every creator's forms
               this.sub3 = this.afs.doc(`users/${this.uid}`)
-              .collection<Form>('forms').valueChanges()
+              .collection<Form>('forms', ref => ref.where('formCreator', '==', this.authService.currentUserId)).valueChanges()
               .subscribe((forms: Form[]) => {
                 forms.forEach((form: Form) => {
                   const formInfo = {
                     'formId': form.formId,
                     'formName': form.formName,
-                    'formCreator': form.formCreator,
                     'startTime': form.startTime,
                     'updateTime': form.updateTime
                   };

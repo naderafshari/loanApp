@@ -7,7 +7,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/forkJoin';
 import { Form, Field, USStatesClass, CountriesClass } from '../../model/form';
-import { FormService } from '../../provider/form.service';
+import { LenderFormService } from '../../provider/lender-form.service';
 import { Subscription } from 'rxjs/Subscription';
 import { firestore } from 'firebase';
 import { UserInfo } from './../../model/user-info';
@@ -15,11 +15,11 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { DialogComponent } from '../dialog/dialog.component';
 
 @Component({
-  selector: 'app-form-config',
-  templateUrl: './form-config.component.html',
-  styleUrls: ['./form-config.component.css']
+  selector: 'app-lender-form-config',
+  templateUrl: './lender-form-config.component.html',
+  styleUrls: ['./lender-form-config.component.css']
 })
-export class FormConfigComponent implements OnInit {
+export class LenderFormConfigComponent implements OnInit {
   form: Form;
   userId: string;
   id: string;
@@ -34,14 +34,14 @@ export class FormConfigComponent implements OnInit {
   minUsedField: any;
   mask: string;
 
-  constructor(private afs: AngularFirestore, public fs: FormService, private location: Location,
+  constructor(private afs: AngularFirestore, public lfs: LenderFormService, private location: Location,
               private router: Router, private route: ActivatedRoute,
               private authService: AuthService, public dialog: MatDialog) {
     this.userId = this.authService.currentUserId;
     this.route.params.subscribe(params => {
       this.id = params['id'] || 0;
       if (this.id) {
-        this.sub = this.fs.getForm(this.id).subscribe((data) => {
+        this.sub = this.lfs.getForm(this.id).subscribe((data) => {
           this.form = data;
           if (this.form) {
             this.updateFields();
@@ -209,8 +209,8 @@ export class FormConfigComponent implements OnInit {
       this.form.numOfFields--;
       delete this.form[fieldToDelete];
       this.updateFields();
-      // this.afs.collection('forms').doc(this.id).set(this.form);
-      /*const docRef = this.afs.collection('forms').doc(this.id);
+      // this.afs.collection(`users/${this.authService.currentUserId}/forms`).doc(this.id).set(this.form);
+      /*const docRef = this.afs.collection(`users/${this.authService.currentUserId}/forms`).doc(this.id);
       delete this.form[fieldToDelete];
       this.form.numOfFields--;
       this.updateFields();
@@ -231,7 +231,7 @@ export class FormConfigComponent implements OnInit {
     }
     this.form.numOfFields = 0;
     this.updateFields();
-    // this.afs.collection('forms').doc(this.id).set(this.form);
+    // this.afs.collection(`users/${this.authService.currentUserId}/forms`).doc(this.id).set(this.form);
   }
 
   allRequireFields() {
@@ -249,7 +249,7 @@ export class FormConfigComponent implements OnInit {
     if (this.form) {
       if (this.allRequireFields()) {
         this.form.updateTime = new Date().toString();
-        this.afs.collection('forms').doc(this.id).set(this.form).then(() => this.updateFields());
+        this.afs.collection(`users/${this.authService.currentUserId}/forms`).doc(this.id).set(this.form).then(() => this.updateFields());
         this.sub.unsubscribe();
         this.goBack();
       } else {
@@ -266,8 +266,8 @@ export class FormConfigComponent implements OnInit {
     if (this.form) {
       if (this.allRequireFields()) {
         this.form.updateTime = new Date().toString();
-        this.afs.collection('forms').doc(this.id).set(this.form).then(() => this.updateFields());
-        this.fs.reAssignFormAllUsers(this.form.formId, this.userId )
+        this.afs.collection(`users/${this.authService.currentUserId}/forms`).doc(this.id).set(this.form).then(() => this.updateFields());
+        this.lfs.reAssignFormAllUsers(this.form.formId, this.userId );
         this.sub.unsubscribe();
         this.goBack();
       } else {

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { AuthService } from '../../provider/auth.service';
 import { Observable } from 'rxjs/Observable';
@@ -25,7 +26,7 @@ export class FormReviewComponent implements OnInit {
 
   constructor(private afs: AngularFirestore,
     public authService: AuthService,
-    private router: Router,
+    private router: Router, private location: Location,
     private route: ActivatedRoute) {
 
     this.route.params.subscribe(params => {
@@ -56,7 +57,7 @@ export class FormReviewComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/form-history', this.uid]);
+    this.location.back();
   }
   ngOnInit() {
   }

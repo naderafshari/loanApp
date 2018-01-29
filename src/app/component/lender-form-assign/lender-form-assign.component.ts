@@ -6,15 +6,15 @@ import { AuthService } from '../../provider/auth.service';
 import { UserInfo } from '../../model/user-info';
 import { Observable } from 'rxjs/Observable';
 import { Form } from '../../model/form';
-import { FormService } from '../../provider/form.service';
+import { LenderFormService } from '../../provider/lender-form.service';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
-  selector: 'app-form-assign',
-  templateUrl: './form-assign.component.html',
-  styleUrls: ['./form-assign.component.css']
+  selector: 'app-lender-form-assign',
+  templateUrl: './lender-form-assign.component.html',
+  styleUrls: ['./lender-form-assign.component.css']
 })
-export class FormAssignComponent implements OnInit, OnDestroy {
+export class LenderFormAssignComponent implements OnInit, OnDestroy {
   uid: string;
   forms: Observable<Form[]>;
   formData: Form;
@@ -27,11 +27,11 @@ export class FormAssignComponent implements OnInit, OnDestroy {
               private authService: AuthService,
               private router: Router, private location: Location,
               private route: ActivatedRoute,
-              public fs: FormService) {
+              public lfs: LenderFormService) {
     this.route.params.subscribe(params => {
       this.uid = params['uid'] || 0;
       if (this.uid) {
-        this.forms = this.fs.getForms();
+        this.forms = this.lfs.getForms();
         this.userDoc = this.afs.doc(`users/${this.uid}`).valueChanges();
         this.sub = this.userDoc.subscribe((data: UserInfo) => this.userInfo = data);
       }
@@ -39,13 +39,13 @@ export class FormAssignComponent implements OnInit, OnDestroy {
   }
 
   assignClick(formId) {
-    this.fs.assignForm(formId, this.authService.currentUserId, this.uid);
+    this.lfs.assignForm(formId, this.uid);
     alert('Form assigned successfully.');
     this.goBack();
   }
 
   unAssignClick(formId) {
-    this.fs.unAssignForm(formId, this.uid);
+    this.lfs.unAssignForm(formId, this.uid);
     alert('Form Unassigned successfully.');
     this.goBack();
   }

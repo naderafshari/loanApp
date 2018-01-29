@@ -5,26 +5,20 @@ import { Observable } from 'rxjs/Observable';
 import { Form, FormClass } from '../model/form';
 import { FormConfigComponent } from '../component/form-config/form-config.component';
 import { UserInfo } from '../model/user-info';
+import { AuthService } from './auth.service';
 
 @Injectable()
-export class FormService {
+export class LenderFormService {
 
   formsCol: AngularFirestoreCollection<Form>;
   userDoc: AngularFirestoreDocument<Form>;
   forms: Observable<Form[]>;
 
-  constructor(private afs: AngularFirestore,
+  constructor(private afs: AngularFirestore, private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute) {
-      this.formsCol = this.afs.collection<Form>('forms');
+      this.formsCol = this.afs.doc(`users/${this.authService.currentUserId}`).collection<Form>('forms');
       this.forms = this.formsCol.valueChanges();
-      /*this.forms = this.formsCol.snapshotChanges().map(actions => {
-        return actions.map(a => {
-          const data = a.payload.doc.data() as Form;
-          const id = a.payload.doc.id;
-          return {id, ...data};
-        });
-      });*/
     }
 
   getForms() {
@@ -32,17 +26,18 @@ export class FormService {
   }
 
   getForm(id) {
-    return this.afs.doc<Form>(`forms/${id}`).valueChanges();
+    return this.formsCol.doc<Form>(`${id}`).valueChanges();
   }
 
   deleteForm(id) {
-    const formsRef: AngularFirestoreDocument<any> = this.afs.doc(`forms/${id}`);
+    const formsRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${this.authService.currentUserId}/forms/${id}`);
+    // const formsRef: AngularFirestoreDocument<any> =  this.formsCol.doc(`${id}`);
     formsRef.delete().then(() => console.log(`${id} deleted`));
   }
 
   addForm(i) {
     const formClass: FormClass = new FormClass();
-    const formsRef: AngularFirestoreDocument<any> = this.afs.doc(`forms/form${i}`);
+    const formsRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${this.authService.currentUserId}/forms/form${i}`);
     const form: Form = formClass.form;
     form.formId = `form${i}`;
     form.formName = `form${i}`;
@@ -51,24 +46,12 @@ export class FormService {
     formsRef.set(form).then(() => console.log(`form${i} added`));
   }
 
-  createAllForms() {
-    const formClass: FormClass = new FormClass();
-    for (let i = 1; i <= 10; i++) {
-      const formsRef: AngularFirestoreDocument<any> = this.afs.doc(`forms/form${i}`);
-      const form: Form = formClass.form;
-      form.formId = `form${i}`;
-      form.formName = `form${i}`;
-      form.updateTime = new Date().toString();
-      form.startTime = new Date().toString();
-      formsRef.set(form).then(() => console.log(`forms${i} added`));
-    }
-  }
-
-  assignForm(formId, sourceUid, uid) {
-    const form = this.afs.collection<Form>('forms', ref => ref.where('formId', '==', formId)).valueChanges();
+  assignForm(formId, uid) {
+    const form = this.afs.doc(`users/${this.authService.currentUserId}`)
+    .collection<Form>('forms', ref => ref.where('formId', '==', formId)).valueChanges();
     const sub1 = form.subscribe((data) => {
         let formData = data[0];
-        formData.formCreator = sourceUid;
+        formData.formCreator = this.authService.currentUserId;
         formData.updateTime = new Date().toString();
         formData.startTime = new Date().toString();
         this.afs.doc(`users/${uid}`).collection('forms').doc(new Date().toString()).set(formData);
@@ -98,12 +81,14 @@ export class FormService {
   }
 
   reAssignFormAllUsers(formId, uid) {
-    const user = this.afs.collection<UserInfo>('users').valueChanges();
+    const user = this.afs.doc(`users/${this.authService.currentUserId}`)
+    .collection<UserInfo>('users').valueChanges();
     const sub2 = user.subscribe((data) => {
       const users = data;
       users.forEach((userInfo) =>  {
         if (userInfo.assignedForms[`${formId}`] === 'true') {
-          const form = this.afs.collection<Form>('forms', ref => ref.where('formId', '==', formId)).valueChanges();
+          const form = this.afs.doc(`users/${this.authService.currentUserId}`)
+          .collection<Form>('forms', ref => ref.where('formId', '==', formId)).valueChanges();
           const sub1 = form.subscribe((data) => {
               let formData = data[0];
               formData.formCreator = uid;

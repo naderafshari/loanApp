@@ -1,0 +1,92 @@
+<mat-card class="form-container" *ngIf="form">
+  <a (click)="goBack()" id="goback">Go back/Cancel</a>
+  <hr>
+  <mat-form-field>
+    <input matInput required [(ngModel)]="form.formName" placeholder="Form Name..."> 
+  </mat-form-field>
+  <p>Last Updated: {{form.updateTime}}</p>
+  <hr>
+  <mat-sidenav-container style="position: fixed; margin-left:0px; left: 55%;">
+    <mat-sidenav mode="side" opened="true"></mat-sidenav>
+    <mat-sidenav-content>
+      <div fxFlex></div>
+      <button mat-raised-button color="primary" (click)="addField()">
+        <mat-icon>add</mat-icon>Field</button>
+      <button mat-raised-button color="accent" (click)="openSubmitDialog()">
+        Save</button>
+      <button mat-raised-button color="accent" (click)="openSubmitReassignDialog()">
+        Save & Reassign</button>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+  <button mat-raised-button color="warn" *ngIf="(authService.user | async)?.role == 'admin'" (click)="openDeleteAllDialog()">
+    <mat-icon>delete</mat-icon>All Fields</button>
+  <br>
+  <div *ngFor="let field of fields">
+    <button mat-button class="mat-mini-fab" *ngIf="field.index > minUsedField" (click)="moveUp(field.index)"style="float: right;">
+      <mat-icon>arrow_upward</mat-icon>
+    </button> 
+    <button mat-button class="mat-mini-fab" *ngIf="field.index < maxUsedField"(click)="moveDown(field.index)"style="float: right;">
+      <mat-icon>arrow_downward</mat-icon>
+    </button> <br>
+    <mat-form-field>
+      <textarea autosize matInput [ngModel]='getName(field.index)' (ngModelChange)='setName($event,field.index)' placeholder="Field Description.."></textarea> 
+    </mat-form-field>
+    <mat-form-field>
+      <textarea autosize matInput [ngModel]='getToolTip(field.index)' (ngModelChange)='setToolTip($event,field.index)' placeholder="Help Tip.."></textarea> 
+    </mat-form-field>
+    <!-- <mat-slide-toggle *ngIf="getType(field.index) !==  'checkbox'" [ngModel]='getRequired(field.index)' (ngModelChange)='setRequired($event,field.index)'>Required</mat-slide-toggle> -->
+    <mat-slide-toggle [ngModel]='getRequired(field.index)' (ngModelChange)='setRequired($event,field.index)'>Required</mat-slide-toggle>
+    <a *ngIf="(authService.user | async)?.role == 'admin'" (click)="openDeleteDialog(field.index)" >&nbsp;&nbsp;&nbsp;<mat-icon>delete</mat-icon></a>
+    <!--<button mat-raised-button (click)="openDeleteDialog(field.index)">Delete Field</button>-->
+    <br>
+    <mat-form-field>
+      <mat-select [ngModel]='getType(field.index)' (ngModelChange)='setType($event,field.index)' placeholder="Field Type..">
+        <mat-option>-- None --</mat-option>
+        <mat-option value="textbox">  Text Box    </mat-option>
+        <mat-option value="textarea"> Text Area   </mat-option>
+        <mat-option value="select">   Pull Down   </mat-option>
+        <mat-option value="date">     Date Picker </mat-option>
+        <mat-option value="checkbox"> Check Box   </mat-option>
+        <mat-option value="radio">    Radio Button</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <br>
+    <div *ngIf="getType(field.index) === 'textbox'">
+      <mat-radio-group [ngModel]='getMask(field.index)' (ngModelChange)='setMask($event,field.index)'>
+      <!--<mat-radio-button *ngFor="let mask of masks" [value]="mask"> {{mask}}</mat-radio-group>-->
+        <mat-radio-button value="None">         Plain </mat-radio-button>
+        <mat-radio-button value="USPhoneNumber">US Phone Number </mat-radio-button>
+        <mat-radio-button value="USDate">       US Date         </mat-radio-button>
+        <mat-radio-button value="USDollar">     US Dollar       </mat-radio-button>
+        <mat-radio-button value="USZipCode">    US Zip Code     </mat-radio-button>
+        <mat-radio-button value="Email">        Email           </mat-radio-button>
+      </mat-radio-group>
+    </div>
+    
+    <div *ngIf="getType(field.index) === 'select'">
+      <button *ngIf="field.options.type === 'custom'" mat-raised-button color="primary" (click)="addOption(field.index,field.it)"><mat-icon>add</mat-icon>Custom Option</button> 
+      <button *ngIf="field.numOfOptions == 0" mat-raised-button color="primary" (click)="addStatesOption(field.index,field.it)"><mat-icon>add</mat-icon>US States</button> 
+      <button *ngIf="field.numOfOptions == 0" mat-raised-button color="primary" (click)="addCountriesOption(field.index,field.it)"><mat-icon>add</mat-icon>Countries</button> 
+      <div *ngFor="let option of field.usedOptions">
+        <mat-form-field >
+          <input matInput [ngModel]='getOption(field.index,option)' (ngModelChange)='setOption($event,field.index,option)' 
+            placeholder="Enter Option.."> 
+        </mat-form-field>
+        <a *ngIf="(authService.user | async)?.role == 'admin'" (click)="deleteOption(field.index,option)" >&nbsp;&nbsp;&nbsp;<mat-icon>delete</mat-icon></a>
+      </div>
+    </div>
+
+    <div *ngIf="getType(field.index) === 'radio'">
+      <button mat-raised-button color="primary" (click)="addChoice(field.index,field.it)"><mat-icon>add</mat-icon>Choice</button>
+      <div *ngFor="let choice of field.usedChoices">
+        <mat-form-field >
+          <input matInput [ngModel]='getChoice(field.index,choice)' (ngModelChange)='setChoice($event,field.index,choice)'
+            placeholder="Enter Choice..">
+        </mat-form-field>
+        <a *ngIf="(authService.user | async)?.role == 'admin'" (click)="deleteChoice(field.index,choice)" >&nbsp;&nbsp;&nbsp;<mat-icon>delete</mat-icon></a>
+      </div>
+    </div>
+    <hr>
+  </div>
+</mat-card>

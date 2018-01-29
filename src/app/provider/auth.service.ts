@@ -63,6 +63,9 @@ export class AuthService {
     return this.authenticated ? this.userInfo.role : null;
   }
 
+  get userFunction(): string {
+    return this.authenticated ? this.userInfo.function : null;
+  }
   // Returns current user data
   get currentUser(): any {
       return this.authenticated ? this.firebaseAuth.authState : null;
