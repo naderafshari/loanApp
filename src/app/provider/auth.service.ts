@@ -140,8 +140,10 @@ export class AuthService {
             sub.unsubscribe();
           });
         } else {
-          alert('The login email is not verified. Check your email for a verification email.');
-          this.logout();
+          user.sendEmailVerification().then(() => {
+            alert('The login email is not verified. Verify your email with the Social media provider.');
+            this.logout();
+          });
         }
       })
       .catch( (err) => alert('Login failed! ' + err));
