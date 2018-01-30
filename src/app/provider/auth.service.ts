@@ -17,7 +17,7 @@ export class AuthService {
   userDoc: Observable<{}>;
   userInfo: UserInfo;
 
-  constructor(private firebaseAuth: AngularFireAuth, private router: Router, 
+  constructor(private firebaseAuth: AngularFireAuth, private router: Router,
     private afs: AngularFirestore, private fs: FormService) {
 
     this.user = this.firebaseAuth.authState
@@ -42,14 +42,12 @@ export class AuthService {
         displayName: displayName,
         photoURL: userAuth.photoURL,
         role: 'user',
+        joinedTime: new Date().toString(),
         assignedForms: {},
         purchased: {}
     };
     // const calRef: AngularFirestoreDocument<any> = this.afs.doc(`calendar/${userAuth.uid}`);
     // calRef.set({calId: `${userAuth.uid}`});
-    if (this.fs.getForm('form1')) {
-      this.fs.assignForm('form1', userAuth.uid, userAuth.uid);
-    }
     return userRef.set(AuthData);
   }
 
@@ -78,7 +76,7 @@ export class AuthService {
   }
 
   // Returns current user Info
-  get currentUserInfo(): any {
+  get currentUserInfo(): UserInfo {
     return this.authenticated ? this.userInfo : null;
   }
 
@@ -96,6 +94,14 @@ export class AuthService {
   // Returns current user UID
   get currentUserEmail(): string {
     return this.authenticated ? this.firebaseAuth.auth.currentUser.email : '';
+  }
+
+  changeEmail(newEmail, oldEmail, password) {
+    firebase.auth()
+      .signInWithEmailAndPassword(oldEmail, password)
+      .then(user => {
+          user.updateEmail(newEmail);
+      });
   }
 
   signup(email: string, password: string, displayName: string) {
@@ -159,24 +165,24 @@ export class AuthService {
         value.user.sendEmailVerification().then(() => {
           alert('The login email is not verified. Verify your email with the Social media provider.');
           this.logout();
-        })
+        });
       }
     })
     .catch( (err) =>  alert('Login failed! ' + err));
   }
 
   upsert(user) {
-    //const appmtRef: AngularFirestoreDocument<any> = this.afs.doc(`appointment/${value.uid}`);
-    //appmtRef.update({calId: `${value.uid}`})
-    //.catch(() => {
-    //  appmtRef.set({calId: `${value.uid}`, numOfSlots: 0, slots: {}});
-    //});
+    // const appmtRef: AngularFirestoreDocument<any> = this.afs.doc(`appointment/${value.uid}`);
+    // appmtRef.update({calId: `${value.uid}`})
+    // .catch(() => {
+    //   appmtRef.set({calId: `${value.uid}`, numOfSlots: 0, slots: {}});
+    // });
     const authData: UserInfo = {
       'displayName': user.displayName,
       'email': user.email,
       'uid': user.uid,
       'photoURL': user.photoURL,
-    }
+    };
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
     userRef.update(authData)
     .then(() => {
@@ -202,14 +208,12 @@ export class AuthService {
         'email': user.email,
         'uid': user.uid,
         'photoURL': user.photoURL,
+        'joinedTime': new Date().toString(),
         'role': 'user',
         'assignedForms': {},
         'purchased': {}
       })
       .then( () => {
-        if (this.fs.getForm('form1')) {
-          this.fs.assignForm('form1', user.uid, user.uid);
-        }
         this.router.navigateByUrl('/user-function');
       })
       .catch((err) => {

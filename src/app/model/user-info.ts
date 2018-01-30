@@ -7,8 +7,10 @@ export interface UserInfo {
   function?:     string;
   displayName?:  string;
   photoURL?:     string;
+  joinedTime?:   string;
   firstName?:    string;
   lastName?:     string;
+  dob?:          string;
   assignedForms?: {};
   purchased?:     {};
   addr1Line1?:   string;

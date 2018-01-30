@@ -11,6 +11,7 @@ import { LenderAdminGuard } from './guard/lender-admin.guard';
 
 import { LoginComponent } from './component/login/login.component';
 import { EmailLoginComponent } from './component/email-login/email-login.component';
+import { EmailChangeComponent } from './component/email-change/email-change.component';
 import { SignupComponent } from './component/signup/signup.component';
 import { ResetPasswordComponent } from './component/reset-password/reset-password.component';
 import { UserProfileComponent } from './component/user-profile/user-profile.component';
@@ -23,17 +24,19 @@ import { FormManageComponent } from './component/form-manage/form-manage.compone
 import { FormConfigComponent } from './component/form-config/form-config.component';
 import { FormAssignComponent } from './component/form-assign/form-assign.component';
 import { FormHistoryComponent } from './component/form-history/form-history.component';
+import { FormReviewComponent } from './component/form-review/form-review.component';
 import { LenderFormManageComponent } from './component/lender-form-manage/lender-form-manage.component';
 import { LenderFormConfigComponent } from './component/lender-form-config/lender-form-config.component';
 import { LenderFormAssignComponent } from './component/lender-form-assign/lender-form-assign.component';
 import { LenderFormHistoryComponent } from './component/lender-form-history/lender-form-history.component';
-import { FormReviewComponent } from './component/form-review/form-review.component';
+import { LenderProspectViewComponent } from './component/lender-prospect-view/lender-prospect-view.component';
 
 export const router: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'login', component: LoginComponent },
     { path: 'signup', component: SignupComponent },
     { path: 'email-login', component: EmailLoginComponent },
+    { path: 'email-change', component: EmailChangeComponent, canActivate: [AuthGuard]  },
     { path: 'reset-password', component: ResetPasswordComponent },
     { path: 'user-function', component: UserFunctionComponent, canActivate: [AuthGuard] },
     { path: 'user-profile/:uid', component: UserProfileComponent, canActivate: [AuthGuard] },
@@ -49,7 +52,8 @@ export const router: Routes = [
     { path: 'lender-form-manage/:uid', component: LenderFormManageComponent, canActivate: [LenderAdminGuard] },
     { path: 'lender-form-config/:id', component: LenderFormConfigComponent, canActivate: [LenderAdminGuard] },
     { path: 'lender-form-assign/:uid', component: LenderFormAssignComponent, canActivate: [LenderAdminGuard] },
-    { path: 'lender-form-history/:uid', component: LenderFormHistoryComponent, canActivate: [LenderAdminGuard] }
+    { path: 'lender-form-history/:uid', component: LenderFormHistoryComponent, canActivate: [LenderAdminGuard] },
+    { path: 'lender-prospect-view', component: LenderProspectViewComponent, canActivate: [LenderAdminGuard] }
 ];
 
 export const routes: ModuleWithProviders = RouterModule.forRoot(router);

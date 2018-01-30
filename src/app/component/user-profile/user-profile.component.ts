@@ -35,17 +35,38 @@ export class UserProfileComponent implements OnInit {
           } else {
             this.userDoc = this.afs.doc(`users/${this.user.uid}`).valueChanges();
           }
-          this.userDoc.subscribe((data: UserInfo) => this.userInfo = data);
+          this.userDoc.subscribe((data: UserInfo) => {
+            this.userInfo = data;
+          });
         }
       });
     });
   }
 
+  goChangeEmail () {
+    this.router.navigateByUrl('/email-change');
+  }
+
   updateUser() {
     if (this.user && this.userInfo) {
+      if (this.authService.userAuthRole === 'admin' && this.userInfo.role !== 'admin' &&
+          this.authService.currentUserId === this.userInfo.uid) {
+        alert('admin role cannot be changed by self');
+        return;
+      }
       if (this.allRequireFields()) {
         this.afs.collection('users').doc(this.userInfo.uid).update(this.userInfo);
-        this.goBack();
+        // We can be getting here after function page so goBack wouldn't work
+        // The order of the conditions is important, don't move them
+        if (this.authService.userAuthRole === 'admin') {
+          this.router.navigateByUrl('/user-manage');
+        } else if (this.authService.userFunction === 'borrower') {
+          this.router.navigateByUrl('/borrower-portal');
+        } else if (this.authService.userFunction === 'lender') {
+          this.router.navigateByUrl('/lender-portal');
+        } else {
+          this.router.navigateByUrl('/user-function');
+        }
       } else {
         alert('Required field was not filled!');
       }
@@ -70,7 +91,7 @@ export class UserProfileComponent implements OnInit {
 
   deleteUser(userId) {
     if (this.userInfo) {
-      if (this.userInfo.role !== 'admin') {
+      if (this.authService.currentUserId !== this.userInfo.uid) {
         this.afs.doc(`users/${userId}`).delete()
         .then(() => {
           if (this.authService.currentUserId === userId) {
@@ -78,11 +99,11 @@ export class UserProfileComponent implements OnInit {
             this.router.navigateByUrl('/login');
           } else {
             // this.router.navigateByUrl('/user-manage');
-            this.goBack()
+            this.goBack();
           }
         });
       } else {
-        alert('Admin user cannot be deleted here! Contact system admin');
+        alert('Admin cannot delete self! Contact system admin');
       }
     }
   }

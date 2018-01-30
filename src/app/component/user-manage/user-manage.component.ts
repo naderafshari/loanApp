@@ -61,7 +61,7 @@ export class UserManageComponent implements OnInit {
                     }
                   });
                 }
-                console.log("user forms are: ", this.userForms);
+                // console.log("user forms are: ", this.userForms);
               });
             });
           }

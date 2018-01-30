@@ -27,6 +27,7 @@ export class LenderPortalComponent implements OnInit {
   searchText: any;
   userInfo: UserInfo;
   purchasedUsers: any[];
+  contactInfoForm: any;
 
   constructor(private afs: AngularFirestore, public dialog: MatDialog,
               public authService: AuthService, private router: Router,
@@ -42,40 +43,43 @@ export class LenderPortalComponent implements OnInit {
         this.purchasedUsers = Object.values(this.userInfo.purchased);
       }
       // console.log('purchased users values: ', this.purchasedUsers);
-    });
-    this.afs.doc(`users/${this.authService.currentUserId}`).collection<Form>('forms')
-    .valueChanges().subscribe((definedForms) => {
-      if (definedForms) {
-        this.usedForms = [];
-        for (let i = 0; i < definedForms.length; i++) {
-          this.usedForms.push(definedForms[i].formId);
-        }
-        // console.log('defined forms are: ', this.usedForms);
-        this.users = [];
-        this.userForms = [];
-        this.purchasedUsers.forEach( userId => {
-          this.afs.doc(`users/${userId}`).collection<Form>('forms', ref => ref.where('formCreator', '==', this.userInfo.uid))
-          .valueChanges().subscribe((forms) => {
-            if (forms) {
-              this.afs.doc<UserInfo>(`users/${userId}`).valueChanges().subscribe((user) => {
-                this.users.push(user);
-                this.usedForms.forEach( e => {
-                  /* Find the latest of each form of each user ( user's forms collection )and
-                    * push it to userForms array */
-                  this.userForm = forms.filter(form => form.formId === e).sort(this.compare)[0];
-                  if (this.userForm) {
-                    if (user.assignedForms[e] === 'true') {
-                      this.userForm.uid = userId;
-                      this.userForms.push(this.userForm);
-                    }
-                  }
-                });
-                // console.log('user forms are: ', this.userForms);
-              });
+      this.afs.doc(`users/${this.userInfo.uid}`).collection<Form>('forms')
+      .valueChanges().subscribe((definedForms) => {
+        if (definedForms) {
+          this.usedForms = [];
+          for (let i = 0; i < definedForms.length; i++) {
+            this.usedForms.push(definedForms[i].formId);
+            if (definedForms[i].formId === 'form1') {
+              this.contactInfoForm = definedForms[i];
             }
+          }
+          // console.log('defined forms are: ', this.usedForms);
+          this.users = [];
+          this.userForms = [];
+          this.purchasedUsers.forEach( userId => {
+            this.afs.doc(`users/${userId}`).collection<Form>('forms', ref => ref.where('formCreator', '==', this.userInfo.uid))
+            .valueChanges().subscribe((forms) => {
+              if (forms) {
+                this.afs.doc<UserInfo>(`users/${userId}`).valueChanges().subscribe((user) => {
+                  this.users.push(user);
+                  this.usedForms.forEach( e => {
+                    /* Find the latest of each form of each user ( user's forms collection )and
+                      * push it to userForms array */
+                    this.userForm = forms.filter(form => form.formId === e).sort(this.compare)[0];
+                    if (this.userForm) {
+                      if (user.assignedForms[e] === 'true') {
+                        this.userForm.uid = userId;
+                        this.userForms.push(this.userForm);
+                      }
+                    }
+                  });
+                  // console.log('user forms are: ', this.userForms);
+                });
+              }
+            });
           });
-        });
-      }
+        }
+      });
     });
   }
 
@@ -95,6 +99,10 @@ export class LenderPortalComponent implements OnInit {
 
   logout() {
     this.authService.logout();
+  }
+
+  viewBorrowers() {
+    this.router.navigateByUrl('/lender-prospect-view');
   }
 
   goFormManage(uid) {

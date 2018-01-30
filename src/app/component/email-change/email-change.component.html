@@ -1,0 +1,14 @@
+<div class="form-container" *ngIf="userInfo">
+  <a (click)="goBack()" id="goback">Go back</a>
+  <h4>Update Email</h4><br>
+
+  <!--<span class="error" *ngIf="error" [@fallIn]='state'>{{ error }}</span>-->
+  <form #formData='ngForm' (ngSubmit)="changeEmail(formData)">
+
+    <p>{{userInfo.email}}</p>
+    <input matInput type="text" placeholder="New Email address.." (ngModel)="newEmail" name="newEmail" required>
+    <input matInput type="password" placeholder="Password" (ngModel)="password" name="password" required>
+
+    <button mat-raised-button color="primary" [disabled]="!formData.valid">Submit</button>
+  </form>
+</div>

@@ -48,6 +48,8 @@ import { LenderFormConfigComponent } from './component/lender-form-config/lender
 import { LenderFormManageComponent } from './component/lender-form-manage/lender-form-manage.component';
 import { LenderFormAssignComponent } from './component/lender-form-assign/lender-form-assign.component';
 import { LenderFormHistoryComponent } from './component/lender-form-history/lender-form-history.component';
+import { LenderProspectViewComponent } from './component/lender-prospect-view/lender-prospect-view.component';
+import { EmailChangeComponent } from './component/email-change/email-change.component';
 
 @NgModule({
   declarations: [
@@ -73,7 +75,9 @@ import { LenderFormHistoryComponent } from './component/lender-form-history/lend
     LenderFormConfigComponent,
     LenderFormManageComponent,
     LenderFormAssignComponent,
-    LenderFormHistoryComponent
+    LenderFormHistoryComponent,
+    LenderProspectViewComponent,
+    EmailChangeComponent
   ],
   imports: [
     BrowserModule,
