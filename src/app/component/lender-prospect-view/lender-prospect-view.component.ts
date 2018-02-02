@@ -28,8 +28,7 @@ export class LenderProspectViewComponent implements OnDestroy {
   user: any;
   sub: Subscription;
   usersInfo: any[] = [];
-  // displayedColumns = ['select', 'displayName', 'dob', 'joinedTime'];
-  displayedColumns = ['select', 'displayName', 'joinedTime'];
+  displayedColumns = ['select', 'displayName', 'dob', 'joinedTime'];
   dataSource: any;
   selection: any;
   sub1: Subscription;
@@ -56,7 +55,7 @@ export class LenderProspectViewComponent implements OnDestroy {
           const userData = {
             'uid': user.uid,
             'displayName': user.displayName,
-            // 'dob': user.dob,
+            'dob': user.dob,
             'joinedTime': user.joinedTime
           };
           this.usersInfo.push(userData);
@@ -101,6 +100,8 @@ export class LenderProspectViewComponent implements OnDestroy {
 
   ngOnDestroy() {
     // this.sub.unsubscribe();
-    this.sub1.unsubscribe();
+    if (this.sub1) {
+      this.sub1.unsubscribe();
+    }
   }
 }

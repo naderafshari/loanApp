@@ -6,56 +6,78 @@
     <a (click)="openDialog(userInfo.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;Delete-Profile&nbsp;&nbsp;&nbsp;({{userInfo.email}})</a>
   </div>
   <br>
-  <mat-list>
-    <a (click)="goChangeEmail()">{{userInfo.email}} <mat-icon>create</mat-icon></a>
-  </mat-list><br>
-  <mat-form-field>
-    <input matInput required [(ngModel)]="userInfo.firstName" placeholder="First Name.."> 
-  </mat-form-field>
-  <mat-form-field>
-    <input matInput required [(ngModel)]="userInfo.lastName" placeholder="Last Name.."> 
-  </mat-form-field>
-  <mat-form-field>
-    <input matInput required [(ngModel)]="userInfo.dob" placeholder="Birth Date.."> 
-  </mat-form-field>
-  <mat-form-field>
-    <input matInput [(ngModel)]="userInfo.phone1" placeholder="First Phone Number.."> 
-  </mat-form-field>
-  <mat-form-field>
-      <input matInput [(ngModel)]="userInfo.phone2" placeholder="Second Phone Number.."> 
-  </mat-form-field>
-  <br>
-  <mat-form-field>
-    <input matInput [(ngModel)]="userInfo.addr1Line1" placeholder="Address First Line.."> 
-  </mat-form-field>
-  <br>
-  <mat-form-field>
-    <input matInput [(ngModel)]="userInfo.addr1Line2" placeholder="Address Second Line.."> 
-  </mat-form-field>
-  <br>
-  <mat-form-field>
-    <input matInput [(ngModel)]="userInfo.addr1City" placeholder="City.."> 
-  </mat-form-field>
-  <mat-form-field>
-    <input matInput [(ngModel)]="userInfo.addr1State" placeholder="State.."> 
-  </mat-form-field>
-  <mat-form-field>
-    <input matInput [(ngModel)]="userInfo.addr1Zip" placeholder="Zip Code.."> 
-  </mat-form-field>
-  <br>
-  <mat-form-field *ngIf="(authService.user | async)?.role ==='admin'">
-    <mat-select [(ngModel)]="userInfo.role" placeholder="Role">
-      <mat-option value="admin">admin</mat-option>
-      <mat-option value="super">super user</mat-option>
-      <mat-option value="user">user</mat-option>
-    </mat-select>
-  </mat-form-field>  
-  <mat-form-field *ngIf="(authService.user | async)?.role ==='admin'">
-    <mat-select [(ngModel)]="userInfo.function" placeholder="Function">
-      <mat-option value="borrower">Borrower</mat-option>
-      <mat-option value="lender">Lender</mat-option>
-    </mat-select>
-  </mat-form-field>  
-  <button *ngIf="(authService.user | async)?.role ==='admin' || userInfo.uid === (authService.user | async)?.uid"
-          mat-raised-button color="primary" (click)="updateUser()">Submit</button>
+  <mat-list *ngIf="(authService.user | async)?.role === 'admin' || userInfo.uid === (authService.user | async)?.uid;else not_self_or_admin">
+    <mat-list-item>
+      <a *ngIf="userInfo.uid === (authService.user | async)?.uid;else not_self"
+          (click)="goChangeEmail()">{{userInfo.email}} <mat-icon>create</mat-icon></a>
+    </mat-list-item>
+    <mat-form-field>
+      <input matInput required [(ngModel)]="userInfo.firstName" placeholder="First Name.."> 
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput required [(ngModel)]="userInfo.lastName" placeholder="Last Name.."> 
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput required [(ngModel)]="userInfo.dob" placeholder="Birth Date.."> 
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput [(ngModel)]="userInfo.phone1" placeholder="First Phone Number.."> 
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput [(ngModel)]="userInfo.phone2" placeholder="Second Phone Number.."> 
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <input matInput [(ngModel)]="userInfo.addr1Line1" placeholder="Address First Line.."> 
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <input matInput [(ngModel)]="userInfo.addr1Line2" placeholder="Address Second Line.."> 
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <input matInput [(ngModel)]="userInfo.addr1City" placeholder="City.."> 
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput [(ngModel)]="userInfo.addr1State" placeholder="State.."> 
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput [(ngModel)]="userInfo.addr1Zip" placeholder="Zip Code.."> 
+    </mat-form-field>
+    <br>
+    <mat-form-field *ngIf="(authService.user | async)?.role ==='admin'">
+      <mat-select [(ngModel)]="userInfo.role" placeholder="Role">
+        <mat-option value="admin">admin</mat-option>
+        <mat-option value="super">super user</mat-option>
+        <mat-option value="user">user</mat-option>
+      </mat-select>
+    </mat-form-field>  
+    <mat-form-field *ngIf="(authService.user | async)?.role ==='admin'">
+      <mat-select [(ngModel)]="userInfo.function" placeholder="Function">
+        <mat-option value="borrower">Borrower</mat-option>
+        <mat-option value="lender">Lender</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button *ngIf="(authService.user | async)?.role ==='admin' || userInfo.uid === (authService.user | async)?.uid"
+            mat-raised-button color="primary" (click)="updateUser()">Submit</button>
+  </mat-list>
 </mat-card>
+
+<ng-template #not_self>
+    {{userInfo.email}}
+</ng-template>
+
+<ng-template #not_self_or_admin>
+    <mat-list>
+      <mat-list-item>
+        First Name: {{userInfo.firstName}}<br>
+        Last Name: {{userInfo.lastName}}<br>
+        DOB: {{userInfo.dob}}<br>
+      </mat-list-item>
+      <mat-list-item>
+      <button *ngIf="(authService.user | async)?.role ==='user' || userInfo.function === 'lender'"
+      mat-raised-button color="primary" (click)="addToCart()">Add To Cart</button>
+    </mat-list-item>
+  </mat-list>
+</ng-template>
+

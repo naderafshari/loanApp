@@ -11,7 +11,6 @@ import { AuthService } from './auth.service';
 export class LenderFormService {
 
   formsCol: AngularFirestoreCollection<Form>;
-  userDoc: AngularFirestoreDocument<Form>;
   forms: Observable<Form[]>;
 
   constructor(private afs: AngularFirestore, private authService: AuthService,

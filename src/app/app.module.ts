@@ -16,6 +16,7 @@ import { AuthService } from './provider/auth.service';
 import { UserService } from './provider/user.service';
 import { FormService } from './provider/form.service';
 import { LenderFormService } from './provider/lender-form.service';
+import { ShoppingCartService } from './provider/shopping-cart.service';
 import { AuthGuard } from './guard/auth.guard';
 import { AdminGuard } from './guard/admin.guard';
 import { LenderGuard } from './guard/lender.guard';
@@ -96,7 +97,7 @@ import { EmailChangeComponent } from './component/email-change/email-change.comp
   entryComponents: [
     DialogComponent
   ],
-  providers: [AuthService, UserService, FormService, LenderFormService,
+  providers: [AuthService, UserService, FormService, LenderFormService, ShoppingCartService,
     AuthGuard, AdminGuard, LenderGuard, BorrowerGuard, BorrowerAdminGuard, LenderAdminGuard],
   bootstrap: [AppComponent]
 })

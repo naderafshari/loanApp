@@ -156,9 +156,17 @@ export class LenderFormHistoryComponent implements OnDestroy {
   }
 
   ngOnDestroy() {
-    this.sub.unsubscribe();
-    this.sub1.unsubscribe();
-    this.sub2.unsubscribe();
-    this.sub3.unsubscribe();
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
+    if (this.sub1) {
+      this.sub1.unsubscribe();
+    }
+    if (this.sub2) {
+      this.sub2.unsubscribe();
+    }
+    if (this.sub3) {
+      this.sub3.unsubscribe();
+    }
   }
 }

@@ -10,7 +10,6 @@ import { UserInfo } from '../model/user-info';
 export class FormService {
 
   formsCol: AngularFirestoreCollection<Form>;
-  userDoc: AngularFirestoreDocument<Form>;
   forms: Observable<Form[]>;
 
   constructor(private afs: AngularFirestore,
