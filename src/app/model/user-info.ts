@@ -1,4 +1,4 @@
-import { Form } from './form';
+import { ShoppingCart } from './cart';
 
 export interface UserInfo {
   uid:           string;
@@ -13,6 +13,7 @@ export interface UserInfo {
   dob?:          string;
   assignedForms?: {};
   purchased?:     {};
+  cart?:         ShoppingCart;
   addr1Line1?:   string;
   addr1Line2?:   string;
   addr1City?:    string;

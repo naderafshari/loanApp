@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
@@ -8,7 +8,7 @@ import { Observable } from 'rxjs/Observable';
 import { UserInfo } from '../../model/user-info';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { DialogComponent } from '../dialog/dialog.component';
-import { ShoppingCart } from '../../model/cart';
+import { ShoppingCart, CartItem } from '../../model/cart';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
@@ -17,7 +17,7 @@ import { Subscription } from 'rxjs/Subscription';
   styleUrls: ['./user-profile.component.css'],
 })
 
-export class UserProfileComponent implements OnInit {
+export class UserProfileComponent implements OnInit, OnDestroy {
   userDoc: Observable<{}>;
   userInfo: UserInfo;
   uid: string;
@@ -32,18 +32,23 @@ export class UserProfileComponent implements OnInit {
 
     this.route.params.subscribe(params => {
       this.uid = params['uid'] || 0;
-          if (this.uid) {
-            this.userDoc = this.afs.doc(`users/${this.uid}`).valueChanges();
-          } else {
-            this.userDoc = this.afs.doc(`users/${this.authService.currentUserId}`).valueChanges();
+      if (this.uid) {
+        this.userDoc = this.afs.doc(`users/${this.uid}`).valueChanges();
+      } else {
+        this.userDoc = this.afs.doc(`users/${this.authService.currentUserId}`).valueChanges();
+      }
+      this.sub1 = this.userDoc.subscribe((data: UserInfo) => {
+        this.userInfo = data;
+      });
+      if (this.authService.userFunction === 'lender') {
+        this.sub2 = this.afs.collection<UserInfo>('users', ref => ref.where('uid', '==', this.authService.currentUserId)).valueChanges()
+        .subscribe(user => {
+          if (user[0]) {
+            this.shoppingCart = user[0].cart;
+            console.log('cart is: ', user[0].cart);
           }
-          this.sub1 = this.userDoc.subscribe((data: UserInfo) => {
-            this.userInfo = data;
-          });
-          this.scs.getCart(this.uid);
-          //this.sub2 = this.scs.getCart(this.uid).subscribe((cart) => {
-          //  this.shoppingCart = cart[0];
-          //});
+        });
+      }
     });
   }
 
@@ -123,9 +128,17 @@ export class UserProfileComponent implements OnInit {
     this.location.back();
   }
 
+  calculateCart(cart): number {
+    let prices: number[] = [];
+    cart.items.forEach(item => prices.push(item.price));
+    return prices.reduce((a, b) => a + b, 0);
+  }
+
   addToCart() {
-    this.scs.addItem(this.authService.currentUserId, this.userInfo.uid, '', 30);
-    console.log(this.authService.currentUserId, this.userInfo.uid);
+    const cartItem: CartItem = {itemId: this.userInfo.uid, catId: '', price: 30};
+    this.shoppingCart.items.push(cartItem);
+    this.shoppingCart.itemsTotal = this.calculateCart(this.shoppingCart);
+    this.scs.updateCart(this.authService.currentUserId, this.shoppingCart);
     alert('borrower added to shopping cart successfuly');
   }
 
@@ -133,6 +146,14 @@ export class UserProfileComponent implements OnInit {
     this.router.navigateByUrl('/lender-cart');
   }
 
+  ngOnDestroy() {
+    if (this.sub1) {
+      this.sub1.unsubscribe();
+    }
+    if (this.sub2) {
+      this.sub2.unsubscribe();
+    }
+  }
   ngOnInit() {
   }
 }

@@ -12,38 +12,13 @@ export class ShoppingCartService {
   cartCol: AngularFirestoreCollection<ShoppingCart>;
   userCol: AngularFirestoreCollection<UserInfo>;
   userDoc: AngularFirestoreDocument<UserInfo>;
-  cart$: Observable<ShoppingCart[]>;
   shoppingCart: ShoppingCartClass;
   sub: Subscription;
+  uid: string;
 
   constructor(private afs: AngularFirestore, private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute) {
-  }
-
-  getCart(uid) {
-    // if (uid) {
-    //   this.cartCol = this.afs.doc(`users/${uid}`);
-    //   this.cart$ = this.cartCol.valueChanges();
-    // }
-    // return this.cart$;
-    this.userCol = this.afs.collection('users', ref => ref.where('uid', '==', uid));  
-    this.cart$ = this.userCol
-    .switchMap(user => {
-      if (user) {
-          this.userDoc = this.afs.doc(`users/${user.uid}`).valueChanges();
-          this.userDoc.subscribe((data: UserInfo) => {
-              this.userInfo = data;
-          });
-          return this.userDoc;
-      } else {
-        return Observable.of(null);
-      }
-    });
-
-    });
-  });
-
   }
 
   createCart(uid) {
@@ -56,21 +31,37 @@ export class ShoppingCartService {
 
   updateCart(uid, shoppingCart) {
     shoppingCart.updateTime = new Date().toString();
-    this.afs.doc(`users/${uid}`).update(shoppingCart)
-    .then(() => console.log('shopping cart updated for lender'))
-    .catch((err) => console.log(err));
+    let userInfo;
+    this.afs.doc(`users/${uid}`).valueChanges().subscribe((data) => {
+      userInfo = data;
+      userInfo.cart = shoppingCart;
+      this.afs.doc(`users/${uid}`).update(userInfo)
+      .then(() => console.log('shopping cart updated for lender'))
+      .catch((err) => console.log(err));
+      });
   }
 
   emptyCart(uid) {
     const cart = new ShoppingCartClass();
     this.updateCart(uid, cart.getObject());
   }
+/* not working right
+  getCart(uid): any {
+    if (uid) {
+      this.afs.collection<UserInfo>('users', ref => ref.where('uid', '==', uid)).valueChanges()
+      .switchMap(user => {
+        if (user[0]) {
+          return Observable.of(user[0].cart);
+        } else {
+          return Observable.of(null);
+        }
+      });
+    }
+  }
 
   addItem(uid, userId, catId, price) {
-    console.log('1', uid, userId, catId, price)
     this.getCart(uid).subscribe((cart) => {
       if (cart[0]) {
-        console.log('2', uid, userId, catId, price)
         cart[0].items.push({'itemId': userId, 'catId': catId, 'price': price});
         cart[0].itemsTotal = this.calculateCart(cart[0]);
         this.updateCart(uid, cart[0]);
@@ -91,8 +82,9 @@ export class ShoppingCartService {
   }
 
   calculateCart(cart): number {
-    let prices: number[];
+    let prices: number[] = [];
     cart.items.forEach(item => prices.push(item.price));
     return prices.reduce((a, b) => a + b, 0);
   }
+  */
 }
