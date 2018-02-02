@@ -30,6 +30,7 @@ import { LenderFormConfigComponent } from './component/lender-form-config/lender
 import { LenderFormAssignComponent } from './component/lender-form-assign/lender-form-assign.component';
 import { LenderFormHistoryComponent } from './component/lender-form-history/lender-form-history.component';
 import { LenderProspectViewComponent } from './component/lender-prospect-view/lender-prospect-view.component';
+import { LenderCartComponent } from './component/lender-cart/lender-cart.component';
 
 export const router: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -53,7 +54,8 @@ export const router: Routes = [
     { path: 'lender-form-config/:id', component: LenderFormConfigComponent, canActivate: [LenderAdminGuard] },
     { path: 'lender-form-assign/:uid', component: LenderFormAssignComponent, canActivate: [LenderAdminGuard] },
     { path: 'lender-form-history/:uid', component: LenderFormHistoryComponent, canActivate: [LenderAdminGuard] },
-    { path: 'lender-prospect-view', component: LenderProspectViewComponent, canActivate: [LenderAdminGuard] }
+    { path: 'lender-prospect-view', component: LenderProspectViewComponent, canActivate: [LenderAdminGuard] },
+    { path: 'lender-cart', component: LenderCartComponent, canActivate: [LenderAdminGuard] }
 ];
 
 export const routes: ModuleWithProviders = RouterModule.forRoot(router);

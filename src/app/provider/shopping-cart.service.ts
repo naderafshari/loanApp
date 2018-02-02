@@ -10,6 +10,7 @@ import { AuthService } from './auth.service';
 @Injectable()
 export class ShoppingCartService {
   cartCol: AngularFirestoreCollection<ShoppingCart>;
+  userCol: AngularFirestoreCollection<UserInfo>;
   userDoc: AngularFirestoreDocument<UserInfo>;
   cart$: Observable<ShoppingCart[]>;
   shoppingCart: ShoppingCartClass;
@@ -21,11 +22,28 @@ export class ShoppingCartService {
   }
 
   getCart(uid) {
-    if (uid) {
-      this.cartCol = this.afs.doc(`users/${uid}`).collection<ShoppingCart>('cart');
-      this.cart$ = this.cartCol.valueChanges();
-    }
-    return this.cart$;
+    // if (uid) {
+    //   this.cartCol = this.afs.doc(`users/${uid}`);
+    //   this.cart$ = this.cartCol.valueChanges();
+    // }
+    // return this.cart$;
+    this.userCol = this.afs.collection('users', ref => ref.where('uid', '==', uid));  
+    this.cart$ = this.userCol
+    .switchMap(user => {
+      if (user) {
+          this.userDoc = this.afs.doc(`users/${user.uid}`).valueChanges();
+          this.userDoc.subscribe((data: UserInfo) => {
+              this.userInfo = data;
+          });
+          return this.userDoc;
+      } else {
+        return Observable.of(null);
+      }
+    });
+
+    });
+  });
+
   }
 
   createCart(uid) {
@@ -49,8 +67,10 @@ export class ShoppingCartService {
   }
 
   addItem(uid, userId, catId, price) {
+    console.log('1', uid, userId, catId, price)
     this.getCart(uid).subscribe((cart) => {
       if (cart[0]) {
+        console.log('2', uid, userId, catId, price)
         cart[0].items.push({'itemId': userId, 'catId': catId, 'price': price});
         cart[0].itemsTotal = this.calculateCart(cart[0]);
         this.updateCart(uid, cart[0]);

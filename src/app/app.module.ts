@@ -51,6 +51,7 @@ import { LenderFormAssignComponent } from './component/lender-form-assign/lender
 import { LenderFormHistoryComponent } from './component/lender-form-history/lender-form-history.component';
 import { LenderProspectViewComponent } from './component/lender-prospect-view/lender-prospect-view.component';
 import { EmailChangeComponent } from './component/email-change/email-change.component';
+import { LenderCartComponent } from './component/lender-cart/lender-cart.component';
 
 @NgModule({
   declarations: [
@@ -78,7 +79,8 @@ import { EmailChangeComponent } from './component/email-change/email-change.comp
     LenderFormAssignComponent,
     LenderFormHistoryComponent,
     LenderProspectViewComponent,
-    EmailChangeComponent
+    EmailChangeComponent,
+    LenderCartComponent
   ],
   imports: [
     BrowserModule,
