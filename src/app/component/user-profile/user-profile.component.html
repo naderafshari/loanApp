@@ -73,7 +73,8 @@
         First Name: {{userInfo.firstName}}<br>
         Last Name: {{userInfo.lastName}}<br>
         DOB: {{userInfo.dob}}<br>
-      </mat-list-item>
+        Date Joined: {{userInfo.JoinedTime}}
+      </mat-list-item><br>
       <mat-list-item>
       <button *ngIf="(authService.user | async)?.role ==='user' || userInfo.function === 'lender'"
       mat-raised-button color="primary" (click)="addToCart()">Add To Cart</button>
