@@ -10,7 +10,7 @@
     // numOfItems: number;
     deliveryId: string;
     itemsTotal: number;
-    upateTime: string;
+    updateTime: string;
   }
 
   export class ShoppingCartClass {

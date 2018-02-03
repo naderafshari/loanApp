@@ -119,4 +119,8 @@ export class LenderPortalComponent implements OnInit {
   goFormHistory(uid) {
     this.router.navigate(['/lender-form-history', uid]);
   }
+
+  goToCart(uid) {
+    this.router.navigate(['/lender-cart', uid]);
+  }
 }

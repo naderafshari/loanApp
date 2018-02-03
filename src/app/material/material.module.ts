@@ -17,6 +17,7 @@ import { MatListModule } from '@angular/material';
 import { MatDatepickerModule } from '@angular/material';
 import { MatNativeDateModule } from '@angular/material';
 import { MatTableModule } from '@angular/material';
+import { MatSortModule } from '@angular/material';
 import { MatPaginatorModule } from '@angular/material';
 import { MatCheckboxModule } from '@angular/material';
 import { MatSlideToggleModule } from '@angular/material';
@@ -43,6 +44,7 @@ import { MatRadioModule } from '@angular/material';
         MatNativeDateModule,
         MatPaginatorModule,
         MatTableModule,
+        MatSortModule,
         MatCheckboxModule,
         MatSlideToggleModule,
         MatIconModule,
@@ -67,6 +69,7 @@ import { MatRadioModule } from '@angular/material';
         MatNativeDateModule,
         MatPaginatorModule,
         MatTableModule,
+        MatSortModule,
         MatCheckboxModule,
         MatSlideToggleModule,
         MatIconModule,

@@ -58,11 +58,11 @@ export class AuthService {
   }
 
   get userAuthRole(): string {
-    return this.authenticated ? this.userInfo.role : null;
+    return this.authenticated && this.userInfo ? this.userInfo.role : null;
   }
 
   get userFunction(): string {
-    return this.authenticated ? this.userInfo.function : null;
+    return this.authenticated && this.userInfo ? this.userInfo.function : null;
   }
   // Returns current user data
   get currentUser(): any {
@@ -88,7 +88,7 @@ export class AuthService {
 
   // Returns current user displayName
   get currentUserDisplayName(): string {
-    return this.authenticated ? this.userInfo.displayName : '';
+    return this.authenticated && this.userInfo ? this.userInfo.displayName : '';
   }
 
   // Returns current user UID

@@ -22,6 +22,9 @@
       <mat-list-item *ngIf = "authService.user | async; let user" >
         <a id="goback" (click)="viewBorrowers()"><mat-icon>person</mat-icon>&nbsp;&nbsp;&nbsp;Potential Applicants</a>
       </mat-list-item>
+      <mat-list-item *ngIf = "authService.user | async; let user" >
+        <a id="goback" (click)="goToCart(user.uid)"><mat-icon>shop</mat-icon>&nbsp;&nbsp;&nbsp;Shopping Cart</a>
+      </mat-list-item>
     </mat-list>
   </mat-card-content>
   <hr><h5>Purchased Applicants:</h5>

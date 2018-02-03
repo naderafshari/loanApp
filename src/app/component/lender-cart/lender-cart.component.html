@@ -1,3 +1,15 @@
-<p>
-  lender-cart works!
-</p>
+<mat-card class="user-container">
+  <mat-card-header>
+    <a *ngIf="authService.user | async" id="goback" (click)="goBack()">Go Back</a>
+  </mat-card-header>
+  <hr>
+  <mat-card-content *ngIf="items">
+    <mat-list>
+      <mat-list-item *ngFor="let item of items">
+        <strong>{{item.displayName}}</strong> &nbsp;
+        <strong>DOB:&nbsp;{{item.dob}}</strong> &nbsp;
+        <a (click)="removeFromCart(item.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;<mat-icon>delete</mat-icon></a>
+      </mat-list-item>
+    </mat-list>
+  </mat-card-content>
+</mat-card>

@@ -55,7 +55,7 @@ export const router: Routes = [
     { path: 'lender-form-assign/:uid', component: LenderFormAssignComponent, canActivate: [LenderAdminGuard] },
     { path: 'lender-form-history/:uid', component: LenderFormHistoryComponent, canActivate: [LenderAdminGuard] },
     { path: 'lender-prospect-view', component: LenderProspectViewComponent, canActivate: [LenderAdminGuard] },
-    { path: 'lender-cart', component: LenderCartComponent, canActivate: [LenderAdminGuard] }
+    { path: 'lender-cart/:uid', component: LenderCartComponent, canActivate: [LenderAdminGuard] }
 ];
 
 export const routes: ModuleWithProviders = RouterModule.forRoot(router);

@@ -36,16 +36,17 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         this.userDoc = this.afs.doc(`users/${this.uid}`).valueChanges();
       } else {
         this.userDoc = this.afs.doc(`users/${this.authService.currentUserId}`).valueChanges();
+        this.uid = this.authService.currentUserId;
       }
       this.sub1 = this.userDoc.subscribe((data: UserInfo) => {
         this.userInfo = data;
       });
       if (this.authService.userFunction === 'lender') {
-        this.sub2 = this.afs.collection<UserInfo>('users', ref => ref.where('uid', '==', this.authService.currentUserId)).valueChanges()
+        this.sub2 = this.afs.collection<UserInfo>('users', ref => 
+        ref.where('uid', '==', this.authService.currentUserId)).valueChanges()
         .subscribe(user => {
           if (user[0]) {
             this.shoppingCart = user[0].cart;
-            console.log('cart is: ', user[0].cart);
           }
         });
       }
@@ -58,8 +59,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
   updateUser() {
     if (this.userInfo) {
-      if (this.authService.userAuthRole === 'admin' && this.userInfo.role !== 'admin' &&
-          this.authService.currentUserId === this.userInfo.uid) {
+      if (this.authService.userAuthRole === 'admin' && this.userInfo.role !== 'admin' && this.authService.currentUserId === this.userInfo.uid) {
         alert('admin role cannot be changed by self');
         return;
       }
@@ -134,16 +134,29 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     return prices.reduce((a, b) => a + b, 0);
   }
 
+  alreadyAddedUser: CartItem[] = [];
   addToCart() {
-    const cartItem: CartItem = {itemId: this.userInfo.uid, catId: '', price: 30};
-    this.shoppingCart.items.push(cartItem);
-    this.shoppingCart.itemsTotal = this.calculateCart(this.shoppingCart);
-    this.scs.updateCart(this.authService.currentUserId, this.shoppingCart);
-    alert('borrower added to shopping cart successfuly');
+    const catId = ''; // for now, wil change later
+    const price = 30;
+    const cartItem: CartItem = {itemId: this.userInfo.uid, catId: catId, price: price};
+
+    if (typeof this.shoppingCart.items !== 'undefined' && this.shoppingCart.items.length > 0) {
+      this.alreadyAddedUser = this.shoppingCart.items.filter((item) => {
+        return (item.itemId == this.userInfo.uid && item.catId == catId)
+      });
+    }
+    if (this.alreadyAddedUser.length > 0) {
+      alert('Borrower already added to the cart');
+    } else {
+      this.shoppingCart.items.push(cartItem);
+      this.shoppingCart.itemsTotal = this.calculateCart(this.shoppingCart);
+      this.scs.updateCart(this.authService.currentUserId, this.shoppingCart);
+      alert('Borrower added to shopping cart successfuly');
+    }
   }
 
   goToCart() {
-    this.router.navigateByUrl('/lender-cart');
+    this.router.navigate(['/lender-cart', this.authService.currentUserId]);
   }
 
   ngOnDestroy() {

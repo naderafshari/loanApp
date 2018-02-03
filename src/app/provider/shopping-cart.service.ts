@@ -32,13 +32,14 @@ export class ShoppingCartService {
   updateCart(uid, shoppingCart) {
     shoppingCart.updateTime = new Date().toString();
     let userInfo;
-    this.afs.doc(`users/${uid}`).valueChanges().subscribe((data) => {
+    const sub = this.afs.doc(`users/${uid}`).valueChanges().subscribe((data) => {
       userInfo = data;
       userInfo.cart = shoppingCart;
+      sub.unsubscribe();
       this.afs.doc(`users/${uid}`).update(userInfo)
       .then(() => console.log('shopping cart updated for lender'))
       .catch((err) => console.log(err));
-      });
+    });
   }
 
   emptyCart(uid) {
