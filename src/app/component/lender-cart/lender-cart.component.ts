@@ -25,23 +25,23 @@ export class LenderCartComponent implements OnInit {
   sub1: Subscription;
   userInfo: UserInfo;
 
-  constructor(private afs: AngularFirestore,
-              public authService: AuthService, private location: Location, private scs: ShoppingCartService,
+  constructor(private afs: AngularFirestore, private scs: ShoppingCartService,
+              public authService: AuthService, private location: Location,
               private router: Router, private dialog: MatDialog, private route: ActivatedRoute) {
 
     this.route.params.subscribe(params => {
-      this.uid = params['uid'] || 0;   //uid is the logged in user if not admin
+      this.uid = params['uid'] || 0;   //uid is the logged in user(lender) if not admin
       if (this.uid) {
         this.userDoc = this.afs.doc(`users/${this.uid}`).valueChanges();
       } else { // Should not be needed because we should route with the parameter passed to it, make sure
         this.userDoc = this.afs.doc(`users/${this.authService.currentUserId}`).valueChanges();
         this.uid = this.authService.currentUserId;
       }
-      this.sub1 = this.userDoc.subscribe((data: UserInfo) => {
-        this.userInfo = data;
-        this.shoppingCart = data.cart;
+      this.sub1 = this.scs.getCart(this.uid).subscribe((data: ShoppingCart) => {
+        this.shoppingCart = data;
         this.items = [];
-        this.shoppingCart.items.forEach((item) => {
+        if (typeof this.shoppingCart.items !== 'undefined' && this.shoppingCart.items.length > 0) {
+          this.shoppingCart.items.forEach((item) => {
             const sub = this.afs.doc<UserInfo>(`users/${item.itemId}`).valueChanges().subscribe((user) => {
               this.items.push({
                 'uid': user.uid,
@@ -53,24 +53,21 @@ export class LenderCartComponent implements OnInit {
               sub.unsubscribe();
             });
           });
-            });
+        }
+      });
     });
   }
 
-  calculateCart(cart): number {
-    let prices: number[] = [];
-    cart.items.forEach(item => prices.push(item.price));
-    return prices.reduce((a, b) => a + b, 0);
+  removeFromCart(userId) {
+    this.scs.removeItem(this.uid, userId, '')
   }
 
-  removeFromCart(userId) {
-    const item = this.shoppingCart.items.filter(item => item.itemId == userId);
-    const index = this.shoppingCart.items.indexOf(item[0]);
-    if (index > -1) {
-      this.shoppingCart.items.splice(index, 1);
-      this.shoppingCart.itemsTotal = this.calculateCart(this.shoppingCart);
-      this.scs.updateCart(this.uid, this.shoppingCart);
-    }
+  goToCheckout() {
+    
+  }
+
+  goToPortal() {
+    this.router.navigateByUrl('/lender-portal');
   }
 
   goBack() {

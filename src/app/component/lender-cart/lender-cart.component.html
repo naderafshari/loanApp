@@ -1,6 +1,13 @@
 <mat-card class="user-container">
   <mat-card-header>
-    <a *ngIf="authService.user | async" id="goback" (click)="goBack()">Go Back</a>
+    <mat-list *ngIf="authService.user | async" >
+      <mat-list-item >
+        <a id="goback" (click)="goBack()">Go Back</a>
+      </mat-list-item>
+      <mat-list-item >
+        <a id="goback" (click)="goToPortal()">Back to Portal</a>
+      </mat-list-item>
+    </mat-list>
   </mat-card-header>
   <hr>
   <mat-card-content *ngIf="items">
@@ -9,6 +16,9 @@
         <strong>{{item.displayName}}</strong> &nbsp;
         <strong>DOB:&nbsp;{{item.dob}}</strong> &nbsp;
         <a (click)="removeFromCart(item.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;<mat-icon>delete</mat-icon></a>
+      </mat-list-item>
+      <mat-list-item>
+        <button mat-raised-button color="primary" (click)="goToCheckout()">Check Out</button>
       </mat-list-item>
     </mat-list>
   </mat-card-content>

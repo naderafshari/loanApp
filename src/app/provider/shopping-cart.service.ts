@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { ShoppingCart, ShoppingCartClass, CartItem } from '../model/cart';
 import { UserInfo } from '../model/user-info';
 import { AuthService } from './auth.service';
+import { observeOn } from 'rxjs/operator/observeOn';
 
 @Injectable()
 export class ShoppingCartService {
@@ -14,7 +15,6 @@ export class ShoppingCartService {
   userDoc: AngularFirestoreDocument<UserInfo>;
   shoppingCart: ShoppingCartClass;
   sub: Subscription;
-  uid: string;
 
   constructor(private afs: AngularFirestore, private authService: AuthService,
     private router: Router,
@@ -24,62 +24,65 @@ export class ShoppingCartService {
   createCart(uid) {
     /* Called only once for a new lender*/
     const shoppingCart = new ShoppingCartClass();
-    this.afs.doc(`users/${uid}`).set(shoppingCart.getObject())
+    this.afs.doc(`carts/${uid}`).set(shoppingCart.getObject())
     .then(() => console.log('shopping cart created for lender'))
     .catch((err) => console.log(err));
   }
 
   updateCart(uid, shoppingCart) {
     shoppingCart.updateTime = new Date().toString();
-    let userInfo;
-    const sub = this.afs.doc(`users/${uid}`).valueChanges().subscribe((data) => {
-      userInfo = data;
-      userInfo.cart = shoppingCart;
-      sub.unsubscribe();
-      this.afs.doc(`users/${uid}`).update(userInfo)
-      .then(() => console.log('shopping cart updated for lender'))
-      .catch((err) => console.log(err));
-    });
+    this.afs.doc(`carts/${uid}`).update(shoppingCart)
+    .then(() => console.log('shopping cart updated for lender'))
+    .catch((err) => console.log(err));
   }
 
   emptyCart(uid) {
     const cart = new ShoppingCartClass();
     this.updateCart(uid, cart.getObject());
   }
-/* not working right
+
   getCart(uid): any {
     if (uid) {
-      this.afs.collection<UserInfo>('users', ref => ref.where('uid', '==', uid)).valueChanges()
-      .switchMap(user => {
-        if (user[0]) {
-          return Observable.of(user[0].cart);
-        } else {
-          return Observable.of(null);
-        }
-      });
+      return this.afs.doc(`carts/${uid}`).valueChanges();
     }
+    return Observable.of(null);
   }
 
-  addItem(uid, userId, catId, price) {
-    this.getCart(uid).subscribe((cart) => {
-      if (cart[0]) {
-        cart[0].items.push({'itemId': userId, 'catId': catId, 'price': price});
-        cart[0].itemsTotal = this.calculateCart(cart[0]);
-        this.updateCart(uid, cart[0]);
+  addItem(uid, itemId, catId, price) {
+    const sub = this.getCart(uid).subscribe((cart) => {
+      if (cart) {
+        let shoppingCart: ShoppingCart = cart;
+        let alreadyAddedUser: CartItem[] = [];
+        if (typeof shoppingCart.items !== 'undefined' && shoppingCart.items.length > 0) {
+          alreadyAddedUser = shoppingCart.items.filter((item) => item.itemId == itemId && item.catId == catId);
+        }
+        if (alreadyAddedUser.length > 0) {
+          alert('Borrower already added to the cart');
+        } else {
+          shoppingCart.items.push({'itemId': itemId, 'catId': catId, 'price': price});
+          shoppingCart.itemsTotal = this.calculateCart(shoppingCart);
+          this.updateCart(uid, shoppingCart);
+          alert('Borrower added to shopping cart successfuly');
+        }
+        sub.unsubscribe();
       }
     })
-    .unsubscribe();
   }
 
-  deleteItem(uid, userId, catId) {
-    this.getCart(uid).subscribe((cart) => {
-      if (cart[0]) {
-        cart[0].items.filter(e => (e.itemId !== userId) && (e.catId !== catId));
-        cart[0].itemsTotal = this.calculateCart(cart[0]);
-        this.updateCart(uid, cart[0]);
+  removeItem(uid, itemId, catId) {
+    const sub = this.getCart(uid).subscribe((cart) => {
+      if (cart) {
+        let shoppingCart: ShoppingCart = cart;
+        const item = shoppingCart.items.filter(item => item.itemId == itemId && item.catId == catId);
+        const index = shoppingCart.items.indexOf(item[0]);
+        if (index > -1) {
+          shoppingCart.items.splice(index, 1);
+          shoppingCart.itemsTotal = this.calculateCart(shoppingCart);
+          this.updateCart(uid, shoppingCart);
+        }
+        sub.unsubscribe();
       }
     })
-    .unsubscribe();
   }
 
   calculateCart(cart): number {
@@ -87,5 +90,4 @@ export class ShoppingCartService {
     cart.items.forEach(item => prices.push(item.price));
     return prices.reduce((a, b) => a + b, 0);
   }
-  */
 }

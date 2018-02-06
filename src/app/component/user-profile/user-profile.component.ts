@@ -41,15 +41,13 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       this.sub1 = this.userDoc.subscribe((data: UserInfo) => {
         this.userInfo = data;
       });
-      if (this.authService.userFunction === 'lender') {
-        this.sub2 = this.afs.collection<UserInfo>('users', ref => 
-        ref.where('uid', '==', this.authService.currentUserId)).valueChanges()
-        .subscribe(user => {
-          if (user[0]) {
-            this.shoppingCart = user[0].cart;
-          }
-        });
-      }
+      // if (this.authService.userFunction === 'lender') {
+      //   this.sub2 = this.scs.getCart(this.authService.currentUserId).subscribe(cart => {
+      //     if (cart[0]) {
+      //       this.shoppingCart = cart[0];
+      //     }
+      //   });
+      // }
     });
   }
 
@@ -134,25 +132,10 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     return prices.reduce((a, b) => a + b, 0);
   }
 
-  alreadyAddedUser: CartItem[] = [];
   addToCart() {
     const catId = ''; // for now, wil change later
     const price = 30;
-    const cartItem: CartItem = {itemId: this.userInfo.uid, catId: catId, price: price};
-
-    if (typeof this.shoppingCart.items !== 'undefined' && this.shoppingCart.items.length > 0) {
-      this.alreadyAddedUser = this.shoppingCart.items.filter((item) => {
-        return (item.itemId == this.userInfo.uid && item.catId == catId)
-      });
-    }
-    if (this.alreadyAddedUser.length > 0) {
-      alert('Borrower already added to the cart');
-    } else {
-      this.shoppingCart.items.push(cartItem);
-      this.shoppingCart.itemsTotal = this.calculateCart(this.shoppingCart);
-      this.scs.updateCart(this.authService.currentUserId, this.shoppingCart);
-      alert('Borrower added to shopping cart successfuly');
-    }
+    this.scs.addItem(this.authService.currentUserId, this.userInfo.uid, catId, price)
   }
 
   goToCart() {
