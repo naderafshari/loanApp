@@ -100,7 +100,11 @@ export class LenderPortalComponent implements OnInit {
   logout() {
     this.authService.logout();
   }
-
+  
+  goInterestArea(uid) {
+    alert('Comming soon!');
+  }
+  
   viewBorrowers() {
     this.router.navigateByUrl('/lender-prospect-view');
   }
