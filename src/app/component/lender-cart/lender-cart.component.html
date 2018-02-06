@@ -5,20 +5,25 @@
         <a id="goback" (click)="goBack()">Go Back</a>
       </mat-list-item>
       <mat-list-item >
-        <a id="goback" (click)="goToPortal()">Back to Portal</a>
+        <a id="goback" (click)="goToPortal()">Go to Portal</a>
       </mat-list-item>
     </mat-list>
   </mat-card-header>
   <hr>
   <mat-card-content *ngIf="items">
-    <mat-list>
+    <mat-list><strong>Cart Items:</strong>
       <mat-list-item *ngFor="let item of items">
         <strong>{{item.displayName}}</strong> &nbsp;
-        <strong>DOB:&nbsp;{{item.dob}}</strong> &nbsp;
-        <a (click)="removeFromCart(item.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;<mat-icon>delete</mat-icon></a>
+        <strong>DOB:&nbsp;{{item.dob}}</strong> &nbsp;&nbsp;&nbsp;&nbsp;
+        <strong>$&nbsp;{{item.price}}</strong> &nbsp;&nbsp;&nbsp;&nbsp;
+        <a (click)="removeFromCart(item.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>delete</mat-icon></a>
+      </mat-list-item><hr>
+      <mat-list-item *ngIf="shoppingCart">
+          <p><strong>Total:&nbsp;</strong>${{shoppingCart.itemsTotal}}&nbsp;&nbsp;&nbsp;({{shoppingCart.items.length}} items)</p>
       </mat-list-item>
       <mat-list-item>
-        <button mat-raised-button color="primary" (click)="goToCheckout()">Check Out</button>
+        <button mat-raised-button color="primary" (click)="goToCheckout()">Check Out</button>&nbsp;&nbsp;&nbsp;
+        <button mat-raised-button color="warn" (click)="openEmptyDialog()">Empty Cart</button>
       </mat-list-item>
     </mat-list>
   </mat-card-content>

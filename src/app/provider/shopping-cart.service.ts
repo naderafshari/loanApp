@@ -54,7 +54,7 @@ export class ShoppingCartService {
         let shoppingCart: ShoppingCart = cart;
         let alreadyAddedUser: CartItem[] = [];
         if (typeof shoppingCart.items !== 'undefined' && shoppingCart.items.length > 0) {
-          alreadyAddedUser = shoppingCart.items.filter((item) => item.itemId == itemId && item.catId == catId);
+          alreadyAddedUser = shoppingCart.items.filter((item) => item.itemId === itemId && item.catId === catId);
         }
         if (alreadyAddedUser.length > 0) {
           alert('Borrower already added to the cart');
@@ -66,15 +66,15 @@ export class ShoppingCartService {
         }
         sub.unsubscribe();
       }
-    })
+    });
   }
 
   removeItem(uid, itemId, catId) {
     const sub = this.getCart(uid).subscribe((cart) => {
       if (cart) {
         let shoppingCart: ShoppingCart = cart;
-        const item = shoppingCart.items.filter(item => item.itemId == itemId && item.catId == catId);
-        const index = shoppingCart.items.indexOf(item[0]);
+        const cartItem = shoppingCart.items.filter((item) => item.itemId === itemId && item.catId === catId);
+        const index = shoppingCart.items.indexOf(cartItem[0]);
         if (index > -1) {
           shoppingCart.items.splice(index, 1);
           shoppingCart.itemsTotal = this.calculateCart(shoppingCart);
@@ -82,7 +82,7 @@ export class ShoppingCartService {
         }
         sub.unsubscribe();
       }
-    })
+    });
   }
 
   calculateCart(cart): number {

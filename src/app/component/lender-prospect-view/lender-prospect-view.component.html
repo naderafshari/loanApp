@@ -1,8 +1,9 @@
 <mat-card>
-  <a (click)="goBack()" id="goback">Go back/Cancel</a>
+  <a (click)="goBack()" id="goback">Go back</a>
   <hr>
   <mat-card-content>
-      <button mat-raised-button (click)="viewSelected()">View Selected</button>
+      <button mat-raised-button color="primary" (click)="viewSelected()">View Selected</button>
+      <button mat-raised-button color="primary" (click)="goToCart()">Shopping Cart</button>
  </mat-card-content>
 </mat-card>
       
@@ -24,9 +25,13 @@
       </mat-cell>
   </ng-container>
 
+  <ng-container matColumnDef="addToCart">
+    <mat-header-cell *matHeaderCellDef> Add Cart</mat-header-cell>
+    <mat-cell *matCellDef="let usersInfo"> <a (click)="addToCart(usersInfo.uid)"><mat-icon>add</mat-icon></a> </mat-cell>
+  </ng-container>
   <ng-container matColumnDef="displayName">
-          <mat-header-cell *matHeaderCellDef  mat-sort-header> Name </mat-header-cell>
-          <mat-cell *matCellDef="let usersInfo"> {{usersInfo.displayName}} </mat-cell>
+    <mat-header-cell *matHeaderCellDef  mat-sort-header> Name </mat-header-cell>
+    <mat-cell *matCellDef="let usersInfo"> {{usersInfo.displayName}} </mat-cell>
   </ng-container>
   <ng-container matColumnDef="joinedTime">
     <mat-header-cell *matHeaderCellDef mat-sort-header> Joined </mat-header-cell>

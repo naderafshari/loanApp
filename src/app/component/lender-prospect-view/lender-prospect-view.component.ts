@@ -15,6 +15,7 @@ import { MatPaginator } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { DialogComponent } from '../dialog/dialog.component';
+import { ShoppingCartService } from './../../provider/shopping-cart.service';
 
 @Component({
   selector: 'app-lender-prospect-view',
@@ -28,7 +29,7 @@ export class LenderProspectViewComponent implements OnDestroy {
   user: any;
   sub: Subscription;
   usersInfo: any[] = [];
-  displayedColumns = ['select', 'displayName', 'dob', 'joinedTime'];
+  displayedColumns = ['select', 'addToCart', 'displayName', 'dob', 'joinedTime'];
   dataSource: any;
   selection: any;
   sub1: Subscription;
@@ -38,7 +39,8 @@ export class LenderProspectViewComponent implements OnDestroy {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private afs: AngularFirestore, private router: Router, private location: Location,
-              private route: ActivatedRoute, public dialog: MatDialog) {
+              private route: ActivatedRoute, public dialog: MatDialog, private scs: ShoppingCartService,
+              private authService: AuthService) {
               // public authService: AuthService) {
       // this.sub = this.route.params.subscribe(params => {
       // this.catId = params['catid'] || 0;
@@ -70,6 +72,12 @@ export class LenderProspectViewComponent implements OnDestroy {
     // });
   }
 
+  addToCart(uid) {
+    const catId = ''; // for now, wil change later
+    const price = 30;
+    this.scs.addItem(this.authService.currentUserId, uid, catId, price);
+  }
+
   viewSelected() {
     if (this.selection.selected[1]) {
       alert('More than one item was selected! Please, select only one item.');
@@ -96,6 +104,10 @@ export class LenderProspectViewComponent implements OnDestroy {
 
   goBack() {
     this.location.back();
+  }
+
+  goToCart() {
+    this.router.navigate(['/lender-cart', this.authService.currentUserId]);
   }
 
   ngOnDestroy() {

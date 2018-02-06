@@ -30,7 +30,7 @@ export class LenderCartComponent implements OnInit {
               private router: Router, private dialog: MatDialog, private route: ActivatedRoute) {
 
     this.route.params.subscribe(params => {
-      this.uid = params['uid'] || 0;   //uid is the logged in user(lender) if not admin
+      this.uid = params['uid'] || 0;   // uid is the logged in user(lender) if not admin
       if (this.uid) {
         this.userDoc = this.afs.doc(`users/${this.uid}`).valueChanges();
       } else { // Should not be needed because we should route with the parameter passed to it, make sure
@@ -46,10 +46,11 @@ export class LenderCartComponent implements OnInit {
               this.items.push({
                 'uid': user.uid,
                 'displayName': user.displayName,
+                'price': item.price,
                 'dob': user.dob,
                 'photoURL': user.photoURL,
                 'joinedTime': user.joinedTime
-              })
+              });
               sub.unsubscribe();
             });
           });
@@ -58,12 +59,31 @@ export class LenderCartComponent implements OnInit {
     });
   }
 
+  emptyCart() {
+    this.scs.emptyCart(this.uid);
+  }
+
+  openEmptyDialog(): void {
+    if (this.shoppingCart.items.length > 0) {
+      const dialogRef = this.dialog.open(DialogComponent, {
+        width: '250px',
+        data: 'You are about to remove all items from shopping cart. Are you sure?'
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === 'Confirm') {
+          this.emptyCart();
+        }
+      });
+    }
+  }
+
   removeFromCart(userId) {
-    this.scs.removeItem(this.uid, userId, '')
+    this.scs.removeItem(this.uid, userId, '');
   }
 
   goToCheckout() {
-    
+    alert('coming soon');
   }
 
   goToPortal() {

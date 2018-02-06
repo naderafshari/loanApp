@@ -77,7 +77,7 @@
       </mat-list-item><br>
       <mat-list-item>
       <button *ngIf="(authService.user | async)?.role ==='user' || userInfo.function === 'lender'"
-      mat-raised-button color="primary" (click)="addToCart()">Add To Cart</button>
+      mat-raised-button color="primary" (click)="addToCart()">Add To Cart</button>&nbsp;&nbsp;&nbsp;
       <button *ngIf="(authService.user | async)?.role ==='user' || userInfo.function === 'lender'"
       mat-raised-button color="primary" (click)="goToCart()">Go To Cart</button>
     </mat-list-item>

@@ -135,7 +135,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   addToCart() {
     const catId = ''; // for now, wil change later
     const price = 30;
-    this.scs.addItem(this.authService.currentUserId, this.userInfo.uid, catId, price)
+    this.scs.addItem(this.authService.currentUserId, this.userInfo.uid, catId, price);
   }
 
   goToCart() {
