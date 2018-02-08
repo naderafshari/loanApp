@@ -1,5 +1,3 @@
-import { ShoppingCart } from './cart';
-
 export interface UserInfo {
   uid:           string;
   email:         string;
@@ -7,13 +5,13 @@ export interface UserInfo {
   function?:     string;
   displayName?:  string;
   photoURL?:     string;
-  joinedTime?:   string;
+  joinTime?:   string;
+  updateTime?:  string;
   firstName?:    string;
   lastName?:     string;
   dob?:          string;
   assignedForms?: {};
-  purchased?:     {};
-  cart?:         ShoppingCart;
+  purchased?:    any[];   // used if lender
   addr1Line1?:   string;
   addr1Line2?:   string;
   addr1City?:    string;

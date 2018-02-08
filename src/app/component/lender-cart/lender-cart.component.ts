@@ -10,6 +10,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { DialogComponent } from '../dialog/dialog.component';
 import { ShoppingCart, CartItem } from '../../model/cart';
 import { Subscription } from 'rxjs/Subscription';
+import { UserService } from '../../provider/user.service';
 
 @Component({
   selector: 'app-lender-cart',
@@ -17,7 +18,7 @@ import { Subscription } from 'rxjs/Subscription';
   styleUrls: ['./lender-cart.component.css']
 })
 export class LenderCartComponent implements OnInit {
-  userDoc: Observable<{}>;
+  userDoc: Observable<UserInfo>;
   uid: string;
   uidDialog: string;
   shoppingCart: ShoppingCart;
@@ -26,15 +27,15 @@ export class LenderCartComponent implements OnInit {
   userInfo: UserInfo;
 
   constructor(private afs: AngularFirestore, private scs: ShoppingCartService,
-              public authService: AuthService, private location: Location,
+              public authService: AuthService, private location: Location, private us: UserService,
               private router: Router, private dialog: MatDialog, private route: ActivatedRoute) {
 
     this.route.params.subscribe(params => {
       this.uid = params['uid'] || 0;   // uid is the logged in user(lender) if not admin
       if (this.uid) {
-        this.userDoc = this.afs.doc(`users/${this.uid}`).valueChanges();
+        this.userDoc = this.afs.doc<UserInfo>(`users/${this.uid}`).valueChanges();
       } else { // Should not be needed because we should route with the parameter passed to it, make sure
-        this.userDoc = this.afs.doc(`users/${this.authService.currentUserId}`).valueChanges();
+        this.userDoc = this.afs.doc<UserInfo>(`users/${this.authService.currentUserId}`).valueChanges();
         this.uid = this.authService.currentUserId;
       }
       this.sub1 = this.scs.getCart(this.uid).subscribe((data: ShoppingCart) => {
@@ -49,7 +50,7 @@ export class LenderCartComponent implements OnInit {
                 'price': item.price,
                 'dob': user.dob,
                 'photoURL': user.photoURL,
-                'joinedTime': user.joinedTime
+                'joinTime': user.joinTime
               });
               sub.unsubscribe();
             });
@@ -83,7 +84,26 @@ export class LenderCartComponent implements OnInit {
   }
 
   goToCheckout() {
-    alert('coming soon');
+    const sub = this.userDoc.subscribe((lender) => {
+      this.userInfo = lender;
+      if (typeof this.userInfo.purchased == 'undefined') {
+        console.log('get here!');
+        this.userInfo.purchased = [];
+      }
+      this.shoppingCart.items.forEach((cartItem) => {
+        console.log('shopping cart ', this.shoppingCart.items);
+        const purchasedUser = this.userInfo.purchased.filter(e => e === cartItem.itemId); // && e === cartItem.catId);
+        if (purchasedUser.length > 0) {
+          alert('user already purchased, skipping');
+        } else {
+          this.userInfo.purchased.push(cartItem.itemId);
+        }
+      });
+      this.us.updateUser(this.userInfo);
+      this.emptyCart();
+      sub.unsubscribe();
+      alert('The transaction has been completed!');
+    });
   }
 
   goToPortal() {

@@ -27,7 +27,6 @@ export class LenderPortalComponent implements OnInit {
   searchText: any;
   userInfo: UserInfo;
   purchasedUsers: any[];
-  contactInfoForm: any;
 
   constructor(private afs: AngularFirestore, public dialog: MatDialog,
               public authService: AuthService, private router: Router,
@@ -39,8 +38,12 @@ export class LenderPortalComponent implements OnInit {
     .valueChanges().subscribe((data) => {
       this.userInfo = data;
       this.purchasedUsers = [];
-      if (this.userInfo.purchased) {
-        this.purchasedUsers = Object.values(this.userInfo.purchased);
+      if (typeof this.userInfo.purchased !== 'undefined' && this.userInfo.purchased.length > 0 ) {
+        // If use object instead of array use this code..
+        // if (this.userInfo.purchased) {
+          // this.purchasedUsers = Object.values(this.userInfo.purchased);
+        // }
+        this.purchasedUsers = this.userInfo.purchased;
       }
       // console.log('purchased users values: ', this.purchasedUsers);
       this.afs.doc(`users/${this.userInfo.uid}`).collection<Form>('forms')
@@ -49,16 +52,14 @@ export class LenderPortalComponent implements OnInit {
           this.usedForms = [];
           for (let i = 0; i < definedForms.length; i++) {
             this.usedForms.push(definedForms[i].formId);
-            if (definedForms[i].formId === 'form1') {
-              this.contactInfoForm = definedForms[i];
-            }
           }
           // console.log('defined forms are: ', this.usedForms);
           this.users = [];
           this.userForms = [];
           this.purchasedUsers.forEach( userId => {
-            this.afs.doc(`users/${userId}`).collection<Form>('forms', ref => ref.where('formCreator', '==', this.userInfo.uid))
-            .valueChanges().subscribe((forms) => {
+            this.afs.doc(`users/${userId}`).collection<Form>('forms', ref => ref
+            .where('formCreator', '==', this.userInfo.uid)).valueChanges()
+            .subscribe((forms) => {
               if (forms) {
                 this.afs.doc<UserInfo>(`users/${userId}`).valueChanges().subscribe((user) => {
                   this.users.push(user);
@@ -67,7 +68,7 @@ export class LenderPortalComponent implements OnInit {
                       * push it to userForms array */
                     this.userForm = forms.filter(form => form.formId === e).sort(this.compare)[0];
                     if (this.userForm) {
-                      if (user.assignedForms[e] === 'true') {
+                      if (user.assignedForms[e] === this.userInfo.uid) {
                         this.userForm.uid = userId;
                         this.userForms.push(this.userForm);
                       }
@@ -112,6 +113,7 @@ export class LenderPortalComponent implements OnInit {
   goFormManage(uid) {
     this.router.navigate(['/lender-form-manage', uid]);
   }
+
   goFormAssign(uid) {
     this.router.navigate(['/lender-form-assign', uid]);
   }

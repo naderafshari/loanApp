@@ -42,9 +42,9 @@ export class AuthService {
         displayName: displayName,
         photoURL: userAuth.photoURL,
         role: 'user',
-        joinedTime: new Date().toString(),
+        joinTime: new Date().toString(),
         assignedForms: {},
-        purchased: {}
+        purchased: []
     };
     // const calRef: AngularFirestoreDocument<any> = this.afs.doc(`calendar/${userAuth.uid}`);
     // calRef.set({calId: `${userAuth.uid}`});
@@ -210,10 +210,10 @@ export class AuthService {
         'email': user.email,
         'uid': user.uid,
         'photoURL': user.photoURL,
-        'joinedTime': new Date().toString(),
+        'joinTime': new Date().toString(),
         'role': 'user',
         'assignedForms': {},
-        'purchased': {}
+        'purchased': []
       })
       .then( () => {
         this.router.navigateByUrl('/user-function');

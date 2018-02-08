@@ -7,6 +7,7 @@ import { ShoppingCartService } from '../../provider/shopping-cart.service';
 import { UserInfo } from '../../model/user-info';
 import { Form } from '../../model/form';
 import { Subscription } from 'rxjs/Subscription';
+import { UserService } from '../../provider/user.service';
 
 @Component({
   selector: 'app-user-function',
@@ -20,7 +21,7 @@ export class UserFunctionComponent implements OnInit, OnDestroy {
  sub1: Subscription;
  sub2: Subscription;
 
-  constructor(private afs: AngularFirestore, public authService: AuthService,
+  constructor(private afs: AngularFirestore, public authService: AuthService, private us: UserService,
     private router: Router, private route: ActivatedRoute, private scs: ShoppingCartService) {
       this.uid = this.authService.currentUserId;
       this.sub1 = this.afs.doc(`users/${this.uid}`).valueChanges()
@@ -51,9 +52,9 @@ export class UserFunctionComponent implements OnInit, OnDestroy {
         this.afs.doc(`users/${this.userInfo.uid}`).collection('forms').doc(new Date().toString()).set(formData);
       }
       if (this.userInfo) {
-        this.userInfo.assignedForms['form1'] = 'true';
-        this.userInfo.joinedTime = new Date().toString();
-        this.afs.collection('users').doc(this.userInfo.uid).update(this.userInfo)
+        this.userInfo.assignedForms['form1'] = this.userInfo.uid;
+        this.userInfo.joinTime = new Date().toString();
+        this.us.updateUser(this.userInfo)
         .then(() =>
           this.router.navigate(['/user-profile', this.userInfo.uid])
         );

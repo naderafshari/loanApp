@@ -21,7 +21,7 @@
     </div>
     <mat-list *ngFor="let user of users | async | nameFilter : searchText">
     <mat-list-item *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.role ==='super' || (authService.user | async)?.uid === user.uid">
-        <strong>{{user.displayName}}</strong> &nbsp;
+        <strong>{{user.displayName}} (Function:{{user.function}}) (Role:{{user.role}})</strong> &nbsp;
       <a (click)="editClick(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>person</mat-icon></a>
       <div *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.role ==='super'">
         <a (click)="goFormAssign(user.uid);"class="secondary-content">&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>assignment</mat-icon></a>

@@ -5,6 +5,7 @@ import { AuthService } from '../../provider/auth.service';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { UserInfo } from '../../model/user-info';
+import { UserService } from '../../provider/user.service';
 
 @Component({
   selector: 'app-email-change',
@@ -19,7 +20,7 @@ export class EmailChangeComponent implements OnInit {
   userInfo: UserInfo;
 
   constructor(public authService: AuthService, private router: Router,
-    private location: Location, private afs: AngularFirestore) {
+    private location: Location, private afs: AngularFirestore, private us: UserService) {
       this.userDoc = this.afs.doc(`users/${this.authService.currentUserId}`).valueChanges();
       this.userDoc.subscribe((data: UserInfo) => {
         this.userInfo = data;
@@ -30,7 +31,7 @@ export class EmailChangeComponent implements OnInit {
     if (formData.valid) {
       this.authService.changeEmail(formData.value.newEmail, this.userInfo.email, formData.value.password);
       this.userInfo.email = formData.value.newEmail;
-      this.afs.doc(`users/${this.authService.currentUserId}`).update(this.userInfo);
+      this.us.updateUser(this.userInfo);
       this.goBack();
     }
   }

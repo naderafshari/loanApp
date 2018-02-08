@@ -18,7 +18,7 @@ import { UserInfo } from '../../model/user-info';
 export class LenderFormManageComponent implements OnInit {
   formsCol: AngularFirestoreCollection<Form>;
   forms: Observable<Form[]>;
-  usedForms: string[];
+  usedForms: number[];
   usersCol: AngularFirestoreCollection<UserInfo>;
   userDoc: AngularFirestoreDocument<UserInfo>;
   users: Observable<UserInfo[]>;
@@ -46,7 +46,7 @@ export class LenderFormManageComponent implements OnInit {
             this.forms.subscribe(forms => {
               this.usedForms = [];
               forms.forEach(form => {
-                this.usedForms.push(form.formId.charAt(4) + form.formId.charAt(5));
+                this.usedForms.push(form.formNumber);
               });
             });
           }
@@ -80,7 +80,7 @@ export class LenderFormManageComponent implements OnInit {
     }
     return next ;
   }
-
+/*
   openDeleteAllDialog(): void {
     if (this.userInfo.function === 'lender') {
       const dialogRef = this.dialog.open(DialogComponent, {
@@ -91,7 +91,7 @@ export class LenderFormManageComponent implements OnInit {
       dialogRef.afterClosed().subscribe(result => {
         if (result === 'Confirm') {
           for (let i = 0; i < this.usedForms.length; i++) {
-            this.lfs.deleteForm('form' + this.usedForms[i]);
+            this.lfs.deleteForm('form' + this.usedForms[i]);   <-------this part won't work
           }
         }
       });
@@ -99,7 +99,7 @@ export class LenderFormManageComponent implements OnInit {
       alert('No Delete privilages! Please contact the Administrator');
     }
   }
-
+*/
   openDeleteDialog(formId): void {
     if (this.userInfo.function === 'lender') {
       const dialogRef = this.dialog.open(DialogComponent, {

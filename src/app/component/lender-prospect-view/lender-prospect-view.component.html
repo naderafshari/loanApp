@@ -27,19 +27,23 @@
 
   <ng-container matColumnDef="addToCart">
     <mat-header-cell *matHeaderCellDef> Add Cart</mat-header-cell>
-    <mat-cell *matCellDef="let usersInfo"> <a (click)="addToCart(usersInfo.uid)"><mat-icon>add</mat-icon></a> </mat-cell>
+    <mat-cell *matCellDef="let users"> <a (click)="addToCart(users.uid)"><mat-icon>add</mat-icon></a> </mat-cell>
   </ng-container>
   <ng-container matColumnDef="displayName">
     <mat-header-cell *matHeaderCellDef  mat-sort-header> Name </mat-header-cell>
-    <mat-cell *matCellDef="let usersInfo"> {{usersInfo.displayName}} </mat-cell>
+    <mat-cell *matCellDef="let users"> {{users.displayName}} </mat-cell>
   </ng-container>
-  <ng-container matColumnDef="joinedTime">
+  <ng-container matColumnDef="joinTime">
     <mat-header-cell *matHeaderCellDef mat-sort-header> Joined </mat-header-cell>
-    <mat-cell *matCellDef="let usersInfo"> {{usersInfo.joinedTime}} </mat-cell>
+    <mat-cell *matCellDef="let users"> {{users.joinTime}} </mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="updateTime">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Last Active </mat-header-cell>
+    <mat-cell *matCellDef="let users"> {{users.updateTime}} </mat-cell>
   </ng-container>
   <ng-container matColumnDef="dob">
     <mat-header-cell *matHeaderCellDef mat-sort-header> DOB </mat-header-cell>
-    <mat-cell *matCellDef="let usersInfo"> {{usersInfo.dob}} </mat-cell>
+    <mat-cell *matCellDef="let users"> {{users.dob}} </mat-cell>
   </ng-container>
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"> 

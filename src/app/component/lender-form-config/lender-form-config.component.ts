@@ -249,7 +249,8 @@ export class LenderFormConfigComponent implements OnInit {
     if (this.form) {
       if (this.allRequireFields()) {
         this.form.updateTime = new Date().toString();
-        this.afs.collection(`users/${this.authService.currentUserId}/forms`).doc(this.id).set(this.form).then(() => this.updateFields());
+        this.afs.collection(`users/${this.userId}/forms`).doc(this.id).set(this.form)
+        .then(() => this.updateFields());
         this.sub.unsubscribe();
         this.goBack();
       } else {
@@ -266,8 +267,9 @@ export class LenderFormConfigComponent implements OnInit {
     if (this.form) {
       if (this.allRequireFields()) {
         this.form.updateTime = new Date().toString();
-        this.afs.collection(`users/${this.authService.currentUserId}/forms`).doc(this.id).set(this.form).then(() => this.updateFields());
-        this.lfs.reAssignFormAllUsers(this.form.formId, this.userId );
+        this.afs.collection(`users/${this.userId}/forms`).doc(this.id).set(this.form)
+        .then(() => this.updateFields());
+        this.lfs.reAssignForm(this.form.formId, this.userId );
         this.sub.unsubscribe();
         this.goBack();
       } else {
@@ -319,7 +321,7 @@ export class LenderFormConfigComponent implements OnInit {
         this.authService.userFunction === 'lender' ) {
       const dialogRef = this.dialog.open(DialogComponent, {
         width: '250px',
-        data: 'You are about to submit changer.\n\nA fresh copy of the updated Form will be "Reassigned" to all user whom are assigned this Form.\n\nAre you sure?'
+        data: 'You are about to submit changer. A fresh copy of the updated Form will be "Reassigned" to all user whom are assigned this Form. Are you sure?'
       });
 
       dialogRef.afterClosed().subscribe(result => {

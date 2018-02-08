@@ -45,8 +45,9 @@ export class UserService {
   }
 
   updateUser(user: UserInfo) {
+    user.updateTime = new Date().toString();
     this.userDoc = this.afs.doc(`users/${user.uid}`);
-    this.userDoc.update(user);
+    return this.userDoc.update(user);
   }
 
 }

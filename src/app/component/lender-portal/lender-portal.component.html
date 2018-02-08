@@ -8,12 +8,7 @@
       <mat-list-item ><mat-icon>person</mat-icon><strong>{{userInfo.displayName}}</strong> &nbsp;
         <a (click)="editClick(user.uid);">&nbsp;&nbsp;&nbsp;<mat-icon>create</mat-icon></a>
       </mat-list-item>
-      <h6>Configured Application Forms:</h6>
-      <mat-list-item *ngIf="contactInfoForm">
-        <mat-icon>subject</mat-icon>
-          <a (click)="goToForm(user.uid, contactInfoForm.formId);">&nbsp;&nbsp;{{contactInfoForm.formName}}</a>
-      </mat-list-item>
-    </mat-list><hr>
+    </mat-list>
     <mat-list> 
       <mat-list-item *ngIf = "authService.user | async; let user" >
         <a id="goback" (click)="goInterestArea(user.uid);">

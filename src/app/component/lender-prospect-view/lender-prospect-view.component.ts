@@ -28,8 +28,8 @@ export class LenderProspectViewComponent implements OnDestroy {
   userDoc: Observable<{}>;
   user: any;
   sub: Subscription;
-  usersInfo: any[] = [];
-  displayedColumns = ['select', 'addToCart', 'displayName', 'dob', 'joinedTime'];
+  users: any[] = [];
+  displayedColumns = ['select', 'addToCart', 'displayName', 'dob', 'joinTime', 'updateTime'];
   dataSource: any;
   selection: any;
   sub1: Subscription;
@@ -51,18 +51,20 @@ export class LenderProspectViewComponent implements OnDestroy {
       //      this.authUser = authUser;
       //    }
       this.sub1 = this.afs
-      .collection<UserInfo>('users', ref => ref.where('function', '==', 'borrower').where('role', '==', 'user')).valueChanges()
+      .collection<UserInfo>('users', ref => ref.where('function', '==', 'borrower')
+      .where('role', '==', 'user')).valueChanges().debounceTime(500)
       .subscribe((users: UserInfo[]) => {
         users.forEach((user: UserInfo) => {
           const userData = {
             'uid': user.uid,
             'displayName': user.displayName,
             'dob': user.dob,
-            'joinedTime': user.joinedTime
+            'joinTime': user.joinTime,
+            'updateTime': user.updateTime
           };
-          this.usersInfo.push(userData);
+          this.users.push(userData);
         });
-        this.dataSource = new MatTableDataSource<Form>(this.usersInfo);
+        this.dataSource = new MatTableDataSource<Form>(this.users);
         this.selection = new SelectionModel<Form>(true, []);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;

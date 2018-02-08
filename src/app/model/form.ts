@@ -14,6 +14,7 @@ export interface Field {
 export interface Form {
   formId: string;
   formName: string;
+  formNumber: number;
   formCreator?: string;
   numOfFields?: number;
   startTime?: string;
@@ -24,6 +25,7 @@ export class FormClass {
   form = <Form> {
       formId: '',
       formName: '',
+      formNumber: 0,
       numOfFields: 0,
       startTime: '',
       updateTime: ''

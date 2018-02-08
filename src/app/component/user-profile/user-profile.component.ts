@@ -10,6 +10,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { DialogComponent } from '../dialog/dialog.component';
 import { ShoppingCart, CartItem } from '../../model/cart';
 import { Subscription } from 'rxjs/Subscription';
+import { UserService } from '../../provider/user.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -26,7 +27,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   sub1: Subscription;
   sub2: Subscription;
 
-  constructor(private afs: AngularFirestore,
+  constructor(private afs: AngularFirestore, private us: UserService,
               public authService: AuthService, private location: Location, private scs: ShoppingCartService,
               private router: Router, private dialog: MatDialog, private route: ActivatedRoute) {
 
@@ -62,7 +63,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         return;
       }
       if (this.allRequireFields()) {
-        this.afs.collection('users').doc(this.userInfo.uid).update(this.userInfo);
+        this.us.updateUser(this.userInfo);
         // We can be getting here after function page so goBack wouldn't work
         // The order of the conditions is important, don't move them
         if (this.authService.userAuthRole === 'admin') {

@@ -12,9 +12,7 @@ export class FormService {
   formsCol: AngularFirestoreCollection<Form>;
   forms: Observable<Form[]>;
 
-  constructor(private afs: AngularFirestore,
-    private router: Router,
-    private route: ActivatedRoute) {
+  constructor(private afs: AngularFirestore, private router: Router, private route: ActivatedRoute) {
       this.formsCol = this.afs.collection<Form>('forms');
       this.forms = this.formsCol.valueChanges();
       /*this.forms = this.formsCol.snapshotChanges().map(actions => {
@@ -77,7 +75,8 @@ export class FormService {
      const sub = user.subscribe((data) => {
        const userInfo = data[0];
        if (userInfo) {
-         userInfo.assignedForms[`${formId}`] = 'true';
+         userInfo.assignedForms[`${formId}`] = sourceUid;
+         userInfo.updateTime = new Date().toString();
          this.afs.collection('users').doc(userInfo.uid).update(userInfo);
        }
        sub.unsubscribe();
@@ -89,7 +88,8 @@ export class FormService {
     const sub = user.subscribe((data) => {
       const userInfo = data[0];
       if (userInfo) {
-        userInfo.assignedForms[`${formId}`] = 'false';
+        delete userInfo.assignedForms[`${formId}`];
+        userInfo.updateTime = new Date().toString();
         this.afs.collection('users').doc(userInfo.uid).update(userInfo);
       }
       sub.unsubscribe();

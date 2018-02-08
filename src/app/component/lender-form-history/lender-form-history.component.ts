@@ -30,7 +30,7 @@ export class LenderFormHistoryComponent implements OnDestroy {
   userInfo: UserInfo;
   sub: Subscription;
   formsInfo: Form[] = [];
-  displayedColumns = ['select', 'formId', 'formName', 'startTime', 'updateTime'];
+  displayedColumns = ['select', 'formName', 'startTime', 'updateTime'];
   dataSource: any;
   selection: any;
   sub1: Subscription;
@@ -64,6 +64,7 @@ export class LenderFormHistoryComponent implements OnDestroy {
                   const formInfo = {
                     'formId': form.formId,
                     'formName': form.formName,
+                    'formNumber': form.formNumber,
                     'startTime': form.startTime,
                     'updateTime': form.updateTime
                   };

@@ -8,6 +8,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/forkJoin';
 import { Form, Field, USStatesClass, CountriesClass } from '../../model/form';
 import { FormService } from '../../provider/form.service';
+import { LenderFormService } from '../../provider/lender-form.service';
 import { Subscription } from 'rxjs/Subscription';
 import { firestore } from 'firebase';
 import { UserInfo } from './../../model/user-info';
@@ -35,7 +36,7 @@ export class FormConfigComponent implements OnInit {
   mask: string;
 
   constructor(private afs: AngularFirestore, public fs: FormService, private location: Location,
-              private router: Router, private route: ActivatedRoute,
+              private router: Router, private route: ActivatedRoute,public lfs: LenderFormService,
               private authService: AuthService, public dialog: MatDialog) {
     this.userId = this.authService.currentUserId;
     this.route.params.subscribe(params => {
@@ -261,13 +262,19 @@ export class FormConfigComponent implements OnInit {
       this.goBack();
     }
   }
-
+  
   updateFormAndReAssign() {
     if (this.form) {
       if (this.allRequireFields()) {
         this.form.updateTime = new Date().toString();
         this.afs.collection('forms').doc(this.id).set(this.form).then(() => this.updateFields());
-        this.fs.reAssignFormAllUsers(this.form.formId, this.userId )
+        if (this.authService.userFunction === 'lender') {
+          this.lfs.reAssignForm(this.form.formId, this.userId )
+        } else if (this.authService.userAuthRole === 'admin' ) {
+          this.fs.reAssignFormAllUsers(this.form.formId, this.userId )
+        } else {
+          alert('Form cannot be reassigned!');          
+        }
         this.sub.unsubscribe();
         this.goBack();
       } else {
@@ -279,6 +286,7 @@ export class FormConfigComponent implements OnInit {
       this.goBack();
     }
   }
+
   openDeleteAllDialog(): void {
     if (this.authService.userAuthRole === 'admin') {
       const dialogRef = this.dialog.open(DialogComponent, {
