@@ -91,7 +91,6 @@ export class LenderCartComponent implements OnInit {
         this.userInfo.purchased = [];
       }
       this.shoppingCart.items.forEach((cartItem) => {
-        console.log('shopping cart ', this.shoppingCart.items);
         const purchasedUser = this.userInfo.purchased.filter(e => e === cartItem.itemId); // && e === cartItem.catId);
         if (purchasedUser.length > 0) {
           alert('user already purchased, skipping');

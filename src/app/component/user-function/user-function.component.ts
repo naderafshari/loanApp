@@ -28,7 +28,7 @@ export class UserFunctionComponent implements OnInit, OnDestroy {
       .subscribe((data: UserInfo) => {
         this.userInfo = data;
         // Default to borrower
-        if (this.userInfo.function === '') {
+        if (typeof this.userInfo.function === 'undefined' || this.userInfo.function === '') {
             this.userInfo.function = 'borrower';
         }
       });
@@ -41,18 +41,22 @@ export class UserFunctionComponent implements OnInit, OnDestroy {
   clickNext() {
     const form = this.afs.collection<Form>('forms', ref => ref.where('formId', '==', 'form1')).valueChanges();
     this.sub2 = form.subscribe((data) => {
-      let formData = data[0];
-      formData.formCreator = this.userInfo.uid;
-      formData.updateTime = new Date().toString();
-      formData.startTime = new Date().toString();
-      if (this.userInfo.function === 'lender') {
-        this.afs.doc(`users/${this.userInfo.uid}`).collection('forms').doc('form1').set(formData);
-        this.scs.createCart(this.userInfo.uid);
-      } else if (this.userInfo.function === 'borrower') {
-        this.afs.doc(`users/${this.userInfo.uid}`).collection('forms').doc(new Date().toString()).set(formData);
+      if (data[0]) {
+        let formData = data[0];
+        formData.formCreator = this.userInfo.uid;
+        formData.updateTime = new Date().toString();
+        formData.startTime = new Date().toString();
+        if (this.userInfo.function === 'lender') {
+          this.afs.doc(`users/${this.userInfo.uid}`).collection('forms').doc('form1').set(formData);
+        } else if (this.userInfo.function === 'borrower') {
+          this.afs.doc(`users/${this.userInfo.uid}`).collection('forms').doc(new Date().toString()).set(formData);
+        }
+        this.userInfo.assignedForms['form1'] = this.userInfo.uid;
       }
       if (this.userInfo) {
-        this.userInfo.assignedForms['form1'] = this.userInfo.uid;
+        if (this.userInfo.function === 'lender') {
+          this.scs.createCart(this.userInfo.uid);
+        }
         this.userInfo.joinTime = new Date().toString();
         this.us.updateUser(this.userInfo)
         .then(() =>

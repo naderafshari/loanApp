@@ -42,7 +42,9 @@ export class AuthService {
         displayName: displayName,
         photoURL: userAuth.photoURL,
         role: 'user',
+        function: '',
         joinTime: new Date().toString(),
+        updateTime: new Date().toString(),
         assignedForms: {},
         purchased: []
     };
@@ -109,7 +111,8 @@ export class AuthService {
     .auth
     .createUserWithEmailAndPassword(email, password)
     .then( (user) => {
-      user.sendEmailVerification().then(() => {
+      user.sendEmailVerification()
+      .then(() => {
         this.setUserAuthData(user, displayName)
         .then(() =>  {
           alert('A Verification Email was sent to your login email. After receiving the email, click on the provided link and log back in.');
@@ -117,14 +120,18 @@ export class AuthService {
           this.logout();
         })
         .catch(err => {
-          console.log(err);
-          alert(err);
+          alert('Something went wrong saving new user: ' + err.message);
+          console.log('Something went wrong saving new user:', err.message);
         });
+      })
+      .catch(err => {
+        alert('Something went wrong sending verification email: ' + err.message);
+        console.log('Something went wrong sending verification email:', err.message);
       });
     })
     .catch(err => {
-      alert('Something went wrong: ' + err.message);
-      console.log('Something went wrong:', err.message);
+      alert('Something went wrong creating account: ' + err.message);
+      console.log('Something went wrong creating account:', err.message);
     });
   }
 
@@ -141,7 +148,7 @@ export class AuthService {
           });
         } else {
           user.sendEmailVerification().then(() => {
-            alert('The login email is not verified. Verify your email with the Social media provider.');
+            alert('The login email is not verified. Check your email for another verification email.');
             this.logout();
           });
         }
