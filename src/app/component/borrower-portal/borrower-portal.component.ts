@@ -33,41 +33,35 @@ export class BorrowerPortalComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.afs.collection<Form>('forms')
-    .valueChanges().subscribe((definedForms) => {
-      if (definedForms) {
+    this.sub1 = this.afs.doc(`users/${this.authService.currentUserId}`)
+    .valueChanges().subscribe((user: UserInfo) => {
+      if (user) {
+        this.userInfo = user;
+      }
+    });
+    this.sub2 = this.afs.doc(`users/${this.authService.currentUserId}`).collection<Form>('forms')
+    .valueChanges().subscribe((forms) => {
+      if (forms) {
         this.usedForms = [];
-        for (let i = 0; i < definedForms.length; i++) {
-          this.usedForms.push(definedForms[i].formId);
+        for (let i = 0; i < forms.length; i++) {
+          // find given forms, only once though
+          if (this.usedForms.indexOf(forms[i].formId) === -1) {
+            this.usedForms.push(forms[i].formId);
+          }
         }
-        this.sub1 = this.afs.doc(`users/${this.authService.currentUserId}`).valueChanges()
-        .subscribe((data: UserInfo) => {
-          this.userInfo = data;
-          if (this.userInfo) {
-            this.sub2 = this.afs.doc(`users/${this.userInfo.uid}`).collection<Form>('forms')
-            .valueChanges().subscribe((forms) => {
-              if (forms) {
-                this.userForms = [];
-                this.usedForms.forEach( e => {
-                  /* Find the latest of each form (user's forms collection) and
-                    * push it to userForms array if the form is assigned */
-                  this.userForm = forms.filter(form => form.formId === e).sort(this.compare)[0];
-                  if (this.userForm) {
-                    if (this.userInfo.assignedForms[e] === 'true') {
-                      this.userForms.push( this.userForm);
-                    }
-                  }
-                });
-              }
-             // console.log("user forms are: ", this.userForms);
-            });
+        this.userForms = [];
+        this.usedForms.forEach( e => {
+          /* Find the latest of each formId and push it to userForms array */
+          this.userForm = forms.filter(form => form.formId === e).sort(this.compareTime)[0];
+          if (this.userForm) {
+            this.userForms.push( this.userForm);
           }
         });
       }
     });
   }
 
-  compare(a, b) {
+  compareTime(a, b) {
     if (a.updateTime < b.updateTime) {
       return -1;
     }

@@ -1,7 +1,8 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/map';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { DialogComponent } from '../dialog/dialog.component';
@@ -16,7 +17,7 @@ import { NameFilterPipe } from '../../pipe/name-filter.pipe';
   templateUrl: './lender-portal.component.html',
   styleUrls: ['./lender-portal.component.css']
 })
-export class LenderPortalComponent implements OnInit {
+export class LenderPortalComponent implements OnInit, OnDestroy {
   usersCol: AngularFirestoreCollection<UserInfo>;
   userDoc: AngularFirestoreDocument<UserInfo>;
   users: any;
@@ -27,6 +28,7 @@ export class LenderPortalComponent implements OnInit {
   searchText: any;
   userInfo: UserInfo;
   purchasedUsers: any[];
+  sub: Subscription;
 
   constructor(private afs: AngularFirestore, public dialog: MatDialog,
               public authService: AuthService, private router: Router,
@@ -34,7 +36,7 @@ export class LenderPortalComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.afs.doc<UserInfo>(`users/${this.authService.currentUserId}`)
+    this.sub = this.afs.doc<UserInfo>(`users/${this.authService.currentUserId}`)
     .valueChanges().subscribe((data) => {
       this.userInfo = data;
       this.purchasedUsers = [];
@@ -46,7 +48,7 @@ export class LenderPortalComponent implements OnInit {
         this.purchasedUsers = this.userInfo.purchased;
       }
       // console.log('purchased users values: ', this.purchasedUsers);
-      this.afs.doc(`users/${this.userInfo.uid}`).collection<Form>('forms')
+      const sub0 = this.afs.doc(`users/${this.userInfo.uid}`).collection<Form>('forms')
       .valueChanges().subscribe((definedForms) => {
         if (definedForms) {
           this.usedForms = [];
@@ -57,16 +59,15 @@ export class LenderPortalComponent implements OnInit {
           this.users = [];
           this.userForms = [];
           this.purchasedUsers.forEach( userId => {
-            this.afs.doc(`users/${userId}`).collection<Form>('forms', ref => ref
+            const sub1 = this.afs.doc(`users/${userId}`).collection<Form>('forms', ref => ref
             .where('formCreator', '==', this.userInfo.uid)).valueChanges()
             .subscribe((forms) => {
               if (forms) {
-                this.afs.doc<UserInfo>(`users/${userId}`).valueChanges().subscribe((user) => {
+                const sub2 = this.afs.doc<UserInfo>(`users/${userId}`).valueChanges().subscribe((user) => {
                   this.users.push(user);
                   this.usedForms.forEach( e => {
-                    /* Find the latest of each form of each user ( user's forms collection )and
-                      * push it to userForms array */
-                    this.userForm = forms.filter(form => form.formId === e).sort(this.compare)[0];
+                    /* Find the latest of each form of each user and push it to userForms array */
+                    this.userForm = forms.filter(form => form.formId === e).sort(this.compareTime)[0];
                     if (this.userForm) {
                       if (user.assignedForms[e] === this.userInfo.uid) {
                         this.userForm.uid = userId;
@@ -74,17 +75,19 @@ export class LenderPortalComponent implements OnInit {
                       }
                     }
                   });
-                  // console.log('user forms are: ', this.userForms);
+                  sub2.unsubscribe();
                 });
+                sub1.unsubscribe();
               }
             });
           });
+          sub0.unsubscribe();
         }
       });
     });
   }
 
-  compare(a, b) {
+  compareTime(a, b) {
     if (a.updateTime < b.updateTime) {
       return -1;
     }
@@ -101,11 +104,11 @@ export class LenderPortalComponent implements OnInit {
   logout() {
     this.authService.logout();
   }
-  
+
   goInterestArea(uid) {
     alert('Comming soon!');
   }
-  
+
   viewBorrowers() {
     this.router.navigateByUrl('/lender-prospect-view');
   }
@@ -128,5 +131,11 @@ export class LenderPortalComponent implements OnInit {
 
   goToCart(uid) {
     this.router.navigate(['/lender-cart', uid]);
+  }
+
+  ngOnDestroy() {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
   }
 }
