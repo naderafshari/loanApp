@@ -51,7 +51,7 @@ export const router: Routes = [
     { path: 'form-history/:uid', component: FormHistoryComponent, canActivate: [LenderAdminGuard] },
     { path: 'form-review/:uid/:tid', component: FormReviewComponent, canActivate: [LenderAdminGuard] },
     { path: 'lender-form-manage/:uid', component: LenderFormManageComponent, canActivate: [LenderAdminGuard] },
-    { path: 'lender-form-config/:id', component: LenderFormConfigComponent, canActivate: [LenderAdminGuard] },
+    { path: 'lender-form-config/:uid/:fid', component: LenderFormConfigComponent, canActivate: [LenderAdminGuard] },
     { path: 'lender-form-assign/:uid', component: LenderFormAssignComponent, canActivate: [LenderAdminGuard] },
     { path: 'lender-form-history/:uid', component: LenderFormHistoryComponent, canActivate: [LenderAdminGuard] },
     { path: 'lender-prospect-view', component: LenderProspectViewComponent, canActivate: [LenderAdminGuard] },

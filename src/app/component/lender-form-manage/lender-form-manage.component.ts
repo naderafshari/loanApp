@@ -41,7 +41,7 @@ export class LenderFormManageComponent implements OnInit {
             this.userInfo = users[0];
             /* Setting up for add form. To find next available
             form, find the not-available ones first here (at init) */
-            this.formsCol = this.afs.doc(`users/${this.authService.currentUserId}`).collection<Form>('forms');
+            this.formsCol = this.afs.doc(`users/${this.userId}`).collection<Form>('forms');
             this.forms = this.formsCol.valueChanges();
             this.forms.subscribe(forms => {
               this.usedForms = [];
@@ -59,8 +59,8 @@ export class LenderFormManageComponent implements OnInit {
     // this.lfs.createAllForms();
   }
 
-  editClick(id) {
-    this.router.navigate(['/lender-form-config', id]);
+  editClick(fid) {
+    this.router.navigate(['/lender-form-config', this.userId, fid]);
   }
 
   addForm() {

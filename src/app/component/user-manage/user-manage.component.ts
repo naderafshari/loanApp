@@ -33,44 +33,40 @@ export class UserManageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.afs.collection<Form>('forms')
-    .valueChanges().subscribe((definedForms) => {
-      if (definedForms) {
-        this.usedForms = [];
-        for (let i = 0; i < definedForms.length; i++) {
-          this.usedForms.push(definedForms[i].formId);
-        }
-        this.usersCol = this.afs.collection<UserInfo>('users');
-        this.users = this.usersCol.valueChanges();
-        this.userForms = [];
-        this.users.subscribe((users) => {
-          if (users) {
-            users.forEach( user => {
-              this.afs.doc(`users/${user.uid}`).collection<Form>('forms')
-              .valueChanges().subscribe((forms) => {
-                if (forms) {
-                  this.usedForms.forEach( e => {
-                    /* Find the latest of each form of each user ( user's forms collection )and
-                     * push it to userForms array along with the uid of the user if the form is assigned */
-                    this.userForm = forms.filter(form => form.formId === e).sort(this.compare)[0];
-                    if (this.userForm) {
-                      if (user.assignedForms[e] === 'true') {
-                        this.userForm.uid = user.uid;
-                        this.userForms.push( this.userForm);
-                      }
-                    }
-                  });
+    this.usersCol = this.afs.collection<UserInfo>('users');
+    this.users = this.usersCol.valueChanges();
+    this.userForms = [];
+    this.users.subscribe((users) => {
+      if (users) {
+        users.forEach( user => {
+          const sub0 = this.afs.doc(`users/${user.uid}`).collection<Form>('forms')
+          .valueChanges().subscribe((forms) => {
+            if (forms) {
+              this.usedForms = [];
+              for (let i = 0; i < forms.length; i++) {
+                // find given forms, only once though
+                if (this.usedForms.indexOf(forms[i].formId) === -1) {
+                  this.usedForms.push(forms[i].formId);
                 }
-                // console.log("user forms are: ", this.userForms);
+              }
+              this.usedForms.forEach( e => {
+                /* Find the latest of each form of each user and push it to userForms array
+                 * along with the uid of the user if the form is assigned */
+                this.userForm = forms.filter(form => form.formId === e && user.assignedForms[e])
+                .sort(this.compareTime)[0];
+                if (this.userForm) {
+                  this.userForm.uid = user.uid;
+                  this.userForms.push(this.userForm);
+                }
               });
-            });
-          }
+            }
+          });
         });
       }
     });
   }
 
-  compare(a, b) {
+  compareTime(a, b) {
     if (a.updateTime < b.updateTime) {
       return -1;
     }
@@ -91,6 +87,11 @@ export class UserManageComponent implements OnInit {
   goFormManage(uid) {
     this.router.navigate(['/form-manage', uid]);
   }
+
+  goLenderFormManage(uid) {
+    this.router.navigate(['/lender-form-manage', uid]);
+  }
+
   goFormAssign(uid) {
     this.router.navigate(['/form-assign', uid]);
   }

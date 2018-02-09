@@ -53,7 +53,11 @@ export class LenderPortalComponent implements OnInit, OnDestroy {
         if (definedForms) {
           this.usedForms = [];
           for (let i = 0; i < definedForms.length; i++) {
-            this.usedForms.push(definedForms[i].formId);
+            // find given forms, only once though which is not really needed because there should only be
+            // one instanse of a form in the lender form collection
+            if (this.usedForms.indexOf(definedForms[i].formId) === -1) {
+              this.usedForms.push(definedForms[i].formId);
+            }
           }
           // console.log('defined forms are: ', this.usedForms);
           this.users = [];

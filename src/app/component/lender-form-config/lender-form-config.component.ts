@@ -22,7 +22,7 @@ import { DialogComponent } from '../dialog/dialog.component';
 export class LenderFormConfigComponent implements OnInit {
   form: Form;
   userId: string;
-  id: string;
+  fid: string;
   fields: any[];
   sub: Subscription;
   usedFields: any[];
@@ -37,11 +37,12 @@ export class LenderFormConfigComponent implements OnInit {
   constructor(private afs: AngularFirestore, public lfs: LenderFormService, private location: Location,
               private router: Router, private route: ActivatedRoute,
               private authService: AuthService, public dialog: MatDialog) {
-    this.userId = this.authService.currentUserId;
+    // this.userId = this.authService.currentUserId;
     this.route.params.subscribe(params => {
-      this.id = params['id'] || 0;
-      if (this.id) {
-        this.sub = this.lfs.getForm(this.id).subscribe((data) => {
+      this.userId = params['uid'] || 0;
+      this.fid = params['fid'] || 0;
+      if (this.fid) {
+        this.sub = this.lfs.getForm(this.fid).subscribe((data) => {
           this.form = data;
           if (this.form) {
             this.updateFields();
@@ -209,8 +210,8 @@ export class LenderFormConfigComponent implements OnInit {
       this.form.numOfFields--;
       delete this.form[fieldToDelete];
       this.updateFields();
-      // this.afs.collection(`users/${this.authService.currentUserId}/forms`).doc(this.id).set(this.form);
-      /*const docRef = this.afs.collection(`users/${this.authService.currentUserId}/forms`).doc(this.id);
+      // this.afs.collection(`users/${this.authService.currentUserId}/forms`).doc(this.fid).set(this.form);
+      /*const docRef = this.afs.collection(`users/${this.authService.currentUserId}/forms`).doc(this.fid);
       delete this.form[fieldToDelete];
       this.form.numOfFields--;
       this.updateFields();
@@ -231,7 +232,7 @@ export class LenderFormConfigComponent implements OnInit {
     }
     this.form.numOfFields = 0;
     this.updateFields();
-    // this.afs.collection(`users/${this.authService.currentUserId}/forms`).doc(this.id).set(this.form);
+    // this.afs.collection(`users/${this.authService.currentUserId}/forms`).doc(this.fid).set(this.form);
   }
 
   allRequireFields() {
@@ -249,7 +250,7 @@ export class LenderFormConfigComponent implements OnInit {
     if (this.form) {
       if (this.allRequireFields()) {
         this.form.updateTime = new Date().toString();
-        this.afs.collection(`users/${this.userId}/forms`).doc(this.id).set(this.form)
+        this.afs.collection(`users/${this.userId}/forms`).doc(this.fid).set(this.form)
         .then(() => this.updateFields());
         this.sub.unsubscribe();
         this.goBack();
@@ -267,7 +268,7 @@ export class LenderFormConfigComponent implements OnInit {
     if (this.form) {
       if (this.allRequireFields()) {
         this.form.updateTime = new Date().toString();
-        this.afs.collection(`users/${this.userId}/forms`).doc(this.id).set(this.form)
+        this.afs.collection(`users/${this.userId}/forms`).doc(this.fid).set(this.form)
         .then(() => this.updateFields());
         this.lfs.reAssignForm(this.form.formId, this.userId );
         this.sub.unsubscribe();

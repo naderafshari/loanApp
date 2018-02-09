@@ -3,15 +3,17 @@
     <a *ngIf="authService.user | async" id="goback" (click)="logout()">Logout</a>
   </mat-card-header>
   <hr>
+<!--  
   <mat-card-content>
     <mat-list *ngIf = "(authService.user | async)?.role === 'admin';"> 
       <mat-list-item *ngIf = "authService.user | async; let user" >
         <a id="goback" (click)="goFormManage(user.uid);"class="secondary-content">
-      <mat-icon>create</mat-icon>&nbsp;&nbsp;Manage/Configre Form Templates</a>
+      <mat-icon>create</mat-icon>&nbsp;&nbsp;Manage/Configre Site Form Templates</a>
       <hr>
       </mat-list-item>
     </mat-list>
   </mat-card-content>
+-->  
   <mat-card-content>
     <div *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.role ==='super'">
       <mat-icon>person</mat-icon><strong>Manage Users</strong>
@@ -24,11 +26,12 @@
         <strong>{{user.displayName}} (Function:{{user.function}}) (Role:{{user.role}})</strong> &nbsp;
       <a (click)="editClick(user.uid);" class="secondary-content">&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>person</mat-icon></a>
       <div *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.role ==='super'">
-        <a (click)="goFormAssign(user.uid);"class="secondary-content">&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>assignment</mat-icon></a>
+        <a *ngIf = "user.function === 'lender'"
+        (click)="goLenderFormManage(user.uid);"class="secondary-content">&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>assignment</mat-icon></a>
         <a (click)="goFormHistory(user.uid);"class="secondary-content">&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>history</mat-icon></a>
       </div>
       </mat-list-item>
-      <mat-list-item *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.role ==='super' || (authService.user | async)?.uid === user.uid">
+      <mat-list-item *ngIf = "user.function === 'borrower' && user.role !== 'admin' && user.role !== 'super'">
         <mat-icon>subject</mat-icon>
         <div *ngFor="let userForm of userForms">
           <a *ngIf="userForm.uid === user.uid" (click)="goToForm(user.uid,userForm.formId);" class="secondary-content">&nbsp;&nbsp;{{userForm.formName}}</a>
