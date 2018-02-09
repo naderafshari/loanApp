@@ -1,7 +1,7 @@
 <mat-card class="form-container">
   <a (click)="goBack()" id="goback">Go back/Cancel</a>
   <hr>
-  <mat-card-content *ngIf="forms">
+  <mat-card-content *ngIf="forms && userInfo">
     <mat-list *ngFor="let form of forms | async">
       <mat-list-item *ngIf = "authService.user | async; let user"><strong>{{form.formName}}</strong>
         <a (click)="assignClick(form.formId);" class="secondary-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Assign/Reassign</a>

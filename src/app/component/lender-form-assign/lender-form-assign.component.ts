@@ -31,7 +31,8 @@ export class LenderFormAssignComponent implements OnInit, OnDestroy {
     this.route.params.subscribe(params => {
       this.uid = params['uid'] || 0;
       if (this.uid) {
-        this.forms = this.lfs.getForms();
+        this.forms = this.afs.doc(`users/${this.authService.currentUserId}`).collection<Form>('forms').valueChanges();
+        // this.lfs.getForms(); this gets the wrong user!!
         this.userDoc = this.afs.doc(`users/${this.uid}`).valueChanges();
         this.sub = this.userDoc.subscribe((data: UserInfo) => this.userInfo = data);
       }
