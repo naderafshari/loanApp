@@ -5,8 +5,8 @@
   <hr>
   <mat-card-content><h4>Lender Portal</h4>
     <mat-list *ngIf ="authService.user | async; let user">
-      <mat-list-item ><mat-icon>person</mat-icon><strong>{{userInfo.displayName}}</strong> &nbsp;
-        <a (click)="editClick(user.uid);">&nbsp;&nbsp;&nbsp;<mat-icon>create</mat-icon></a>
+      <mat-list-item ><strong>{{userInfo.displayName}}</strong> &nbsp;
+          <a matTooltip="Edit Profile" (click)="editClick(user.uid);">&nbsp;&nbsp;&nbsp;<mat-icon>create</mat-icon></a>
       </mat-list-item>
     </mat-list>
     <mat-list> 
@@ -33,16 +33,14 @@
     <mat-list *ngFor="let user of users">
     <mat-list-item >
         <strong>{{user.displayName}}</strong> &nbsp;
-      <a (click)="editClick(user.uid);" >&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>person</mat-icon></a>
-      <div>
-        <a (click)="goFormAssign(user.uid);">&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>assignment</mat-icon></a>
-        <a (click)="goFormHistory(user.uid);">&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>history</mat-icon></a>
-      </div>
+          <a matTooltip="View User Profile" (click)="editClick(user.uid);" >&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>person</mat-icon></a>
+          <a matTooltip="Assign Form to User" (click)="goFormAssign(user.uid);">&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>assignment</mat-icon></a>
+          <a matTooltip="View User Form History"(click)="goFormHistory(user.uid);">&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>history</mat-icon></a>
       </mat-list-item>
       <mat-list-item >
-        <mat-icon>subject</mat-icon>
+        <mat-icon matTooltip="Assigned Form(s)">subject</mat-icon>
         <div *ngFor="let userForm of userForms">
-          <a *ngIf="userForm.uid === user.uid" (click)="goToForm(user.uid,userForm.formId);" >&nbsp;&nbsp;{{userForm.formName}}</a>
+          <a matTooltip="View Assigned Form" *ngIf="userForm.uid === user.uid" (click)="goToForm(user.uid,userForm.formId);" >&nbsp;&nbsp;{{userForm.formName}}</a>
         </div>
       </mat-list-item>
     </mat-list>

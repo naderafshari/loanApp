@@ -36,9 +36,10 @@ export class FormComponent implements OnInit {
   usedChoices: any[];
   optionsValues: any[];
   choicesValues: any[];
+  userInfo: UserInfo;
 
   constructor(private afs: AngularFirestore, public authService: AuthService,
-    private router: Router,private location: Location, private route: ActivatedRoute) {
+    private router: Router, private location: Location, private route: ActivatedRoute) {
 
       const numberMask = createNumberMask({
         prefix: '$',
@@ -58,6 +59,7 @@ export class FormComponent implements OnInit {
       this.uid = params['uid'] || 0;
       this.formId = params['fid'] || 0;
       if (this.uid) {
+        this.afs.doc<UserInfo>(`users/${this.uid}`).valueChanges().subscribe(user => this.userInfo = user);
         this.formRef = this.afs.doc(`users/${this.uid}`).collection<Form>('forms', ref =>
           ref.where('formId', '==', this.formId));
         this.forms = this.formRef.valueChanges();
@@ -187,7 +189,7 @@ export class FormComponent implements OnInit {
   goBack() {
     this.location.back();
   }
-  
+
   ngOnInit() {
   }
 

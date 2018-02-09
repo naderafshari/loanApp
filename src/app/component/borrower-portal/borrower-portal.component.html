@@ -6,7 +6,7 @@
   <mat-card-content *ngIf = "userInfo"><h4>Borrower Portal</h4>
     <mat-list *ngIf = "(authService.user | async)?.uid === userInfo.uid">
       <mat-list-item ><mat-icon>person</mat-icon><strong>{{userInfo.displayName}}</strong> &nbsp;
-        <a (click)="editClick(userInfo.uid);">&nbsp;&nbsp;&nbsp;<mat-icon>create</mat-icon></a>
+        <a matTooltip="Edit Profile" (click)="editClick(userInfo.uid);">&nbsp;&nbsp;&nbsp;<mat-icon>create</mat-icon></a>
       </mat-list-item>
       <mat-list-item >
         <mat-icon>subject</mat-icon>

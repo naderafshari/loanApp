@@ -1,57 +1,72 @@
-<mat-card class="form-container">
+<mat-card *ngIf="userInfo && form" class="form-container">
   <a (click)="goBack()" id="goback">Go back/Cancel</a>
   <br>
   <br>
-  <mat-list-item *ngIf="form">Last Updated: {{form.updateTime}}</mat-list-item>
+  <mat-list-item >Last Updated: {{form.updateTime}}</mat-list-item>
   <br>
-  <span *ngFor="let field of fields">
-    <mat-form-field *ngIf="form && field.type == 'textbox'"[hideRequiredMarker]="!field.required">
-      <input matInput required 
-              [textMask]="field.mask?{mask: field.mask}:{mask: false}"  
-              [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' >
-              <mat-placeholder>{{field.name}}</mat-placeholder>
-      <span matTooltip={{field.toolTip}}> <mat-icon *ngIf="field.toolTip">help</mat-icon></span>
-    </mat-form-field>
-
-    <mat-form-field *ngIf="form && field.type == 'textarea'" [hideRequiredMarker]="!field.required"> 
-      <span>{{field.name}}</span> 
-      <span matTooltip={{field.toolTip}}> <mat-icon *ngIf="field.toolTip">help</mat-icon></span>
-      <textarea autosize matInput required [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)'> </textarea>
-    </mat-form-field>
-
-    <mat-form-field *ngIf="form && field.type == 'select'" [hideRequiredMarker]="!field.required">
-      <mat-select [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}}>
-        <div *ngFor="let option of field.optionsValues">
-          <mat-option value={{option}}>{{option}}</mat-option>
-        </div>
-      </mat-select>
-      <span matTooltip={{field.toolTip}}> <mat-icon *ngIf="field.toolTip">help</mat-icon></span>
-    </mat-form-field>
-
-    <div *ngIf="form && field.type == 'radio'">{{field.name}}:
-      <mat-radio-group [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' 
-        style="display: inline-flex;flex-direction: column;">
+  <div *ngIf="(authService.user | async)?.role === 'admin' || 
+              userInfo.uid === (authService.user | async)?.uid; else not_self_or_admin">
+    <span *ngFor="let field of fields">
+      <mat-form-field *ngIf="field.type == 'textbox'"[hideRequiredMarker]="!field.required">
+        <input matInput required 
+                [textMask]="field.mask?{mask: field.mask}:{mask: false}"  
+                [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' >
+                <mat-placeholder>{{field.name}}</mat-placeholder>
         <span matTooltip={{field.toolTip}}> <mat-icon *ngIf="field.toolTip">help</mat-icon></span>
-        <div *ngFor="let choice of field.choicesValues">
-          <mat-radio-button value={{choice}}>{{choice}}</mat-radio-button>
-        </div>
-      </mat-radio-group>
-    </div>
+      </mat-form-field>
 
-    <mat-form-field *ngIf="form && field.type == 'date'" [hideRequiredMarker]="!field.required">
-      <input matInput required [matDatepicker]="picker" 
-        [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}} disabled>
-      <span matTooltip={{field.toolTip}}> <mat-icon *ngIf="field.toolTip">help</mat-icon></span>
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker touchUi="true" #picker disabled="false"></mat-datepicker>
-    </mat-form-field>
+      <mat-form-field *ngIf="field.type == 'textarea'" [hideRequiredMarker]="!field.required"> 
+        <span>{{field.name}}</span> 
+        <span matTooltip={{field.toolTip}}> <mat-icon *ngIf="field.toolTip">help</mat-icon></span>
+        <textarea autosize matInput required [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)'> </textarea>
+      </mat-form-field>
 
-    <mat-checkbox *ngIf="form && field.type == 'checkbox'" 
-      [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)'>{{field.name}}<span *ngIf="field.required">*</span>
-      <span matTooltip={{field.toolTip}}> <mat-icon *ngIf="field.toolTip">help</mat-icon></span>
-    </mat-checkbox>
-  </span>
-  <br>
-  <button *ngIf="form" mat-raised-button color="primary" (click)="updateForm()">Submit</button>
-  <button *ngIf="form && (authService.user | async)?.role == 'admin'" mat-raised-button color="primary" (click)="saveFile()">Export</button>
+      <mat-form-field *ngIf="field.type == 'select'" [hideRequiredMarker]="!field.required">
+        <mat-select [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}}>
+          <div *ngFor="let option of field.optionsValues">
+            <mat-option value={{option}}>{{option}}</mat-option>
+          </div>
+        </mat-select>
+        <span matTooltip={{field.toolTip}}> <mat-icon *ngIf="field.toolTip">help</mat-icon></span>
+      </mat-form-field>
+
+      <div *ngIf="field.type == 'radio'">{{field.name}}:
+        <mat-radio-group [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' 
+          style="display: inline-flex;flex-direction: column;">
+          <span matTooltip={{field.toolTip}}> <mat-icon *ngIf="field.toolTip">help</mat-icon></span>
+          <div *ngFor="let choice of field.choicesValues">
+            <mat-radio-button value={{choice}}>{{choice}}</mat-radio-button>
+          </div>
+        </mat-radio-group>
+      </div>
+
+      <mat-form-field *ngIf="field.type == 'date'" [hideRequiredMarker]="!field.required">
+        <input matInput required [matDatepicker]="picker" 
+          [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)' placeholder={{field.name}} disabled>
+        <span matTooltip={{field.toolTip}}> <mat-icon *ngIf="field.toolTip">help</mat-icon></span>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker touchUi="true" #picker disabled="false"></mat-datepicker>
+      </mat-form-field>
+
+      <mat-checkbox *ngIf="field.type == 'checkbox'" 
+        [ngModel]='getValue(field.index)' (ngModelChange)='setValue($event,field.index)'>{{field.name}}<span *ngIf="field.required">*</span>
+        <span matTooltip={{field.toolTip}}> <mat-icon *ngIf="field.toolTip">help</mat-icon></span>
+      </mat-checkbox>
+    </span>
+    <br>
+    <button  mat-raised-button color="primary" (click)="updateForm()">Submit</button>
+    <button *ngIf="(authService.user | async)?.role == 'admin'" mat-raised-button color="primary" (click)="saveFile()">Export</button>
+  </div>
 </mat-card>
+
+<ng-template #not_self_or_admin>
+  <mat-card-content>
+    <mat-list *ngIf="fields">
+      <mat-list-item><strong>{{form.formName}}</strong></mat-list-item>
+      <br>
+      <div *ngFor="let field of fields">
+          <mat-list-item><strong>{{field.name}}</strong>&nbsp;&nbsp;&nbsp;&nbsp;{{field.value}}</mat-list-item>
+      </div>
+    </mat-list>
+  </mat-card-content>
+</ng-template>
