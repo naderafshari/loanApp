@@ -31,6 +31,8 @@ import { LenderFormAssignComponent } from './component/lender-form-assign/lender
 import { LenderFormHistoryComponent } from './component/lender-form-history/lender-form-history.component';
 import { LenderProspectViewComponent } from './component/lender-prospect-view/lender-prospect-view.component';
 import { LenderCartComponent } from './component/lender-cart/lender-cart.component';
+import { MsgInboxComponent } from './component/msg-inbox/msg-inbox.component';
+import { MsgComposeComponent } from './component/msg-compose/msg-compose.component';
 
 export const router: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -43,7 +45,6 @@ export const router: Routes = [
     { path: 'user-profile/:uid', component: UserProfileComponent, canActivate: [AuthGuard] },
     { path: 'user-manage', component: UserManageComponent, canActivate: [AdminGuard] },
     { path: 'borrower-portal', component: BorrowerPortalComponent, canActivate: [BorrowerAdminGuard] },
-    { path: 'lender-portal', component: LenderPortalComponent, canActivate: [LenderAdminGuard] },
     { path: 'form/:uid/:fid', component: FormComponent, canActivate: [AuthGuard] },
     { path: 'form-manage/:uid', component: FormManageComponent, canActivate: [LenderAdminGuard] },
     { path: 'form-config/:id', component: FormConfigComponent, canActivate: [LenderAdminGuard] },
@@ -54,8 +55,11 @@ export const router: Routes = [
     { path: 'lender-form-config/:uid/:fid', component: LenderFormConfigComponent, canActivate: [LenderAdminGuard] },
     { path: 'lender-form-assign/:uid', component: LenderFormAssignComponent, canActivate: [LenderAdminGuard] },
     { path: 'lender-form-history/:uid', component: LenderFormHistoryComponent, canActivate: [LenderAdminGuard] },
+    { path: 'lender-portal', component: LenderPortalComponent, canActivate: [LenderAdminGuard] },
     { path: 'lender-prospect-view', component: LenderProspectViewComponent, canActivate: [LenderAdminGuard] },
-    { path: 'lender-cart/:uid', component: LenderCartComponent, canActivate: [LenderAdminGuard] }
+    { path: 'lender-cart/:uid', component: LenderCartComponent, canActivate: [LenderAdminGuard] },
+    { path: 'msg-inbox', component: MsgInboxComponent, canActivate: [AuthGuard] },
+    { path: 'msg-compose', component: MsgComposeComponent, canActivate: [AuthGuard] }
 ];
 
 export const routes: ModuleWithProviders = RouterModule.forRoot(router);

@@ -29,6 +29,9 @@ export class LenderPortalComponent implements OnInit, OnDestroy {
   userInfo: UserInfo;
   purchasedUsers: any[];
   sub: Subscription;
+  inbox = false;
+  show_inbox_icon = false;
+
 
   constructor(private afs: AngularFirestore, public dialog: MatDialog,
               public authService: AuthService, private router: Router,
@@ -89,6 +92,11 @@ export class LenderPortalComponent implements OnInit, OnDestroy {
         }
       });
     });
+  }
+
+  show_inbox() {
+  	this.inbox = true;
+    this.show_inbox_icon = true;
   }
 
   compareTime(a, b) {

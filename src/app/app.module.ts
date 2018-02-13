@@ -52,6 +52,8 @@ import { LenderFormHistoryComponent } from './component/lender-form-history/lend
 import { LenderProspectViewComponent } from './component/lender-prospect-view/lender-prospect-view.component';
 import { EmailChangeComponent } from './component/email-change/email-change.component';
 import { LenderCartComponent } from './component/lender-cart/lender-cart.component';
+import { MsgInboxComponent } from './component/msg-inbox/msg-inbox.component';
+import { MsgComposeComponent } from './component/msg-compose/msg-compose.component';
 
 @NgModule({
   declarations: [
@@ -80,7 +82,9 @@ import { LenderCartComponent } from './component/lender-cart/lender-cart.compone
     LenderFormHistoryComponent,
     LenderProspectViewComponent,
     EmailChangeComponent,
-    LenderCartComponent
+    LenderCartComponent,
+    MsgInboxComponent,
+    MsgComposeComponent
   ],
   imports: [
     BrowserModule,

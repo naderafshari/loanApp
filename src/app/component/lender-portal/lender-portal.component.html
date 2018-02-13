@@ -1,3 +1,31 @@
+<mat-sidenav-container class="example-container">
+  <mat-sidenav #sidenav class="example-sidenav" color="primary">
+      <mat-toolbar color="primary">
+          <mat-toolbar-row (click)="show_inbox()" matTooltip="Inbox">
+              <span (click)="sidenav.toggle()">Inbox</span>
+              <span class="example-spacer"></span>
+              <mat-icon class="example-icon" *ngIf="show_inbox_icon">verified_user</mat-icon>
+          </mat-toolbar-row>
+      </mat-toolbar>
+  </mat-sidenav>
+
+  <mat-toolbar color="primary">
+      <button mat-icon-button (click)="sidenav.toggle()">
+          <mat-icon class="mat-24" matTooltip="Menu">menu</mat-icon>
+      </button>
+<!--      <div style="position: absolute;right: 5%;" matTooltip="User Name">{{ username }}</div>-->
+  </mat-toolbar>
+
+  <div class="container app-content">
+      
+      <div *ngIf="inbox; else portal">
+<!--        <app-msg-inbox [username]="username" [archived_inbox]="archived_inbox" (conversation_info)="get_messages($event)"></app-msg-inbox>-->
+        <app-msg-inbox></app-msg-inbox>
+      </div>
+  </div>
+</mat-sidenav-container>
+
+<ng-template #portal>
 <mat-card class="user-container">
   <mat-card-header>
     <a *ngIf="authService.user | async" id="goback" (click)="logout()">Logout</a>
@@ -46,3 +74,4 @@
     </mat-list>
   </mat-card-content>
 </mat-card>
+</ng-template>
