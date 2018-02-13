@@ -6,14 +6,19 @@
               <span class="example-spacer"></span>
               <mat-icon class="example-icon" *ngIf="show_inbox_icon">verified_user</mat-icon>
           </mat-toolbar-row>
-      </mat-toolbar>
+          <mat-toolbar-row (click)="show_portal()" matTooltip="Lender Portal">
+            <span (click)="sidenav.toggle()">Portal</span>
+            <span class="example-spacer"></span>
+            <mat-icon class="example-icon" *ngIf="show_portal_icon">verified_user</mat-icon>
+        </mat-toolbar-row>
+        </mat-toolbar>
   </mat-sidenav>
 
-  <mat-toolbar color="primary">
+  <mat-toolbar color="primary" *ngIf="userInfo">
       <button mat-icon-button (click)="sidenav.toggle()">
           <mat-icon class="mat-24" matTooltip="Menu">menu</mat-icon>
       </button>
-<!--      <div style="position: absolute;right: 5%;" matTooltip="User Name">{{ username }}</div>-->
+      <div style="position: absolute;right: 5%;" matTooltip="Name">{{ userInfo.displayName }}</div>
   </mat-toolbar>
 
   <div class="container app-content">

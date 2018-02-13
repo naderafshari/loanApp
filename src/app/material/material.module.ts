@@ -23,13 +23,14 @@ import { MatCheckboxModule } from '@angular/material';
 import { MatSlideToggleModule } from '@angular/material';
 import { MatIconModule } from '@angular/material';
 import { MatRadioModule } from '@angular/material';
+import {  MatGridListModule, MatChipsModule, MatAutocompleteModule } from '@angular/material';
 
 @NgModule({
     imports: [
         MatButtonModule,
         MatCardModule,
         MatMenuModule,
-        MatSidenavModule,        
+        MatSidenavModule,
         MatDialogModule,
         MatTooltipModule,
         MatSnackBarModule,
@@ -48,7 +49,19 @@ import { MatRadioModule } from '@angular/material';
         MatCheckboxModule,
         MatSlideToggleModule,
         MatIconModule,
-        MatRadioModule
+        MatRadioModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatCardModule,
+        MatButtonModule,
+        MatToolbarModule,
+        MatGridListModule,
+        MatSidenavModule,
+        MatTooltipModule,
+        MatIconModule,
+        MatChipsModule,
+        MatMenuModule,
+        MatAutocompleteModule,
     ],
     exports: [
         MatButtonModule,
@@ -73,7 +86,19 @@ import { MatRadioModule } from '@angular/material';
         MatCheckboxModule,
         MatSlideToggleModule,
         MatIconModule,
-        MatRadioModule
+        MatRadioModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatCardModule,
+        MatButtonModule,
+        MatToolbarModule,
+        MatGridListModule,
+        MatSidenavModule,
+        MatTooltipModule,
+        MatIconModule,
+        MatChipsModule,
+        MatMenuModule,
+        MatAutocompleteModule,
     ]
   })
   export class MaterialModule {}

@@ -31,6 +31,8 @@ export class LenderPortalComponent implements OnInit, OnDestroy {
   sub: Subscription;
   inbox = false;
   show_inbox_icon = false;
+  portal = true;
+  show_portal_icon = true;
 
 
   constructor(private afs: AngularFirestore, public dialog: MatDialog,
@@ -95,8 +97,17 @@ export class LenderPortalComponent implements OnInit, OnDestroy {
   }
 
   show_inbox() {
-  	this.inbox = true;
+    this.inbox = true;
     this.show_inbox_icon = true;
+    this.portal = false;
+    this.show_portal_icon = false;
+  }
+
+  show_portal() {
+    this.inbox = false;
+    this.show_inbox_icon = false;
+    this.portal = true;
+    this.show_portal_icon = true;
   }
 
   compareTime(a, b) {
