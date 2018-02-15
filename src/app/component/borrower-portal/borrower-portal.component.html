@@ -6,11 +6,14 @@
               <span class="example-spacer"></span>
               <mat-icon class="example-icon" *ngIf="show_inbox_icon">verified_user</mat-icon>
           </mat-toolbar-row>
-          <mat-toolbar-row (click)="show_portal()" matTooltip="Lender Portal">
+          <mat-toolbar-row (click)="show_portal()" matTooltip="Borrower Portal">
             <span (click)="sidenav.toggle()">Portal</span>
             <span class="example-spacer"></span>
             <mat-icon class="example-icon" *ngIf="show_portal_icon">verified_user</mat-icon>
-        </mat-toolbar-row>
+          </mat-toolbar-row>
+          <mat-toolbar-row (click)="logout()" matTooltip="Log Out">
+            <span (click)="sidenav.toggle()">Logout</span>
+          </mat-toolbar-row>
         </mat-toolbar>
   </mat-sidenav>
 
