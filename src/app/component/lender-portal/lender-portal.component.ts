@@ -156,6 +156,10 @@ export class LenderPortalComponent implements OnInit, OnDestroy {
     this.router.navigate(['/lender-cart', uid]);
   }
 
+  goMsgCompose(uid) {
+    this.router.navigate(['/msg-compose', uid]);
+  }
+
   ngOnDestroy() {
     if (this.sub) {
       this.sub.unsubscribe();

@@ -69,6 +69,7 @@
           <a matTooltip="View User Profile" (click)="editClick(user.uid);" >&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>person</mat-icon></a>
           <a matTooltip="Assign Form to User" (click)="goFormAssign(user.uid);">&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>assignment</mat-icon></a>
           <a matTooltip="View User Form History"(click)="goFormHistory(user.uid);">&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>history</mat-icon></a>
+          <a matTooltip="Send a private message"(click)="goMsgCompose(user.uid);">&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>mail</mat-icon></a>
       </mat-list-item>
       <mat-list-item >
         <mat-icon matTooltip="Assigned Form(s)">subject</mat-icon>
