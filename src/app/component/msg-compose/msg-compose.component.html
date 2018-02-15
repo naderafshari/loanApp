@@ -1,7 +1,7 @@
 <!-- Error Alert -->
 <div class="alert alert-danger alert-dismissable animated tada" *ngIf="error_msg" style="margin:3%">
   <a class="close" data-dismiss="alert" (click)="close_error_msg()">×</a>
-  <strong>Error !!! </strong> You should type a valid username and avoid your own name as a receiver
+  <strong>Error !!! </strong> You should type a valid sender name and avoid your own name as a receiver
 </div>
 <!-- Successful message creation Alert -->
 <div class="alert alert-success alert-dismissable animated fadeInDown" *ngIf="success_msg" style="margin:3%">
@@ -16,10 +16,10 @@
 
 <!-- AutoComplete form-field -->
 <!-- <mat-form-field class="example-full-width">
-  <input ngModel matInput placeholder="type @username" aria-label="State" [matAutocomplete]="auto" [formControl]="stateCtrl" (click)="get_all_users()">
+  <input ngModel matInput placeholder="type @sender_name" aria-label="State" [matAutocomplete]="auto" [formControl]="stateCtrl" (click)="get_all_users()">
   <mat-autocomplete #auto="matAutocomplete">
-    <mat-option *ngFor="let user of filteredUsers | async" [value]="user.username">
-      <span>username : {{ user.username }}</span> |
+    <mat-option *ngFor="let user of filteredUsers | async" [value]="user.sender_name">
+      <span>sender_name : {{ user.sender_name }}</span> |
       <small>email : {{user.email}}</small>
     </mat-option>
     </mat-option>

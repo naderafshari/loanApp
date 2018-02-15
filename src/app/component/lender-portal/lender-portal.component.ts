@@ -156,7 +156,7 @@ export class LenderPortalComponent implements OnInit, OnDestroy {
   }
 
   goMsgCompose(uid) {
-    this.router.navigate(['/msg-compose', uid]);
+    this.router.navigate(['/msg-compose', uid, '']);
   }
 
   ngOnDestroy() {

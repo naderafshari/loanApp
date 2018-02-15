@@ -34,12 +34,12 @@
     </div>
     <div class="col-xs-4">From:</div>
     <div class="col-xs-3">
-      <div *ngIf="message.rid !==  displayName else other_content" style="color: #3f51b5;" matTooltip="Conversation with"> 
-        &nbsp; {{ message.rid }}
+      <div *ngIf="message.rName !==  displayName else other_content" style="color: #3f51b5;" matTooltip="Conversation with"> 
+        &nbsp; {{ message.rName }}
       </div>
       <ng-template #other_content>
         <div style="color: #3f51b5;" matTooltip="Conversation with"> 
-          &nbsp; {{ message.sid }}
+          &nbsp; {{ message.sName }}
         </div>
       </ng-template> 
     </div>
@@ -58,7 +58,7 @@
         <mat-icon>notifications_off</mat-icon>
         <span>Delete</span>
       </button>
-      <button mat-menu-item (click)="reply(message.msgid)">
+      <button mat-menu-item (click)="reply(message.sid, message.msgid)">
         <mat-icon>reply</mat-icon>
         <span>Reply</span>
       </button>

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { NgForm, FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
@@ -16,17 +16,21 @@ import { Message } from '../../model/message';
   templateUrl: './msg-compose.component.html',
   styleUrls: ['./msg-compose.component.css']
 })
-export class MsgComposeComponent implements OnInit {
-  sub: Subscription;
+export class MsgComposeComponent implements OnInit, OnDestroy {
+  sub0: Subscription;
+  sub1: Subscription;
   uid: string;
+  msgid: string;
   rx_user: UserInfo;
   tx_user: UserInfo;
   private base64textString = '';
   @ViewChild('imageFile')
   imageFileVariable: any;
 
-  username: string;						  /* @string [username]	*/
-  receiver_name: string;				/* @string [receiver's username] */
+  sender_name: string;					/* @string [sender_name]	*/
+  sender_id: string;					  /* @string [sender_name]	*/
+  receiver_name: string;				/* @string [receiver's sender_name] */
+  receiver_id: string;			  	/* @string [receiver's id] */
   message = null;					      /* @string [the main message] */
   conversation_subject = null;  /* conversation subject */
   error_msg = false;				    /* @boobean [to show the error message] */
@@ -37,6 +41,7 @@ export class MsgComposeComponent implements OnInit {
   conversation_data: Message;
   stateCtrl: FormControl;
   filteredUsers: Observable<any[]>;
+  original_message: Message;
 
   constructor(private afs: AngularFirestore,
     public authService: AuthService,
@@ -45,21 +50,36 @@ export class MsgComposeComponent implements OnInit {
 
     this.route.params.subscribe(params => {
       this.uid = params['uid'] || 0;
+      this.msgid = params['mid'] || 0;
       if (this.uid) {
-        this.sub = this.afs.doc<UserInfo>(`users/${this.uid}`)
+        this.sub0 = this.afs.doc<UserInfo>(`users/${this.uid}`)
         .valueChanges().subscribe((data) => {
           if (data) {
             this.rx_user = data;
             this.receiver_name = this.rx_user.displayName;
+            this.receiver_id = this.rx_user.uid;
             this.receiver_valid = true;
+            this.user_empty = false;
           } else {
             this.user_empty = true;
           }
         });
-        this.sub = this.afs.doc<UserInfo>(`users/${this.authService.currentUserId}`)
+        this.sub1 = this.afs.doc<UserInfo>(`users/${this.authService.currentUserId}`)
         .valueChanges().subscribe((data) => {
           this.tx_user = data;
-          this.username = this.tx_user.displayName;
+          this.sender_name = this.tx_user.displayName;
+          this.sender_id = this.tx_user.uid;
+        });
+      }
+      if (this.msgid) {
+        this.afs.doc<Message>(`messages/${this.msgid}`)
+        .valueChanges().take(1).subscribe((data) => {
+          this.original_message = data;
+          this.conversation_subject = 'RE: ' + this.original_message.subject;
+          this.message = '\n\n' + '-------------Reply above this line-------------\n'
+          + `Last Message from: ${this.original_message.sName}\n
+          Received on: ${this.original_message.timeStamp}\n\n`
+          + this.original_message.message;
         });
       }
     });
@@ -68,9 +88,18 @@ export class MsgComposeComponent implements OnInit {
   ngOnInit() {
   }
 
-  filterUsers(username: string) {
+  ngOnDestroy() {
+    if (this.sub0) {
+      this.sub0.unsubscribe();
+    }
+    if (this.sub1) {
+      this.sub1.unsubscribe();
+    }
+  }
+
+  filterUsers(sender_name: string) {
     return this.users.filter(user =>
-      user.username.toLowerCase().indexOf(username.toLowerCase()) === 0);
+      user.sender_name.toLowerCase().indexOf(sender_name.toLowerCase()) === 0);
   }
 
   get_all_users() {
@@ -97,13 +126,15 @@ export class MsgComposeComponent implements OnInit {
   send_conversation(form: NgForm) {
     const conversation_data = {
       msgid: this.afs.createId(),
-      sid: this.username,
-      rid: this.receiver_name,
+      sid: this.sender_id,
+      rid: this.receiver_id,
+      sName: this.sender_name,
+      rName: this.receiver_name,
       subject: form.value.conversation_subject,
       message: form.value.message,
       timeStamp: new Date().toString()
     };
-    if (this.username === this.receiver_name) {
+    if (this.sender_name === this.receiver_name) {
       this.receiver_valid = false;
       this.error_msg = true;
     } else {

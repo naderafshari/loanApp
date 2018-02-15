@@ -16,11 +16,7 @@ import { Message } from '../../model/message';
   templateUrl: './msg-inbox.component.html',
   styleUrls: ['./msg-inbox.component.css']
 })
-export class MsgInboxComponent implements OnInit {
-  usersCol: AngularFirestoreCollection<UserInfo>;
-  userDoc: AngularFirestoreDocument<UserInfo>;
-  users: any;
-  userInfo: UserInfo;
+export class MsgInboxComponent implements OnInit, OnDestroy {
   sub: Subscription;
   messages: Message[];
   next_page_url: string;
@@ -38,13 +34,11 @@ export class MsgInboxComponent implements OnInit {
 }
 
   ngOnInit() {
-    // this.sub = this.afs.doc<UserInfo>(`users/${this.authService.currentUserId}`)
-    // .valueChanges().subscribe((data) => {
-    //   this.userInfo = data;
-    // });
-    this.sub = this.afs.collection<Message>('messages', ref => ref.where('rid', '==', this.authService.currentUserDisplayName))
+    this.sub = this.afs.collection<Message>('messages', ref => ref.where('rid', '==', this.authService.currentUserId))
     .valueChanges().subscribe((data) => {
       this.messages = data;
+      // grab just the new part of the message
+      this.messages.map((e) => e.message = e.message.split('-------------Reply above')[0]);
       this.displayName = this.authService.currentUserDisplayName;
       if (this.messages.length !== 0) {
         this.inbox_empty = false;
@@ -54,13 +48,21 @@ export class MsgInboxComponent implements OnInit {
     });
   }
 
-  reply(msgid) {
-
+  ngOnDestroy() {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
   }
 
-  delete(msgid) {
-    if (msgid) {
-      this.afs.doc<Message>(`messages/${msgid}`).delete();
+  reply(sid, mid) {
+    if (sid && mid) {
+      this.router.navigate(['/msg-compose', sid, mid]);
+    }
+  }
+
+  delete(mid) {
+    if (mid) {
+      this.afs.doc<Message>(`messages/${mid}`).delete();
     }
   }
 }

@@ -58,7 +58,7 @@ export const router: Routes = [
     { path: 'lender-portal', component: LenderPortalComponent, canActivate: [LenderAdminGuard] },
     { path: 'lender-prospect-view', component: LenderProspectViewComponent, canActivate: [LenderAdminGuard] },
     { path: 'lender-cart/:uid', component: LenderCartComponent, canActivate: [LenderAdminGuard] },
-    { path: 'msg-compose/:uid', component: MsgComposeComponent, canActivate: [AuthGuard] },
+    { path: 'msg-compose/:uid/:mid', component: MsgComposeComponent, canActivate: [AuthGuard] },
     { path: 'msg-inbox', component: MsgInboxComponent, canActivate: [AuthGuard] }
 ];
 
