@@ -25,6 +25,10 @@ export class BorrowerPortalComponent implements OnInit, OnDestroy {
   sub1: Subscription;
   sub2: Subscription;
   userInfo: UserInfo;
+  inbox = false;
+  show_inbox_icon = false;
+  portal = true;
+  show_portal_icon = true;
 
   constructor(private afs: AngularFirestore,
               public authService: AuthService,
@@ -60,6 +64,21 @@ export class BorrowerPortalComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  show_inbox() {
+    this.inbox = true;
+    this.show_inbox_icon = true;
+    this.portal = false;
+    this.show_portal_icon = false;
+  }
+
+  show_portal() {
+    this.inbox = false;
+    this.show_inbox_icon = false;
+    this.portal = true;
+    this.show_portal_icon = true;
+  }
+
 
   compareTime(a, b) {
     if (a.updateTime < b.updateTime) {

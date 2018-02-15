@@ -129,7 +129,9 @@ export class MsgComposeComponent implements OnInit {
   }
   close_success_msg() {
     this.success_msg = false;
+    this.goBack();
   }
+
   close_error_msg() {
     this.error_msg = false;
   }

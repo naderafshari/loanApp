@@ -34,7 +34,6 @@ export class LenderPortalComponent implements OnInit, OnDestroy {
   portal = true;
   show_portal_icon = true;
 
-
   constructor(private afs: AngularFirestore, public dialog: MatDialog,
               public authService: AuthService, private router: Router,
               private route: ActivatedRoute ) {

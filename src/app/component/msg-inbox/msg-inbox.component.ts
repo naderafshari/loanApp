@@ -22,13 +22,13 @@ export class MsgInboxComponent implements OnInit {
   users: any;
   userInfo: UserInfo;
   sub: Subscription;
-  inboxes: Message[];
+  messages: Message[];
   next_page_url: string;
   previous_page_url: string;
   next_page_disable: boolean;
   previous_page_disable: boolean;
   show_success_msg = false;
-  inbox_empty = true;
+  inbox_empty = false;
   success_msg: string;
   displayName: string;
 
@@ -37,19 +37,30 @@ export class MsgInboxComponent implements OnInit {
     private route: ActivatedRoute ) {
 }
 
-ngOnInit() {
+  ngOnInit() {
     // this.sub = this.afs.doc<UserInfo>(`users/${this.authService.currentUserId}`)
     // .valueChanges().subscribe((data) => {
     //   this.userInfo = data;
     // });
     this.sub = this.afs.collection<Message>('messages', ref => ref.where('rid', '==', this.authService.currentUserDisplayName))
     .valueChanges().subscribe((data) => {
-      this.inboxes = data;
+      this.messages = data;
       this.displayName = this.authService.currentUserDisplayName;
-      if (this.inboxes && this.inboxes.length <= 0) {
+      if (this.messages.length !== 0) {
+        this.inbox_empty = false;
+      } else {
         this.inbox_empty = true;
       }
     });
-}
+  }
 
+  reply(msgid) {
+
+  }
+
+  delete(msgid) {
+    if (msgid) {
+      this.afs.doc<Message>(`messages/${msgid}`).delete();
+    }
+  }
 }
