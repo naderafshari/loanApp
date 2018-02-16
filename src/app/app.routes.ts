@@ -30,6 +30,7 @@ import { LenderFormConfigComponent } from './component/lender-form-config/lender
 import { LenderFormAssignComponent } from './component/lender-form-assign/lender-form-assign.component';
 import { LenderFormHistoryComponent } from './component/lender-form-history/lender-form-history.component';
 import { LenderProspectViewComponent } from './component/lender-prospect-view/lender-prospect-view.component';
+import { LenderOwnedUsersComponent } from './component/lender-owned-users/lender-owned-users.component';
 import { LenderCartComponent } from './component/lender-cart/lender-cart.component';
 import { MsgInboxComponent } from './component/msg-inbox/msg-inbox.component';
 import { MsgComposeComponent } from './component/msg-compose/msg-compose.component';
@@ -57,6 +58,7 @@ export const router: Routes = [
     { path: 'lender-form-history/:uid', component: LenderFormHistoryComponent, canActivate: [LenderAdminGuard] },
     { path: 'lender-portal', component: LenderPortalComponent, canActivate: [LenderAdminGuard] },
     { path: 'lender-prospect-view', component: LenderProspectViewComponent, canActivate: [LenderAdminGuard] },
+    { path: 'lender-owned-users', component: LenderOwnedUsersComponent, canActivate: [LenderAdminGuard] },
     { path: 'lender-cart/:uid', component: LenderCartComponent, canActivate: [LenderAdminGuard] },
     { path: 'msg-compose/:uid/:mid', component: MsgComposeComponent, canActivate: [AuthGuard] },
     { path: 'msg-inbox', component: MsgInboxComponent, canActivate: [AuthGuard] }

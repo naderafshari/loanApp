@@ -1,3 +1,24 @@
-<p>
-  lender-owned-users works!
-</p>
+<mat-card class="user-container">
+  <mat-card-header>
+    <a (click)="goBack()" id="goback">Go back</a>
+  </mat-card-header>
+  <hr>
+  <mat-card-content><h4>Acquired Applicants</h4>
+    <mat-list *ngFor="let user of users">
+    <mat-list-item >
+        <strong>{{user.displayName}}</strong> &nbsp;
+          <a matTooltip="View User Profile" (click)="editClick(user.uid);" >&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>person</mat-icon></a>
+          <a matTooltip="Assign Form to User" (click)="goFormAssign(user.uid);">&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>assignment</mat-icon></a>
+          <a matTooltip="View User Form History"(click)="goFormHistory(user.uid);">&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>history</mat-icon></a>
+          <a matTooltip="Send a private message"(click)="goMsgCompose(user.uid);">&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>mail</mat-icon></a>
+          <a matTooltip="Remove from Acquired Applicants"(click)="openRemoveDialog(user.uid);">&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon>delete</mat-icon></a>
+      </mat-list-item>
+      <mat-list-item >
+        <mat-icon matTooltip="Assigned Form(s)">subject</mat-icon>
+        <div *ngFor="let userForm of userForms">
+          <a matTooltip="View Assigned Form" *ngIf="userForm.uid === user.uid" (click)="goToForm(user.uid,userForm.formId);" >&nbsp;&nbsp;{{userForm.formName}}</a>
+        </div>
+      </mat-list-item>
+    </mat-list>
+  </mat-card-content>
+</mat-card>
