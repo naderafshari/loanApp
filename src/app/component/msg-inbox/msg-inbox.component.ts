@@ -37,7 +37,9 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
     this.sub = this.afs.collection<Message>('messages', ref => ref.where('rid', '==', this.authService.currentUserId))
     .valueChanges().subscribe((data) => {
       this.messages = data;
-      // grab just the new part of the message
+      // Sort with the latest first
+      this.messages.sort(this.compareTime);
+      // Grab just the new part of the message
       this.messages.map((e) => e.message = e.message.split('-------------Reply above')[0]);
       this.displayName = this.authService.currentUserDisplayName;
       if (this.messages.length !== 0) {
@@ -46,6 +48,16 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
         this.inbox_empty = true;
       }
     });
+  }
+
+  compareTime(a, b) {
+    if (a.timeStamp < b.timeStamp) {
+      return 1;
+    }
+    if (a.timeStamp > b.timeStamp) {
+      return -1;
+    }
+    return 0;
   }
 
   ngOnDestroy() {

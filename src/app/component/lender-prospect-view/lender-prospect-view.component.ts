@@ -27,13 +27,13 @@ export class LenderProspectViewComponent implements OnDestroy {
   formData: Form;
   userDoc: Observable<{}>;
   user: any;
-  sub: Subscription;
+  sub1: Subscription;
+  sub2: Subscription;
   users: any[] = [];
   displayedColumns = ['select', 'addToCart', 'displayName', 'dob', 'joinTime', 'updateTime'];
   dataSource: any;
   selection: any;
-  sub1: Subscription;
-  // authUser: UserInfo;
+  authUser: UserInfo;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -45,31 +45,33 @@ export class LenderProspectViewComponent implements OnDestroy {
       // this.sub = this.route.params.subscribe(params => {
       // this.catId = params['catid'] || 0;
       // if (this.catId) {
-      //  this.sub1 = this.afs.doc<UserInfo>(`users/${this.authService.currentUserId}`)
-      //  .valueChanges().subscribe((authUser) => {
-      //    if (authUser) {
-      //      this.authUser = authUser;
-      //    }
-      this.sub1 = this.afs
-      .collection<UserInfo>('users', ref => ref.where('function', '==', 'borrower')
-      .where('role', '==', 'user')).valueChanges().debounceTime(500)
-      .subscribe((users: UserInfo[]) => {
-        users.forEach((user: UserInfo) => {
-          const userData = {
-            'uid': user.uid,
-            'displayName': user.displayName,
-            'dob': user.dob,
-            'joinTime': user.joinTime,
-            'updateTime': user.updateTime
-          };
-          this.users.push(userData);
-        });
-        this.dataSource = new MatTableDataSource<Form>(this.users);
-        this.selection = new SelectionModel<Form>(true, []);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-      }); // user, borrower
-      //  }); // authUser
+      this.sub1 = this.afs.doc<UserInfo>(`users/${this.authService.currentUserId}`)
+      .valueChanges().subscribe((authUser) => {
+        if (authUser) {
+          this.authUser = authUser;
+          this.sub2 = this.afs.collection<UserInfo>('users', ref => ref.where('function', '==', 'borrower')
+          .where('role', '==', 'user'))
+          .valueChanges().debounceTime(500)
+          .subscribe( all_users => {
+            // exclude purchased users
+            const users = all_users.filter(user => this.authUser.purchased.indexOf(user.uid) === -1);
+            users.forEach((user: UserInfo) => {
+              const userData = {
+                'uid': user.uid,
+                'displayName': user.displayName,
+                'dob': user.dob,
+                'joinTime': user.joinTime,
+                'updateTime': user.updateTime
+              };
+              this.users.push(userData);
+            });
+            this.dataSource = new MatTableDataSource<Form>(this.users);
+            this.selection = new SelectionModel<Form>(true, []);
+            this.dataSource.paginator = this.paginator;
+            this.dataSource.sort = this.sort;
+          });
+        }
+      }); // authUser
       // } catId
     // });
   }
@@ -116,6 +118,9 @@ export class LenderProspectViewComponent implements OnDestroy {
     // this.sub.unsubscribe();
     if (this.sub1) {
       this.sub1.unsubscribe();
+    }
+    if (this.sub2) {
+      this.sub2.unsubscribe();
     }
   }
 }

@@ -75,7 +75,11 @@ export class MsgComposeComponent implements OnInit, OnDestroy {
         this.afs.doc<Message>(`messages/${this.msgid}`)
         .valueChanges().take(1).subscribe((data) => {
           this.original_message = data;
-          this.conversation_subject = 'RE: ' + this.original_message.subject;
+          if (!this.original_message.subject.startsWith('RE:')) {
+            this.conversation_subject = 'RE: ' + this.original_message.subject;
+          } else {
+            this.conversation_subject = this.original_message.subject;
+          }
           this.message = '\n\n' + '-------------Reply above this line-------------\n'
           + `Last Message from: ${this.original_message.sName}\n
           Received on: ${this.original_message.timeStamp}\n\n`
@@ -160,11 +164,14 @@ export class MsgComposeComponent implements OnInit, OnDestroy {
   }
   close_success_msg() {
     this.success_msg = false;
+    // this.router.navigateByUrl('/msg-inbox');
     this.goBack();
   }
 
   close_error_msg() {
     this.error_msg = false;
+    // this.router.navigateByUrl('/msg-inbox');
+    this.goBack();
   }
 
   handleImageFileSelect(evt)  {

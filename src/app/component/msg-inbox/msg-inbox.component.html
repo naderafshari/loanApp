@@ -26,22 +26,28 @@
 <!-- Conversation Header -->
 <mat-toolbar class="" color="basic">
   <div class="row">
-    <div class="col-xs-2">Subject:</div>
-    <div class="col-xs-3">
-      <div style="color: #3f51b5;" matTooltip="Subject"> 
-        &nbsp; {{ message.subject }}
-      </div>
-    </div>
     <div class="col-xs-4">From:</div>
     <div class="col-xs-3">
       <div *ngIf="message.rName !==  displayName else other_content" style="color: #3f51b5;" matTooltip="Conversation with"> 
-        &nbsp; {{ message.rName }}
+        {{ message.rName }}&nbsp; 
       </div>
       <ng-template #other_content>
         <div style="color: #3f51b5;" matTooltip="Conversation with"> 
-          &nbsp; {{ message.sName }}
+          {{ message.sName }}&nbsp; 
         </div>
       </ng-template> 
+    </div>
+    <div class="col-xs-2">Subject:</div>
+    <div class="col-xs-3">
+      <div style="color: #3f51b5;" matTooltip="Subject"> 
+        {{ message.subject }}&nbsp; 
+      </div>
+    </div>
+    <div class="col-xs-2">On:</div>
+    <div class="col-xs-3">
+      <div style="color: #3f51b5;" matTooltip="Subject"> 
+        {{ message.timeStamp }}&nbsp; 
+      </div>
     </div>
   </div>
 
