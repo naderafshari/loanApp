@@ -127,6 +127,31 @@ export class LenderPortalComponent implements OnInit, OnDestroy {
     this.authService.logout();
   }
 
+  openRemoveDialog(uid): void {
+    if (this.authService.userFunction === 'lender' ||
+        this.authService.userAuthRole === 'admin') {
+      const dialogRef = this.dialog.open(DialogComponent, {
+        width: '250px',
+        data: 'You are about to remove an Acquired Applicant! To re-acquire, re-purchase is needed. Are you sure?'
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === 'Confirm') {
+          this.removeApplicant(uid);
+        }
+      });
+    } else {
+      alert('No Delete privilages! Please contact the Administrator');
+    }
+  }
+
+  removeApplicant(uid) {
+    if (uid) {
+      this.userInfo.purchased = this.userInfo.purchased.filter( e => e !== uid);
+      this.afs.doc(`users/${this.userInfo.uid}`).update(this.userInfo);
+    }
+  }
+
   goInterestArea(uid) {
     alert('Comming soon!');
   }

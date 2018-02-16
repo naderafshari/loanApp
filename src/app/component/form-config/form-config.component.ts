@@ -262,18 +262,18 @@ export class FormConfigComponent implements OnInit {
       this.goBack();
     }
   }
-  
+
   updateFormAndReAssign() {
     if (this.form) {
       if (this.allRequireFields()) {
         this.form.updateTime = new Date().toString();
         this.afs.collection('forms').doc(this.id).set(this.form).then(() => this.updateFields());
         if (this.authService.userFunction === 'lender') {
-          this.lfs.reAssignForm(this.form.formId, this.userId )
+          this.lfs.reAssignForm(this.form.formId, this.userId);
         } else if (this.authService.userAuthRole === 'admin' ) {
-          this.fs.reAssignFormAllUsers(this.form.formId, this.userId )
+          this.fs.reAssignFormAllUsers(this.form.formId, this.userId );
         } else {
-          alert('Form cannot be reassigned!');          
+          alert('Form cannot be reassigned!');
         }
         this.sub.unsubscribe();
         this.goBack();

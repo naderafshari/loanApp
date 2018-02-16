@@ -26,6 +26,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   shoppingCart: ShoppingCart;
   sub1: Subscription;
   sub2: Subscription;
+  show_add = false;
 
   constructor(private afs: AngularFirestore, private us: UserService,
               public authService: AuthService, private location: Location, private scs: ShoppingCartService,
@@ -42,13 +43,20 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       this.sub1 = this.userDoc.subscribe((data: UserInfo) => {
         this.userInfo = data;
       });
-      // if (this.authService.userFunction === 'lender') {
-      //   this.sub2 = this.scs.getCart(this.authService.currentUserId).subscribe(cart => {
-      //     if (cart[0]) {
-      //       this.shoppingCart = cart[0];
-      //     }
-      //   });
-      // }
+      // Figure out show or hide Add to Cart button
+      if (this.authService.userFunction === 'lender' ||
+          this.authService.userAuthRole === 'admin') {
+        this.sub2 = this.afs.doc(`users/${this.authService.currentUserId}`).valueChanges()
+        .subscribe((lender: UserInfo) => {
+          if (lender) {
+            if (lender.purchased.includes(this.uid)) {
+              this.show_add = false;
+            } else {
+              this.show_add = true;
+            }
+          }
+        });
+      }
     });
   }
 
@@ -58,7 +66,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
   updateUser() {
     if (this.userInfo) {
-      if (this.authService.userAuthRole === 'admin' && this.userInfo.role !== 'admin' && this.authService.currentUserId === this.userInfo.uid) {
+      if (this.authService.userAuthRole === 'admin' && this.userInfo.role !== 'admin' &&
+          this.authService.currentUserId === this.userInfo.uid) {
         alert('admin role cannot be changed by self');
         return;
       }
@@ -151,6 +160,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       this.sub2.unsubscribe();
     }
   }
+
   ngOnInit() {
   }
 }
