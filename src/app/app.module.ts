@@ -54,6 +54,7 @@ import { EmailChangeComponent } from './component/email-change/email-change.comp
 import { LenderCartComponent } from './component/lender-cart/lender-cart.component';
 import { MsgInboxComponent } from './component/msg-inbox/msg-inbox.component';
 import { MsgComposeComponent } from './component/msg-compose/msg-compose.component';
+import { LenderOwnedUsersComponent } from './component/lender-owned-users/lender-owned-users.component';
 
 @NgModule({
   declarations: [
@@ -84,7 +85,8 @@ import { MsgComposeComponent } from './component/msg-compose/msg-compose.compone
     EmailChangeComponent,
     LenderCartComponent,
     MsgInboxComponent,
-    MsgComposeComponent
+    MsgComposeComponent,
+    LenderOwnedUsersComponent
   ],
   imports: [
     BrowserModule,
