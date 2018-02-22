@@ -30,7 +30,7 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
 
   constructor(private afs: AngularFirestore, public dialog: MatDialog,
     public authService: AuthService, private router: Router,
-    private route: ActivatedRoute ) {
+    private route: ActivatedRoute, private location: Location ) {
 }
 
   ngOnInit() {
@@ -123,4 +123,9 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
       sub.unsubscribe();
     });
   }
+
+  goBack() {
+    this.location.back();
+  }
+
 }

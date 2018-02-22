@@ -1,7 +1,7 @@
 <mat-sidenav-container class="example-container">
   <mat-sidenav #sidenav class="example-sidenav" color="primary">
       <mat-toolbar color="primary">
-          <mat-toolbar-row (click)="show_inbox()" matTooltip="Inbox">
+          <mat-toolbar-row (click)="goToInbox()" matTooltip="Inbox">
               <span (click)="sidenav.toggle()">Inbox</span>
               <span class="example-spacer"></span>
               <mat-icon class="example-icon" *ngIf="show_inbox_icon">verified_user</mat-icon>
@@ -43,12 +43,15 @@
     <mat-list *ngIf = "(authService.user | async)?.uid === userInfo.uid">
       <mat-list-item ><mat-icon>person</mat-icon><strong>{{userInfo.displayName}}</strong> &nbsp;
         <a matTooltip="Edit Profile" (click)="editClick(userInfo.uid);">&nbsp;&nbsp;&nbsp;<mat-icon>create</mat-icon></a>
-      </mat-list-item>
-      <mat-list-item >
+      </mat-list-item><hr>
+      <strong>Assigned Forms:</strong><mat-list-item>
         <mat-icon>subject</mat-icon>
         <div *ngFor="let userForm of userForms">
           <a (click)="goToForm(userInfo.uid,userForm.formId);">&nbsp;&nbsp;{{userForm.formName}}</a>
         </div>
+      </mat-list-item><hr>
+      <mat-list-item >
+        <a matTooltip="See Messages" (click)="goToInbox();"><mat-icon>mail</mat-icon>&nbsp;<strong>Inbox</strong></a>
       </mat-list-item>
     </mat-list>
   </mat-card-content>

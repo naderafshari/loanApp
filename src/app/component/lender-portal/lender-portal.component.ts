@@ -95,6 +95,10 @@ export class LenderPortalComponent implements OnInit, OnDestroy {
     });
   }
 
+  goToInbox() {
+    this.router.navigateByUrl('/msg-inbox');
+  }
+
   show_inbox() {
     this.inbox = true;
     this.show_inbox_icon = true;

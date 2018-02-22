@@ -1,7 +1,7 @@
 <mat-sidenav-container class="example-container">
   <mat-sidenav #sidenav class="example-sidenav" color="primary">
       <mat-toolbar color="primary">
-          <mat-toolbar-row (click)="show_inbox()" matTooltip="Inbox">
+          <mat-toolbar-row (click)="goToInbox()" matTooltip="Inbox">
               <span (click)="sidenav.toggle()">Inbox</span>
               <span class="example-spacer"></span>
               <mat-icon class="example-icon" *ngIf="show_inbox_icon">verified_user</mat-icon>
@@ -64,6 +64,9 @@
       </mat-list-item>
       <mat-list-item *ngIf = "authService.user | async; let user" >
         <a id="goback" (click)="goToCart(user.uid)"><mat-icon>shop</mat-icon>&nbsp;&nbsp;&nbsp;Shopping Cart</a>
+      </mat-list-item>
+      <mat-list-item >
+        <a id="goback" matTooltip="See Messages" (click)="goToInbox();"><mat-icon>mail</mat-icon>&nbsp;&nbsp;&nbsp;<strong>Inbox</strong></a>
       </mat-list-item>
     </mat-list>
   </mat-card-content>
