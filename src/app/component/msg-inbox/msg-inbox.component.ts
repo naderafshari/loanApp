@@ -72,9 +72,55 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
     }
   }
 
+  read(sid, mid) {
+    if (sid && mid) {
+      this.router.navigate(['/msg-read', sid, mid]);
+    }
+  }
+
   delete(mid) {
     if (mid) {
       this.afs.doc<Message>(`messages/${mid}`).delete();
     }
+  }
+
+  unArchive(msgid) {
+    const sub = this.afs.doc<Message>(`messages/${msgid}`).valueChanges()
+    .subscribe((data) => {
+      const message = data;
+      message.archived = false;
+      this.afs.doc<Message>(`messages/${msgid}`).update(message);
+      sub.unsubscribe();
+    });
+  }
+
+  archive(msgid) {
+    const sub = this.afs.doc<Message>(`messages/${msgid}`).valueChanges()
+    .subscribe((data) => {
+      const message = data;
+      message.archived = true;
+      this.afs.doc<Message>(`messages/${msgid}`).update(message);
+      sub.unsubscribe();
+    });
+  }
+
+  markUnRead(msgid) {
+    const sub = this.afs.doc<Message>(`messages/${msgid}`).valueChanges()
+    .subscribe((data) => {
+      const message = data;
+      message.opened = false;
+      this.afs.doc<Message>(`messages/${msgid}`).update(message);
+      sub.unsubscribe();
+    });
+  }
+
+  markRead(msgid) {
+    const sub = this.afs.doc<Message>(`messages/${msgid}`).valueChanges()
+    .subscribe((data) => {
+      const message = data;
+      message.opened = true;
+      this.afs.doc<Message>(`messages/${msgid}`).update(message);
+      sub.unsubscribe();
+    });
   }
 }

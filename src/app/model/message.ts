@@ -4,7 +4,9 @@ export interface Message {
     sName: string;
     rid: string;
     rName: string;
-    subject: string;
-    message: string;
+    subject?: string;
+    message?: string;
+    opened: boolean;
+    archived: boolean;
     timeStamp: string;
 }

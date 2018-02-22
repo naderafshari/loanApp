@@ -1,0 +1,22 @@
+<mat-card class="example-form container">
+  <mat-card-content *ngIf="original_message">
+    <a (click)="goBack()" id="goback">Go back</a>
+    <br>
+    <br>
+      <mat-list class="example-full-width">
+        <mat-list-item><strong>Subject: </strong>{{original_message.subject}}</mat-list-item>
+        <br>
+        <mat-list-item><strong>Message: </strong>{{original_message.message}}</mat-list-item>
+        <mat-list-item>
+          <button mat-raised-button color="primary" (click)="reply(uid, msgid)">Reply</button>&nbsp;&nbsp;&nbsp;
+          <button mat-raised-button color="warn" (click)="openDeleteDialog(msgid)">Delete</button>
+        </mat-list-item>
+        </mat-list>
+  </mat-card-content>
+</mat-card>
+
+<!-- If there is no user than this message will be shown ... -->
+<div class="alert alert-info alert-dismissable animated fadeInDown" *ngIf="user_empty" style="margin:3%">
+  <strong>Sorry !!! </strong> 
+  No user is available except you. If user other than you registered to this website, only then you can send personal message and your favourite photos to them.
+</div>

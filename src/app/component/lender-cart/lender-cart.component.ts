@@ -86,7 +86,7 @@ export class LenderCartComponent implements OnInit {
   goToCheckout() {
     const sub = this.userDoc.subscribe((lender) => {
       this.userInfo = lender;
-      if (typeof this.userInfo.purchased == 'undefined') {
+      if (typeof this.userInfo.purchased === 'undefined') {
         console.log('get here!');
         this.userInfo.purchased = [];
       }

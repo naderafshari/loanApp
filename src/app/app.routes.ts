@@ -34,6 +34,7 @@ import { LenderOwnedUsersComponent } from './component/lender-owned-users/lender
 import { LenderCartComponent } from './component/lender-cart/lender-cart.component';
 import { MsgInboxComponent } from './component/msg-inbox/msg-inbox.component';
 import { MsgComposeComponent } from './component/msg-compose/msg-compose.component';
+import { MsgReadComponent } from './component/msg-read/msg-read.component';
 
 export const router: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -61,7 +62,8 @@ export const router: Routes = [
     { path: 'lender-owned-users', component: LenderOwnedUsersComponent, canActivate: [LenderAdminGuard] },
     { path: 'lender-cart/:uid', component: LenderCartComponent, canActivate: [LenderAdminGuard] },
     { path: 'msg-compose/:uid/:mid', component: MsgComposeComponent, canActivate: [AuthGuard] },
-    { path: 'msg-inbox', component: MsgInboxComponent, canActivate: [AuthGuard] }
+    { path: 'msg-inbox', component: MsgInboxComponent, canActivate: [AuthGuard] },
+    { path: 'msg-read/:uid/:mid', component: MsgReadComponent, canActivate: [AuthGuard] },
 ];
 
 export const routes: ModuleWithProviders = RouterModule.forRoot(router);

@@ -1,0 +1,17 @@
+.example-form {
+    /*min-width: 150px;*/
+    /*max-width: 500px;*/
+    width: 100%;
+    background:#ECEFF1;
+    padding:3.5em;
+    width:650px;
+    position:fixed;
+    left:50%;
+    margin-left:-250px;
+  }
+  
+  .example-full-width {
+    width: 100%;
+    padding: 2%;
+  }
+  
