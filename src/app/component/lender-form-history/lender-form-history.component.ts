@@ -52,14 +52,14 @@ export class LenderFormHistoryComponent implements OnDestroy {
           if (authUser) {
             this.authUser = authUser;
           }
-          this.formsInfo = [];
           this.userDoc = this.afs.doc(`users/${this.uid}`).valueChanges();
           this.sub2 = this.userDoc.subscribe((data: UserInfo) => {
             this.userInfo = data;
             if (this.userInfo) {
+              this.formsInfo = [];
               this.sub3 = this.afs.doc(`users/${this.uid}`)
               .collection<Form>('forms', ref => ref.where('formCreator', '==', this.authService.currentUserId)).valueChanges()
-              .subscribe((forms: Form[]) => {
+              .debounceTime(250).subscribe((forms: Form[]) => {
                 forms.forEach((form: Form) => {
                   const formInfo = {
                     'formId': form.formId,

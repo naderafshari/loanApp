@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
@@ -94,10 +94,10 @@ export class LenderOwnedUsersComponent implements OnInit, OnDestroy {
 
   compareTime(a, b) {
     if (a.updateTime < b.updateTime) {
-      return -1;
+      return 1;
     }
     if (a.updateTime > b.updateTime) {
-      return 1;
+      return -1;
     }
     return 0;
   }

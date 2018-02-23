@@ -96,7 +96,6 @@ export class LenderFormService {
               .collection<Form>('forms', ref => ref.where('formId', '==', formId)).valueChanges();
               const sub0 = form.subscribe((data) => {
                 let formData = data[0];
-                console.log('lender uid = ', lender.uid)
                 formData.formCreator = lender.uid;
                 formData.updateTime = new Date().toString();
                 formData.startTime = new Date().toString();

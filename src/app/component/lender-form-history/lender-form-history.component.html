@@ -40,11 +40,11 @@
   </ng-container>
   <ng-container matColumnDef="startTime">
           <mat-header-cell *matHeaderCellDef mat-sort-header> Assigned on </mat-header-cell>
-          <mat-cell *matCellDef="let formsInfo"> {{formsInfo.startTime}} </mat-cell>
+          <mat-cell *matCellDef="let formsInfo"> {{formsInfo.startTime | date:'short'}} </mat-cell>
   </ng-container>
   <ng-container matColumnDef="updateTime">
           <mat-header-cell *matHeaderCellDef mat-sort-header> LastUpdated </mat-header-cell>
-          <mat-cell *matCellDef="let formsInfo"> {{formsInfo.updateTime}} </mat-cell>
+          <mat-cell *matCellDef="let formsInfo"> {{formsInfo.updateTime | date:'short'}} </mat-cell>
   </ng-container>
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
   <mat-row *matRowDef="let row; columns: displayedColumns;"> 
