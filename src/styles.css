@@ -44,3 +44,8 @@ body {
 /* Rules for using icons as white on a dark background. */
 .material-icons.mat-light { color: rgba(255, 255, 255, 1); }
 .material-icons.mat-light.mat-inactive { color: rgba(255, 255, 255, 0.3); }
+
+a:hover {
+    cursor:pointer;
+}
+   
