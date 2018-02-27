@@ -1,4 +1,4 @@
-<div class="form-container">
+<div class="general-container">
   <a routerLink="/login" id="goback">Go back</a>
 
   <h2>Join now</h2>
@@ -7,10 +7,10 @@
     
   <form #formData='ngForm' (ngSubmit)="signup(formData)">
 
-    <input matInput type="text" placeholder="Full Name.." (ngModel)="formData.displayName" name="displayName" required>
-    <input matInput type="email" placeholder="Email address.." (ngModel)="formData.email" name="email" required>
-    <input matInput type="password" placeholder="Password" (ngModel)="formData.password" name="password" required>
-    <input matInput type="password" placeholder="Confirm Password" (ngModel)="formData.password2" name="password2" required>
+    <input class="txt" type="text" placeholder="Full Name.." (ngModel)="formData.displayName" name="displayName" required>
+    <input class="txt" type="email" placeholder="Email address.." (ngModel)="formData.email" name="email" required>
+    <input class="txt" type="password" placeholder="Password" (ngModel)="formData.password" name="password" required>
+    <input class="txt" type="password" placeholder="Confirm Password" (ngModel)="formData.password2" name="password2" required>
     
     <button mat-raised-button color="primary" [disabled]="!formData.valid">Create my account</button>
   </form>

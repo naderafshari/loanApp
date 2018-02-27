@@ -114,11 +114,11 @@ export class LenderPortalComponent implements OnInit, OnDestroy {
   }
 
   compareTime(a, b) {
-    if (a.updateTime < b.updateTime) {
-      return -1;
-    }
-    if (a.updateTime > b.updateTime) {
+    if (Date.parse(a.updateTime) < Date.parse(b.updateTime)) {
       return 1;
+    }
+    if (Date.parse(a.updateTime) > Date.parse(b.updateTime)) {
+      return -1;
     }
     return 0;
   }

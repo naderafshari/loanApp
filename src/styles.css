@@ -5,13 +5,14 @@ body {
     background: rgb(50, 65, 145);
     padding-top:4em;
 }
-.form-container {
+.general-container {
     background:#ECEFF1;
     padding:3.5em;
     width:650px;
-    position:fixed;
+    left:5%;
+    /*position:fixed;
     left:50%;
-    margin-left:-250px;
+    margin-left:-250px;*/
 }
 .user-container {
     background:white;

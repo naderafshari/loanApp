@@ -47,7 +47,7 @@ body {
     padding-top:4em;
 }
 
-.form-container {
+.general-container {
     background:white;
     padding:3.5em;
     width:500px;
@@ -142,7 +142,7 @@ h2 {
         padding-top:1.2em;
     }
 
-    .form-container {
+    .general-container {
         padding:1.2em;
         width:90%;
         margin-left:-45%;

@@ -51,11 +51,11 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
   }
 
   compareTime(a, b) {
-    if (a.timeStamp < b.timeStamp) {
-      return -1;
-    }
-    if (a.timeStamp > b.timeStamp) {
+    if (Date.parse(a.timeStamp) < Date.parse(b.timeStamp)) {
       return 1;
+    }
+    if (Date.parse(a.timeStamp) > Date.parse(b.timeStamp)) {
+      return -1;
     }
     return 0;
   }
