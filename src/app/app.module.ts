@@ -56,6 +56,7 @@ import { MsgInboxComponent } from './component/msg-inbox/msg-inbox.component';
 import { MsgComposeComponent } from './component/msg-compose/msg-compose.component';
 import { LenderOwnedUsersComponent } from './component/lender-owned-users/lender-owned-users.component';
 import { MsgReadComponent } from './component/msg-read/msg-read.component';
+import { UserAgreementComponent } from './component/user-agreement/user-agreement.component';
 
 @NgModule({
   declarations: [
@@ -88,7 +89,8 @@ import { MsgReadComponent } from './component/msg-read/msg-read.component';
     MsgInboxComponent,
     MsgComposeComponent,
     LenderOwnedUsersComponent,
-    MsgReadComponent
+    MsgReadComponent,
+    UserAgreementComponent
   ],
   imports: [
     BrowserModule,

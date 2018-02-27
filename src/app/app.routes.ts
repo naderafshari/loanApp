@@ -35,6 +35,7 @@ import { LenderCartComponent } from './component/lender-cart/lender-cart.compone
 import { MsgInboxComponent } from './component/msg-inbox/msg-inbox.component';
 import { MsgComposeComponent } from './component/msg-compose/msg-compose.component';
 import { MsgReadComponent } from './component/msg-read/msg-read.component';
+import { UserAgreementComponent } from './component/user-agreement/user-agreement.component';
 
 export const router: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -43,6 +44,7 @@ export const router: Routes = [
     { path: 'email-login', component: EmailLoginComponent },
     { path: 'email-change', component: EmailChangeComponent, canActivate: [AuthGuard]  },
     { path: 'reset-password', component: ResetPasswordComponent },
+    { path: 'user-agreement', component: UserAgreementComponent, canActivate: [AuthGuard] },
     { path: 'user-function', component: UserFunctionComponent, canActivate: [AuthGuard] },
     { path: 'user-profile/:uid', component: UserProfileComponent, canActivate: [AuthGuard] },
     { path: 'user-manage', component: UserManageComponent, canActivate: [AdminGuard] },

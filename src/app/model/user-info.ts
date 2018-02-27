@@ -3,6 +3,7 @@ export interface UserInfo {
   email:         string;
   role?:         string;
   function?:     string;
+  agree?:        string;
   displayName?:  string;
   photoURL?:     string;
   joinTime?:   string;

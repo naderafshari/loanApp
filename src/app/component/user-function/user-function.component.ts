@@ -60,7 +60,7 @@ export class UserFunctionComponent implements OnInit, OnDestroy {
         this.userInfo.joinTime = new Date().toString();
         this.us.updateUser(this.userInfo)
         .then(() =>
-          this.router.navigate(['/user-profile', this.userInfo.uid])
+          this.router.navigateByUrl('/user-agreement')
         );
       }
     });
