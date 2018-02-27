@@ -3,7 +3,7 @@
     <a *ngIf="authService.user | async" id="goback" (click)="logout()">Logout</a>
   </mat-card-header>
   <hr>
-<!--  
+  
   <mat-card-content>
     <mat-list *ngIf = "(authService.user | async)?.role === 'admin';"> 
       <mat-list-item *ngIf = "authService.user | async; let user" >
@@ -13,7 +13,7 @@
       </mat-list-item>
     </mat-list>
   </mat-card-content>
--->  
+  
   <mat-card-content>
     <div *ngIf = "(authService.user | async)?.role ==='admin' || (authService.user | async)?.role ==='super'">
       <mat-icon>person</mat-icon><strong>Manage Users</strong>

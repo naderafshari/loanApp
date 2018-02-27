@@ -39,7 +39,7 @@ export class UserFunctionComponent implements OnInit, OnDestroy {
   }
 
   clickNext() {
-    const form = this.afs.collection<Form>('forms', ref => ref.where('formId', '==', 'form1')).valueChanges();
+    const form = this.afs.collection<Form>('forms', ref => ref.where('formName', '==', 'auto')).valueChanges();
     this.sub2 = form.subscribe((data) => {
       if (data[0]) {
         let formData = data[0];
@@ -47,11 +47,11 @@ export class UserFunctionComponent implements OnInit, OnDestroy {
         formData.updateTime = new Date().toString();
         formData.startTime = new Date().toString();
         if (this.userInfo.function === 'lender') {
-          this.afs.doc(`users/${this.userInfo.uid}`).collection('forms').doc('form1').set(formData);
+          this.afs.doc(`users/${this.userInfo.uid}`).collection('forms').doc('auto').set(formData);
         } else if (this.userInfo.function === 'borrower') {
           this.afs.doc(`users/${this.userInfo.uid}`).collection('forms').doc(new Date().toString()).set(formData);
         }
-        this.userInfo.assignedForms['form1'] = this.userInfo.uid;
+        this.userInfo.assignedForms['auto'] = this.userInfo.uid;
       }
       if (this.userInfo) {
         if (this.userInfo.function === 'lender') {
