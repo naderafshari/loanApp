@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
@@ -11,6 +11,8 @@ import { DialogComponent } from '../dialog/dialog.component';
 import { ShoppingCart, CartItem } from '../../model/cart';
 import { Subscription } from 'rxjs/Subscription';
 import { UserService } from '../../provider/user.service';
+import { PaymentService } from '../../provider/payment.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-lender-cart',
@@ -25,8 +27,10 @@ export class LenderCartComponent implements OnInit {
   items: any[] = [];
   sub1: Subscription;
   userInfo: UserInfo;
+  handler: any;
+  amount = 0;
 
-  constructor(private afs: AngularFirestore, private scs: ShoppingCartService,
+  constructor(private afs: AngularFirestore, private scs: ShoppingCartService, private paymentSvc: PaymentService,
               public authService: AuthService, private location: Location, private us: UserService,
               private router: Router, private dialog: MatDialog, private route: ActivatedRoute) {
 
@@ -42,6 +46,7 @@ export class LenderCartComponent implements OnInit {
         this.shoppingCart = data;
         this.items = [];
         if (typeof this.shoppingCart.items !== 'undefined' && this.shoppingCart.items.length > 0) {
+          this.configPayment();
           this.shoppingCart.items.forEach((item) => {
             const sub = this.afs.doc<UserInfo>(`users/${item.itemId}`).valueChanges().subscribe((user) => {
               this.items.push({
@@ -87,7 +92,6 @@ export class LenderCartComponent implements OnInit {
     const sub = this.userDoc.subscribe((lender) => {
       this.userInfo = lender;
       if (typeof this.userInfo.purchased === 'undefined') {
-        console.log('get here!');
         this.userInfo.purchased = [];
       }
       this.shoppingCart.items.forEach((cartItem) => {
@@ -96,12 +100,18 @@ export class LenderCartComponent implements OnInit {
           alert('user already purchased, skipping');
         } else {
           this.userInfo.purchased.push(cartItem.itemId);
+          this.amount += cartItem.price * 100;
         }
       });
+      if (this.amount > 0 ) {
+        this.handlePayment();
+      } else {
+        alert('Cart value is zero, nothing to check out!');
+      }
+      // alert('The transaction has been completed!');
       this.us.updateUser(this.userInfo);
       this.emptyCart();
       sub.unsubscribe();
-      alert('The transaction has been completed!');
     });
   }
 
@@ -115,5 +125,29 @@ export class LenderCartComponent implements OnInit {
 
   ngOnInit() {
   }
+
+  configPayment() {
+    this.handler = StripeCheckout.configure({
+      key: environment.stripeKey,
+      // image: '/your/awesome/logo.jpg',
+      locale: 'auto',
+      token: token => {
+        this.paymentSvc.processPayment(token, this.amount);
+      }
+    });
+  }
+
+  handlePayment() {
+    this.handler.open({
+      name: 'FireStarter',
+      excerpt: 'Deposit Funds to Account',
+      amount: this.amount
+    });
+  }
+
+  @HostListener('window:popstate')
+    onPopstate() {
+      this.handler.close();
+    }
 
 }

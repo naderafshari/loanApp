@@ -15,6 +15,7 @@ import { MaterialModule } from './material/material.module';
 import { AuthService } from './provider/auth.service';
 import { UserService } from './provider/user.service';
 import { FormService } from './provider/form.service';
+import { PaymentService } from './provider/payment.service';
 import { LenderFormService } from './provider/lender-form.service';
 import { ShoppingCartService } from './provider/shopping-cart.service';
 import { AuthGuard } from './guard/auth.guard';
@@ -110,6 +111,7 @@ import { UserAgreementComponent } from './component/user-agreement/user-agreemen
     DialogComponent
   ],
   providers: [AuthService, UserService, FormService, LenderFormService, ShoppingCartService,
+    PaymentService,
     AuthGuard, AdminGuard, LenderGuard, BorrowerGuard, BorrowerAdminGuard, LenderAdminGuard],
   bootstrap: [AppComponent]
 })
