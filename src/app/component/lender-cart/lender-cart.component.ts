@@ -139,8 +139,8 @@ export class LenderCartComponent implements OnInit {
 
   handlePayment() {
     this.handler.open({
-      name: 'FireStarter',
-      excerpt: 'Deposit Funds to Account',
+      name: 'Lending Nation',
+      // excerpt: 'Deposit Funds to Account',
       amount: this.amount
     });
   }
