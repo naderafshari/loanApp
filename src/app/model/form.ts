@@ -1,6 +1,7 @@
 export interface Field {
     name: string;
     required: boolean;
+    restricted: boolean;
     type: string;
     mask?: string;
     numOfOptions?: number;

@@ -48,7 +48,26 @@ export class UserAgreementComponent implements OnInit, OnDestroy {
     this.us.updateUser(this.userInfo)
     .then(() => {
       if (this.userInfo.agree === 'yes') {
-        this.router.navigate(['/user-profile', this.userInfo.uid]);
+        if (this.userInfo.role === 'admin') {
+          this.router.navigateByUrl('/user-manage');
+        } else if (this.userInfo.function === 'borrower') {
+          alert('Welcome to Lending Nation!' + '\n' + '\n' +
+          'An Application form will now be presented to you. Once completed, lenders will directly contact you.' + '\n' +
+          'Please check your Inbox periodically.');
+          // have user fill out the auto form
+          this.afs.doc(`users/${this.userInfo.uid}`).collection<Form>('forms', ref => ref.where('formName', '==', 'auto'))
+          .valueChanges().take(1).subscribe((forms) => {
+            if (forms) {
+              this.router.navigate(['/form', this.userInfo.uid, forms[0].formId]);
+            }
+          });
+        } else if (this.userInfo.function === 'lender') {
+          alert('Welcome to Lending Nation!' + '\n' + '\n' +
+          'You will now be redirected to your Portal.' + '\n' +
+          'Your Portal is where you can view and acquire prospect applicants.' + '\n' +
+          'Once you have acquired an applicant you will be able to send private messages.');
+          this.router.navigateByUrl('/lender-portal');
+        }
       } else {
         this.authService.logout();
       }

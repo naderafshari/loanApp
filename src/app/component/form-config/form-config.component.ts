@@ -116,6 +116,7 @@ export class FormConfigComponent implements OnInit {
           index:          this.usedFields[i],
           name:           eval('obj3.field' + this.usedFields[i] + '.name'),
           required:       eval('obj3.field' + this.usedFields[i] + '.required'),
+          restricted:     eval('obj3.field' + this.usedFields[i] + '.restricted'),
           type:           eval('obj3.field' + this.usedFields[i] + '.type'),
           mask:           eval('obj3.field' + this.usedFields[i] + '.mask'),
           numOfOptions:   eval('obj3.field' + this.usedFields[i] + '.numOfOptions'),
@@ -190,6 +191,7 @@ export class FormConfigComponent implements OnInit {
     const fieldToAdd: Field  = {
       name: '',
       required: false,
+      restricted: true,
       type: '',
       mask: 'None',
       numOfOptions: 0,
@@ -469,6 +471,17 @@ export class FormConfigComponent implements OnInit {
   setRequired(required, i) {
     let obj: Form = this.form;
     eval('obj.field' + i + '.required = required');
+    this.form = obj;
+  }
+
+  getRestricted(i) {
+    const obj: Form = this.form;
+    return eval('obj.field' + i + '.restricted');
+  }
+
+  setRestricted(restricted, i) {
+    let obj: Form = this.form;
+    eval('obj.field' + i + '.restricted = restricted');
     this.form = obj;
   }
 

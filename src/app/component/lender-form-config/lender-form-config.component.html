@@ -36,6 +36,7 @@
     </mat-form-field>
     <!-- <mat-slide-toggle *ngIf="getType(field.index) !==  'checkbox'" [ngModel]='getRequired(field.index)' (ngModelChange)='setRequired($event,field.index)'>Required</mat-slide-toggle> -->
     <mat-slide-toggle [ngModel]='getRequired(field.index)' (ngModelChange)='setRequired($event,field.index)'>Required</mat-slide-toggle>
+<!--    <mat-slide-toggle [ngModel]='getRestricted(field.index)' (ngModelChange)='setRestricted($event,field.index)'>Restricted</mat-slide-toggle> -->
     <a *ngIf="(authService.user | async)?.role == 'admin'" (click)="openDeleteDialog(field.index)" >&nbsp;&nbsp;&nbsp;<mat-icon>delete</mat-icon></a>
     <!--<button mat-raised-button (click)="openDeleteDialog(field.index)">Delete Field</button>-->
     <br>

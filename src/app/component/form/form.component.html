@@ -1,6 +1,7 @@
 <mat-card *ngIf="userInfo && form" class="general-container">
   <a (click)="goBack()" id="goback">Go back/Cancel</a>
-  <br>
+  <hr>
+  <mat-list-item >Form: {{form.formName}}</mat-list-item>
   <br>
   <mat-list-item >Last Updated: {{form.updateTime}}</mat-list-item>
   <br>
@@ -62,10 +63,9 @@
 <ng-template #not_self_or_admin>
   <mat-card-content>
     <mat-list *ngIf="fields">
-      <mat-list-item><strong>{{form.formName}}</strong></mat-list-item>
-      <br>
       <div *ngFor="let field of fields">
-          <mat-list-item><strong>{{field.name}}</strong>&nbsp;&nbsp;&nbsp;&nbsp;{{field.value}}</mat-list-item>
+          <mat-list-item *ngIf="field.showField">
+            <strong>{{field.name}}</strong>&nbsp;&nbsp;&nbsp;&nbsp;{{field.value}}</mat-list-item>
       </div>
     </mat-list>
   </mat-card-content>

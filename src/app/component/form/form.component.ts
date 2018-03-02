@@ -37,6 +37,8 @@ export class FormComponent implements OnInit {
   optionsValues: any[];
   choicesValues: any[];
   userInfo: UserInfo;
+  showRestrictedFields: boolean;
+  showField: boolean;
 
   constructor(private afs: AngularFirestore, public authService: AuthService,
     private router: Router, private location: Location, private route: ActivatedRoute) {
@@ -59,6 +61,15 @@ export class FormComponent implements OnInit {
       this.uid = params['uid'] || 0;
       this.formId = params['fid'] || 0;
       if (this.uid) {
+        // Figure out if restricted fields should be shown for the logged in user
+        this.afs.doc<UserInfo>(`users/${this.authService.currentUserId}`).valueChanges()
+        .take(1).subscribe(user => {
+          if (user.purchased.includes(this.uid)) {
+            this.showRestrictedFields = true;
+          } else {
+            this.showRestrictedFields = false;
+          }
+        });
         this.afs.doc<UserInfo>(`users/${this.uid}`).valueChanges().subscribe(user => this.userInfo = user);
         this.formRef = this.afs.doc(`users/${this.uid}`).collection<Form>('forms', ref =>
           ref.where('formId', '==', this.formId));
@@ -110,11 +121,19 @@ export class FormComponent implements OnInit {
               this.choicesValues.push(choice);
             }
 
+            if (this.showRestrictedFields) {
+              this.showField = true;
+            } else {
+              const obj4: Form = this.form;
+              this.showField = !eval('obj4.field' + this.usedFields[i] + '.restricted');
+            }
+
             const obj3: Form = this.form;
             this.fields.push({
               index:          this.usedFields[i],
               name:           eval('obj3.field' + this.usedFields[i] + '.name'),
               required:       eval('obj3.field' + this.usedFields[i] + '.required'),
+              showField:      this.showField,
               type:           eval('obj3.field' + this.usedFields[i] + '.type'),
               mask:           maskCodes[eval('obj3.field' + this.usedFields[i] + '.mask')],
               numOfOptions:   eval('obj3.field' + this.usedFields[i] + '.numOfOptions'),
@@ -152,8 +171,17 @@ export class FormComponent implements OnInit {
         alert('Cannot Update, Form not available!');
       }
       this.sub.unsubscribe();
-      this.goBack();
-    } else {
+      // if admin go back else go portal
+      if (this.authService.userAuthRole === 'admin') {
+        this.goBack();
+      } else if (this.authService.userFunction === 'borrower') {
+        this.router.navigateByUrl('/borrower-portal');
+      } else if (this.authService.userFunction === 'lender') {
+        this.router.navigateByUrl('/lender-portal');
+      } else { // somethings wrong go back to the start!
+        this.router.navigateByUrl('/user-function');
+      }
+  } else {
       alert('Required field was not filled!');
     }
   }

@@ -86,7 +86,13 @@ export class LenderProspectViewComponent implements OnDestroy {
     if (this.selection.selected[1]) {
       alert('More than one item was selected! Please, select only one item.');
     } else if (this.selection.selected[0]) {
-      this.router.navigate(['/user-profile', this.selection.selected[0].uid]);
+      // this.router.navigate(['/user-profile', this.selection.selected[0].uid]);
+      this.afs.doc(`users/${this.selection.selected[0].uid}`).collection<Form>('forms', ref => ref.where('formName', '==', 'auto'))
+      .valueChanges().take(1).subscribe((forms) => {
+        if (forms) {
+          this.router.navigate(['/form', this.selection.selected[0].uid, forms[0].formId]);
+        }
+      });
     } else {
       alert('No item was selected! Please, select one item.');
     }
