@@ -115,7 +115,8 @@ export class AuthService {
       .then(() => {
         this.setUserAuthData(user, displayName)
         .then(() =>  {
-          alert('A Verification Email was sent to your login email. After receiving the email, click on the provided link and log back in.');
+          alert('A Verification Email was sent to your login email. \
+          After receiving the email, click on the provided link and log back in.');
           // console.log('signup success for user: ', user);
           this.logout();
         })
@@ -130,7 +131,8 @@ export class AuthService {
       });
     })
     .catch(err => {
-      alert('Something went wrong creating account: ' + err.message);
+      alert('Something went wrong creating account: ' + err.message +
+      'You may have used social media (google, facebook etc.) to login previously.');
       console.log('Something went wrong creating account:', err.message);
     });
   }
@@ -170,27 +172,23 @@ export class AuthService {
           }
           sub.unsubscribe();
         });
-    } else {
-        value.user.sendEmailVerification().then(() => {
-          alert('The login email is not verified. Verify your email with the Social media provider.');
-          this.logout();
-        });
+      } else {
+          value.user.sendEmailVerification().then(() => {
+            alert('The login email is not verified. Verify your email with the Social media provider.');
+            this.logout();
+          });
       }
     })
     .catch( (err) =>  alert('Login failed! ' + err));
   }
 
   upsert(user) {
-    // const appmtRef: AngularFirestoreDocument<any> = this.afs.doc(`appointment/${value.uid}`);
-    // appmtRef.update({calId: `${value.uid}`})
-    // .catch(() => {
-    //   appmtRef.set({calId: `${value.uid}`, numOfSlots: 0, slots: {}});
-    // });
     const authData: UserInfo = {
       'displayName': user.displayName,
       'email': user.email,
       'uid': user.uid,
       'photoURL': user.photoURL,
+      'updateTime': new Date().toString()
     };
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
     userRef.update(authData)
@@ -218,6 +216,7 @@ export class AuthService {
         'uid': user.uid,
         'photoURL': user.photoURL,
         'joinTime': new Date().toString(),
+        'updateTime': new Date().toString(),
         'role': 'user',
         'assignedForms': {},
         'purchased': []

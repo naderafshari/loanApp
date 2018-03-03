@@ -35,11 +35,11 @@
   </ng-container>
   <ng-container matColumnDef="joinTime">
     <mat-header-cell *matHeaderCellDef mat-sort-header> Joined </mat-header-cell>
-    <mat-cell *matCellDef="let users"> {{users.joinTime}} </mat-cell>
+    <mat-cell *matCellDef="let users"> {{users.joinTime | date:'short'}} </mat-cell>
   </ng-container>
   <ng-container matColumnDef="updateTime">
     <mat-header-cell *matHeaderCellDef mat-sort-header> Last Active </mat-header-cell>
-    <mat-cell *matCellDef="let users"> {{users.updateTime}} </mat-cell>
+    <mat-cell *matCellDef="let users"> {{users.updateTime | date:'short'}} </mat-cell>
   </ng-container>
   <ng-container matColumnDef="dob">
     <mat-header-cell *matHeaderCellDef mat-sort-header> DOB </mat-header-cell>
