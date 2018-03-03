@@ -105,12 +105,12 @@ export class LenderCartComponent implements OnInit {
       });
       if (this.amount > 0 ) {
         this.handlePayment();
+        this.us.updateUser(this.userInfo);
+        this.emptyCart();
       } else {
         alert('Cart value is zero, nothing to check out!');
       }
       // alert('The transaction has been completed!');
-      this.us.updateUser(this.userInfo);
-      this.emptyCart();
       sub.unsubscribe();
     });
   }
@@ -147,7 +147,9 @@ export class LenderCartComponent implements OnInit {
 
   @HostListener('window:popstate')
     onPopstate() {
-      this.handler.close();
+      if (this.handler) {
+        this.handler.close();
+      }
     }
 
 }

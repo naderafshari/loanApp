@@ -9,6 +9,7 @@ import { DialogComponent } from '../dialog/dialog.component';
 import { AuthService } from '../../provider/auth.service';
 import { UserInfo } from '../../model/user-info';
 import { Form } from '../../model/form';
+import { Message } from '../../model/message';
 import { FormManageComponent } from '../form-manage/form-manage.component';
 import { NameFilterPipe } from '../../pipe/name-filter.pipe';
 
@@ -29,10 +30,13 @@ export class LenderPortalComponent implements OnInit, OnDestroy {
   userInfo: UserInfo;
   purchasedUsers: any[];
   sub: Subscription;
+  sub101: Subscription;
   inbox = false;
   show_inbox_icon = false;
   portal = true;
   show_portal_icon = true;
+  messages: Message[];
+  unreadMsgCount: number;
 
   constructor(private afs: AngularFirestore, public dialog: MatDialog,
               public authService: AuthService, private router: Router,
@@ -93,7 +97,12 @@ export class LenderPortalComponent implements OnInit, OnDestroy {
         }
       });
     });
-  }
+    this.sub101 = this.afs.collection<Message>('messages', ref => ref.where('rid', '==', this.authService.currentUserId))
+    .valueChanges().subscribe((data) => {
+      this.messages = data;
+      this.unreadMsgCount = this.messages.filter(e => !e.opened).length;
+    });
+}
 
   goToInbox() {
     this.router.navigateByUrl('/msg-inbox');
@@ -154,6 +163,9 @@ export class LenderPortalComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.sub) {
       this.sub.unsubscribe();
+    }
+    if (this.sub101) {
+      this.sub101.unsubscribe();
     }
   }
 }
