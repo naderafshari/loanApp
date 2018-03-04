@@ -48,7 +48,7 @@ export class LenderOwnedUsersComponent implements OnInit, OnDestroy {
         // }
         this.purchasedUsers = this.userInfo.purchased;
       }
-      // console.log('purchased users values: ', this.purchasedUsers);
+// console.log('purchased users values: ', this.purchasedUsers);
       const sub0 = this.afs.doc(`users/${this.userInfo.uid}`).collection<Form>('forms')
       .valueChanges().subscribe((definedForms) => {
         if (definedForms) {
@@ -60,21 +60,26 @@ export class LenderOwnedUsersComponent implements OnInit, OnDestroy {
               this.usedForms.push(definedForms[i].formId);
             }
           }
-          // console.log('defined forms are: ', this.usedForms);
+// console.log('defined forms are: ', this.usedForms);
           this.users = [];
           this.userForms = [];
           this.purchasedUsers.forEach( userId => {
             const sub1 = this.afs.doc(`users/${userId}`).collection<Form>('forms', ref => ref
-            .where('formCreator', '==', this.userInfo.uid)).valueChanges()
+            // this line is for when lender creats forms and we only want to get the forms that belongs to this lender
+            // .where('formCreator', '==', this.userInfo.uid))
+            .where('formName', '==', 'auto'))
+            .valueChanges()
             .subscribe((forms) => {
               if (forms) {
+// console.log('forms are: ', forms)
                 const sub2 = this.afs.doc<UserInfo>(`users/${userId}`).valueChanges().subscribe((user) => {
                   this.users.push(user);
                   this.usedForms.forEach( e => {
                     /* Find the latest of each form of each user and push it to userForms array */
                     this.userForm = forms.filter(form => form.formId === e).sort(this.compareTime)[0];
                     if (this.userForm) {
-                      if (user.assignedForms[e] === this.userInfo.uid) {
+// console.log('userForm is: ', this.userForm)
+                      if (user.assignedForms[e] === this.userInfo.uid || user.assignedForms[e] === userId) {
                         this.userForm.uid = userId;
                         this.userForms.push(this.userForm);
                       }

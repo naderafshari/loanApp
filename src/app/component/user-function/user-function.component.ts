@@ -46,12 +46,14 @@ export class UserFunctionComponent implements OnInit, OnDestroy {
         formData.formCreator = this.userInfo.uid;
         formData.updateTime = new Date().toString();
         formData.startTime = new Date().toString();
+        const formId = 'form1'; // this.afs.createId();
+        formData.formId = formId;
         if (this.userInfo.function === 'lender') {
           this.afs.doc(`users/${this.userInfo.uid}`).collection('forms').doc('auto').set(formData);
         } else if (this.userInfo.function === 'borrower') {
           this.afs.doc(`users/${this.userInfo.uid}`).collection('forms').doc(new Date().toString()).set(formData);
         }
-        this.userInfo.assignedForms['auto'] = this.userInfo.uid;
+        this.userInfo.assignedForms[formId] = this.userInfo.uid;
       }
       if (this.userInfo) {
         if (this.userInfo.function === 'lender') {

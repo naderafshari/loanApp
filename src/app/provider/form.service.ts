@@ -101,7 +101,7 @@ export class FormService {
     const sub2 = user.subscribe((data) => {
       const users = data;
       users.forEach((userInfo) =>  {
-        if (userInfo.assignedForms[`${formId}`] === 'true') {
+        if (userInfo.assignedForms[`${formId}`] ) { // === 'true') {
           const form = this.afs.collection<Form>('forms', ref => ref.where('formId', '==', formId)).valueChanges();
           const sub1 = form.subscribe((data) => {
               let formData = data[0];

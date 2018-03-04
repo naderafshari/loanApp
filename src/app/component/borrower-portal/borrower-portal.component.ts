@@ -8,6 +8,7 @@ import { DialogComponent } from '../dialog/dialog.component';
 import { AuthService } from '../../provider/auth.service';
 import { UserInfo } from '../../model/user-info';
 import { Form } from '../../model/form';
+import { Message } from '../../model/message';
 import { NameFilterPipe } from '../../pipe/name-filter.pipe';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -24,11 +25,14 @@ export class BorrowerPortalComponent implements OnInit, OnDestroy {
   searchText: any;
   sub1: Subscription;
   sub2: Subscription;
+  sub3: Subscription;
   userInfo: UserInfo;
   inbox = false;
   show_inbox_icon = false;
   portal = true;
   show_portal_icon = true;
+  messages: Message[];
+  unreadMsgCount: number;
 
   constructor(private afs: AngularFirestore,
               public authService: AuthService,
@@ -63,7 +67,12 @@ export class BorrowerPortalComponent implements OnInit, OnDestroy {
         });
       }
     });
-  }
+    this.sub3 = this.afs.collection<Message>('messages', ref => ref.where('rid', '==', this.authService.currentUserId))
+    .valueChanges().subscribe((data) => {
+      this.messages = data;
+      this.unreadMsgCount = this.messages.filter(e => !e.opened).length;
+    });
+}
 
   goToInbox() {
     this.router.navigateByUrl('/msg-inbox');
@@ -112,6 +121,9 @@ export class BorrowerPortalComponent implements OnInit, OnDestroy {
     }
     if (this.sub2) {
       this.sub2.unsubscribe();
+    }
+    if (this.sub3) {
+      this.sub3.unsubscribe();
     }
   }
 }
