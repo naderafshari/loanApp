@@ -10,6 +10,7 @@ import { AuthService } from '../../provider/auth.service';
 import { UserService } from '../../provider/user.service';
 import { UserInfo } from '../../model/user-info';
 import { Message } from '../../model/message';
+import { PaginationService } from '../../provider/pagination.service';
 
 @Component({
   selector: 'app-msg-inbox',
@@ -29,11 +30,12 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
   displayName: string;
 
   constructor(private afs: AngularFirestore, public dialog: MatDialog,
-    public authService: AuthService, private router: Router,
+    public authService: AuthService, private router: Router, public page: PaginationService,
     private route: ActivatedRoute, private location: Location ) {
 }
 
   ngOnInit() {
+    this.page.init('messages', 'timeStamp', { reverse: true, prepend: false });
     this.sub = this.afs.collection<Message>('messages', ref => ref.where('rid', '==', this.authService.currentUserId))
     .valueChanges().subscribe((data) => {
       this.messages = data;
@@ -48,6 +50,13 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
         this.inbox_empty = true;
       }
     });
+  }
+
+  scrollHandler(e) {
+    console.log(e)
+    if (e === 'bottom') {
+      this.page.more();
+    }
   }
 
   compareTime(a, b) {

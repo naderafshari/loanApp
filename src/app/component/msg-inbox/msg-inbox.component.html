@@ -20,13 +20,23 @@
 </button>
 </div> -->
 
+<div class="content" scrollable (scrollPosition)="scrollHandler($event)">
+
+  <div *ngFor="let message of page.data | async">
+    <h3>Built in {{ message.timeStamp }}</h3>
+  </div>
+
+  <p *ngIf="page.done | async">No more Messages!</p>
+  <app-loading-spinner  *ngIf="page.loading | async"></app-loading-spinner>
+</div>
+
 <div>
   <a style="margin: 5%; color:aliceblue; font-weight:bold; text-transform:uppercase;font-size:.8em;" (click)="goBack()" >Go back</a>
 </div>
 
-
 <!-- Individual Conversation snippet -->
-<mat-card class="general-container" *ngFor="let message of messages" class="example-form animated fadeInUp">
+<mat-card class="general-container" scrollable (scrollPosition)="scrollHandler($event)"
+*ngFor="let message of page.data | async" class="example-form animated fadeInUp">
 <!-- Conversation Header -->
 <mat-toolbar class="" color="basic">
   <div class="row">
@@ -59,7 +69,9 @@
         {{ message.timeStamp | date:'short'}}&nbsp; 
       </div>
     </div>
-  </div>
+    <p *ngIf="page.done | async">No more Messages!</p>
+    <app-loading-spinner  *ngIf="page.loading | async"></app-loading-spinner>
+    </div>
 
   <button mat-icon-button [matMenuTriggerFor]="menu" class="conversation-delete-archived">
     <mat-icon>more_vert</mat-icon>

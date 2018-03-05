@@ -16,6 +16,7 @@ import { AuthService } from './provider/auth.service';
 import { UserService } from './provider/user.service';
 import { FormService } from './provider/form.service';
 import { PaymentService } from './provider/payment.service';
+import { PaginationService } from './provider/pagination.service';
 import { LenderFormService } from './provider/lender-form.service';
 import { ShoppingCartService } from './provider/shopping-cart.service';
 import { AuthGuard } from './guard/auth.guard';
@@ -58,6 +59,8 @@ import { MsgComposeComponent } from './component/msg-compose/msg-compose.compone
 import { LenderOwnedUsersComponent } from './component/lender-owned-users/lender-owned-users.component';
 import { MsgReadComponent } from './component/msg-read/msg-read.component';
 import { UserAgreementComponent } from './component/user-agreement/user-agreement.component';
+import { ScrollableDirective } from './scrollable.directive';
+import { LoadingSpinnerComponent } from './component/loading-spinner/loading-spinner.component';
 
 @NgModule({
   declarations: [
@@ -91,7 +94,9 @@ import { UserAgreementComponent } from './component/user-agreement/user-agreemen
     MsgComposeComponent,
     LenderOwnedUsersComponent,
     MsgReadComponent,
-    UserAgreementComponent
+    UserAgreementComponent,
+    ScrollableDirective,
+    LoadingSpinnerComponent
   ],
   imports: [
     BrowserModule,
@@ -111,7 +116,7 @@ import { UserAgreementComponent } from './component/user-agreement/user-agreemen
     DialogComponent
   ],
   providers: [AuthService, UserService, FormService, LenderFormService, ShoppingCartService,
-    PaymentService,
+    PaymentService, PaginationService,
     AuthGuard, AdminGuard, LenderGuard, BorrowerGuard, BorrowerAdminGuard, LenderAdminGuard],
   bootstrap: [AppComponent]
 })
