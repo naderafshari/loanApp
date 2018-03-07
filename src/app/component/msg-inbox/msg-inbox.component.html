@@ -10,6 +10,109 @@
   No messages available for this page ...
 </div>
 
+<div>
+  <a style="margin: 5%; color:aliceblue; font-weight:bold; text-transform:uppercase;font-size:.8em;" (click)="goBack()" >Go back</a>
+</div>
+
+<div class="scrolling" appScrollable (scrollPosition)="scrollHandler($event)">
+  <mat-card class="general-container" *ngFor="let message of page.data | async" class="example-form animated fadeInUp">
+    <mat-toolbar class="" color="basic">
+      <div class="row">
+        <div *ngIf="!message.opened" class="col-xs-3">
+          <a style="color: #72c921;" matTooltip="New Message" (click)="read(message.sid, message.msgid)"> 
+            UnRead&nbsp; 
+          </a>
+        </div>
+        <div class="col-xs-4">From:</div>
+        <div class="col-xs-3">
+          <div *ngIf="message.rName !==  displayName else other_content" style="color: #3f51b5;" matTooltip="Conversation with"> 
+            {{ message.rName }}&nbsp; 
+          </div>
+          <ng-template #other_content>
+            <div style="color: #3f51b5;" matTooltip="Conversation with"> 
+              {{ message.sName }}&nbsp; 
+            </div>
+          </ng-template> 
+        </div>
+        <div class="col-xs-2">Subject:</div>
+        <div class="col-xs-3">
+          <div style="color: #3f51b5;" matTooltip="Subject"> 
+            {{ message.subject }}&nbsp; 
+          </div>
+        </div>
+        <div class="col-xs-2">On:</div>
+        <div class="col-xs-3">
+          <div style="color: #3f51b5;" matTooltip="Subject"> 
+            {{ message.timeStamp | date:'short'}}&nbsp; 
+          </div>
+        </div>
+      </div>
+
+      <button mat-icon-button [matMenuTriggerFor]="menu" class="conversation-delete-archived">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <div *ngIf="!archived_inbox">
+      <!--    <button mat-menu-item (click)="archived_conversation(message.archive_url)">
+            <mat-icon>dialpad</mat-icon>
+            <span>Archived</span>
+          </button> -->
+          <button mat-menu-item (click)="delete(message.msgid)">
+            <mat-icon>notifications_off</mat-icon>
+            <span>Delete</span>
+          </button>
+          <button mat-menu-item (click)="read(message.sid, message.msgid)">
+            <mat-icon>mail</mat-icon>
+            <span>Read</span>
+          </button>
+          <button mat-menu-item (click)="reply(message.sid, message.msgid)">
+            <mat-icon>reply</mat-icon>
+            <span>Reply</span>
+          </button>
+        </div>
+        <div *ngIf="message.archived; else Unarchived_content">
+          <button mat-menu-item (click)="unArchive(message.msgid)">
+            <mat-icon>dialpad</mat-icon>
+            <span>Unarchive</span>
+          </button>
+        </div>
+        <ng-template #Unarchived_content>
+            <button mat-menu-item (click)="archive(message.msgid)">
+                <mat-icon>dialpad</mat-icon>
+                <span>Archive</span>
+              </button>
+        </ng-template>
+        <div *ngIf="message.opened; else Unopened_content">
+            <button mat-menu-item (click)="markUnRead(message.msgid)">
+              <mat-icon>mail</mat-icon>
+              <span>Mark UnRead</span>
+            </button>
+        </div>
+        <ng-template #Unopened_content>
+            <button mat-menu-item (click)="markRead(message.msgid)">
+                <mat-icon>mail</mat-icon>
+                <span>Mark Read</span>
+              </button>
+        </ng-template>
+      </mat-menu>				
+    </mat-toolbar>
+
+    <mat-card-content class="msg-time-btn-class" *ngIf="!message.archived">
+      <b matTooltip="Message">
+          {{ message.message }}
+      </b>
+    </mat-card-content>
+  </mat-card>
+</div>
+<div style="margin: 5%; color:aliceblue; font-weight:bold; text-transform:uppercase;font-size:.8em;"
+  *ngIf="page.done | async">No more Messages! <br>
+  <a (click)="goBack()" >Go back</a>
+</div>
+<app-loading-spinner  *ngIf="page.loading | async"></app-loading-spinner>
+
+
+
+
 <!-- Pagination section -->
 <!-- <div class="button-row pagination-style" *ngIf="!inbox_empty">
 <button mat-fab [disabled]="previous_page_disable" color="#e0e0e0" matTooltip="Previous Page" (click)="go_to_previous_page()">
@@ -19,125 +122,3 @@
   <mat-icon class="example-icon" color="#e0e0e0">arrow_forward</mat-icon>
 </button>
 </div> -->
-<!--
-<div class="content" appScrollable (scrollPosition)="scrollHandler($event)">
-
-  <div *ngFor="let message of page.data | async">
-    <h3>Built in {{ message.timeStamp }}</h3>
-  </div>
-
-  <p *ngIf="page.done | async">No more Messages!</p>
-  <app-loading-spinner  *ngIf="page.loading | async"></app-loading-spinner>
-</div>
--->
-<div>
-  <a style="margin: 5%; color:aliceblue; font-weight:bold; text-transform:uppercase;font-size:.8em;" (click)="goBack()" >Go back</a>
-</div>
-
-<div class="scrolling" appScrollable (scrollPosition)="scrollHandler($event)">
-<mat-card class="general-container" *ngFor="let message of page.data | async" class="example-form animated fadeInUp">
-<mat-toolbar class="" color="basic">
-  <div class="row">
-    <div *ngIf="!message.opened" class="col-xs-3">
-      <a style="color: #72c921;" matTooltip="New Message" (click)="read(message.sid, message.msgid)"> 
-        UnRead&nbsp; 
-      </a>
-    </div>
-    <div class="col-xs-4">From:</div>
-    <div class="col-xs-3">
-      <div *ngIf="message.rName !==  displayName else other_content" style="color: #3f51b5;" matTooltip="Conversation with"> 
-        {{ message.rName }}&nbsp; 
-      </div>
-      <ng-template #other_content>
-        <div style="color: #3f51b5;" matTooltip="Conversation with"> 
-          {{ message.sName }}&nbsp; 
-        </div>
-      </ng-template> 
-    </div>
-    <div class="col-xs-2">Subject:</div>
-    <div class="col-xs-3">
-      <div style="color: #3f51b5;" matTooltip="Subject"> 
-        {{ message.subject }}&nbsp; 
-      </div>
-    </div>
-    <div class="col-xs-2">On:</div>
-    <div class="col-xs-3">
-      <div style="color: #3f51b5;" matTooltip="Subject"> 
-        {{ message.timeStamp | date:'short'}}&nbsp; 
-      </div>
-    </div>
-    <p *ngIf="page.done | async">No more Messages!</p>
-    <app-loading-spinner  *ngIf="page.loading | async"></app-loading-spinner>
-    </div>
-
-  <button mat-icon-button [matMenuTriggerFor]="menu" class="conversation-delete-archived">
-    <mat-icon>more_vert</mat-icon>
-  </button>
-  <mat-menu #menu="matMenu">
-    <div *ngIf="!archived_inbox">
-  <!--    <button mat-menu-item (click)="archived_conversation(message.archive_url)">
-        <mat-icon>dialpad</mat-icon>
-        <span>Archived</span>
-      </button> -->
-      <button mat-menu-item (click)="delete(message.msgid)">
-        <mat-icon>notifications_off</mat-icon>
-        <span>Delete</span>
-      </button>
-      <button mat-menu-item (click)="read(message.sid, message.msgid)">
-        <mat-icon>mail</mat-icon>
-        <span>Read</span>
-      </button>
-      <button mat-menu-item (click)="reply(message.sid, message.msgid)">
-        <mat-icon>reply</mat-icon>
-        <span>Reply</span>
-      </button>
-    </div>
-    <div *ngIf="message.archived; else Unarchived_content">
-      <button mat-menu-item (click)="unArchive(message.msgid)">
-        <mat-icon>dialpad</mat-icon>
-        <span>Unarchive</span>
-      </button>
-    </div>
-    <ng-template #Unarchived_content>
-        <button mat-menu-item (click)="archive(message.msgid)">
-            <mat-icon>dialpad</mat-icon>
-            <span>Archive</span>
-          </button>
-    </ng-template>
-    <div *ngIf="message.opened; else Unopened_content">
-        <button mat-menu-item (click)="markUnRead(message.msgid)">
-          <mat-icon>mail</mat-icon>
-          <span>Mark UnRead</span>
-        </button>
-    </div>
-    <ng-template #Unopened_content>
-        <button mat-menu-item (click)="markRead(message.msgid)">
-            <mat-icon>mail</mat-icon>
-            <span>Mark Read</span>
-          </button>
-    </ng-template>
-    </mat-menu>				
-</mat-toolbar>
-
-<!-- Main Conversation Body -->
-  <div class="msg-time-btn-class">
-  <!-- Last message of this Conversation thread -->
-  <mat-card-content *ngIf="!message.archived">
-    <b matTooltip="Message">
-      {{ message.message }}
-    </b>
-  </mat-card-content>
-
-  <!-- Retrieve all messages of a conversation and timestamp of the last message sent to this converation -->
-  <!-- <mat-card-actions style="padding-top: 3%">	
-    <mat-chip-list>
-      <button mat-raised-button color="accent" style="margin-right: 30%;" matTooltip="Click!" 
-      (click)="get_message(message.conversation_id, message.conversation_subject)">Get Messages of this Conversation</button>
-      <mat-chip matTooltip="Time">{{ message.timeStamp }}</mat-chip>
-    </mat-chip-list>
-  </mat-card-actions> -->
-  </div>
-</mat-card>
-  <div *ngIf="page.done | async">No more Messages!</div>
-  <app-loading-spinner  *ngIf="page.loading | async"></app-loading-spinner>
-</div>
