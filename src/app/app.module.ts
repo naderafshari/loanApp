@@ -59,7 +59,7 @@ import { MsgComposeComponent } from './component/msg-compose/msg-compose.compone
 import { LenderOwnedUsersComponent } from './component/lender-owned-users/lender-owned-users.component';
 import { MsgReadComponent } from './component/msg-read/msg-read.component';
 import { UserAgreementComponent } from './component/user-agreement/user-agreement.component';
-import { ScrollableDirective } from './scrollable.directive';
+import { ScrollableDirective } from './directive/scrollable.directive';
 import { LoadingSpinnerComponent } from './component/loading-spinner/loading-spinner.component';
 
 @NgModule({

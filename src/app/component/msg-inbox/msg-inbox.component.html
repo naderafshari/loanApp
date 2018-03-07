@@ -19,8 +19,8 @@
   <mat-icon class="example-icon" color="#e0e0e0">arrow_forward</mat-icon>
 </button>
 </div> -->
-
-<div class="content" scrollable (scrollPosition)="scrollHandler($event)">
+<!--
+<div class="content" appScrollable (scrollPosition)="scrollHandler($event)">
 
   <div *ngFor="let message of page.data | async">
     <h3>Built in {{ message.timeStamp }}</h3>
@@ -29,18 +29,15 @@
   <p *ngIf="page.done | async">No more Messages!</p>
   <app-loading-spinner  *ngIf="page.loading | async"></app-loading-spinner>
 </div>
-
+-->
 <div>
   <a style="margin: 5%; color:aliceblue; font-weight:bold; text-transform:uppercase;font-size:.8em;" (click)="goBack()" >Go back</a>
 </div>
 
-<!-- Individual Conversation snippet -->
-<mat-card class="general-container" scrollable (scrollPosition)="scrollHandler($event)"
-*ngFor="let message of page.data | async" class="example-form animated fadeInUp">
-<!-- Conversation Header -->
+<div class="scrolling" appScrollable (scrollPosition)="scrollHandler($event)">
+<mat-card class="general-container" *ngFor="let message of page.data | async" class="example-form animated fadeInUp">
 <mat-toolbar class="" color="basic">
   <div class="row">
-<!--    <div class="col-xs-2"></div> -->
     <div *ngIf="!message.opened" class="col-xs-3">
       <a style="color: #72c921;" matTooltip="New Message" (click)="read(message.sid, message.msgid)"> 
         UnRead&nbsp; 
@@ -139,5 +136,8 @@
       <mat-chip matTooltip="Time">{{ message.timeStamp }}</mat-chip>
     </mat-chip-list>
   </mat-card-actions> -->
-</div>
+  </div>
 </mat-card>
+  <div *ngIf="page.done | async">No more Messages!</div>
+  <app-loading-spinner  *ngIf="page.loading | async"></app-loading-spinner>
+</div>

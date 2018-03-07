@@ -17,4 +17,6 @@ export interface QueryConfig {
     limit: number; // limit per query
     reverse: boolean; // reverse order?
     prepend: boolean; // prepend to source?
+    where_left: string;
+    where_right: string;
 }

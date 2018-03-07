@@ -25,22 +25,41 @@ export class PaginationService {
 
   constructor(private afs: AngularFirestore) { }
 
+  compareTime(a, b) {
+    if (Date.parse(a.timeStamp) < Date.parse(b.timeStamp)) {
+      return 1;
+    }
+    if (Date.parse(a.timeStamp) > Date.parse(b.timeStamp)) {
+      return -1;
+    }
+    return 0;
+  }
   // Initial query sets options and defines the Observable
   // passing opts will override the defaults
-  init(path: string, field: string, opts?: any) {
+  init(path: string, field: string, limit: number, where_left: string, where_right: string, opts?: any) {
+    this._done.next(false);
     this.query = {
       path,
       field,
-      limit: 4,
+      limit,
       reverse: false,
       prepend: false,
+      where_left,
+      where_right,
       ...opts
     };
 
     const first = this.afs.collection(this.query.path, ref => {
-      return ref
-              .orderBy(this.query.field, this.query.reverse ? 'desc' : 'asc')
-              .limit(this.query.limit);
+      if (this.query.where_left !== '' && this.query.where_right !== '') {
+        return ref
+                .where(this.query.where_left, '==', this.query.where_right)
+                .orderBy(this.query.field, this.query.reverse ? 'desc' : 'asc')
+                .limit(this.query.limit);
+      } else {
+        return ref
+                .orderBy(this.query.field, this.query.reverse ? 'desc' : 'asc')
+                .limit(this.query.limit);
+      }
     });
 
     this.mapAndUpdate(first);
@@ -70,7 +89,8 @@ export class PaginationService {
   private getCursor() {
     const current = this._data.value;
     if (current.length) {
-      return this.query.prepend ? current[0].doc : current[current.length - 1].doc;
+      // return this.query.prepend ? current[0].doc : current[current.length - 1].doc;
+      return this.query.prepend ? 0 : current.length - 1;
     }
     return null;
   }
@@ -96,7 +116,11 @@ export class PaginationService {
         });
 
         // If prepending, reverse the batch order
-        values = this.query.prepend ? values.reverse() : values;
+        if (this.query.field === 'timeStamp') {
+          values = this.query.prepend ? values.reverse().sort(this.compareTime) : values.sort(this.compareTime);
+        } else {
+          values = this.query.prepend ? values.reverse() : values;
+        }
 
         // update source with new values, done loading
         this._data.next(values);

@@ -35,7 +35,7 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
 }
 
   ngOnInit() {
-    this.page.init('messages', 'timeStamp', { reverse: true, prepend: false });
+    this.page.init('messages', 'timeStamp', 8, 'rid', this.authService.currentUserId, { reverse: true, prepend: false });
     this.sub = this.afs.collection<Message>('messages', ref => ref.where('rid', '==', this.authService.currentUserId))
     .valueChanges().subscribe((data) => {
       this.messages = data;
@@ -53,7 +53,6 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
   }
 
   scrollHandler(e) {
-    console.log(e)
     if (e === 'bottom') {
       this.page.more();
     }

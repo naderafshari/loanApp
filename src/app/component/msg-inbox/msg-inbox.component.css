@@ -1,3 +1,7 @@
+.scrolling {
+    overflow-y: visible;
+}
+
 mat-card {
 	margin: 2%;
 }
