@@ -25,15 +25,6 @@ export class PaginationService {
 
   constructor(private afs: AngularFirestore) { }
 
-  compareTime(a, b) {
-    if (Date.parse(a.timeStamp) < Date.parse(b.timeStamp)) {
-      return 1;
-    }
-    if (Date.parse(a.timeStamp) > Date.parse(b.timeStamp)) {
-      return -1;
-    }
-    return 0;
-  }
   // Initial query sets options and defines the Observable
   // passing opts will override the defaults
   init(path: string, field: string, limit: number, where_left: string, where_right: string, opts?: any) {
@@ -76,10 +67,18 @@ export class PaginationService {
     const cursor = this.getCursor();
 
     const more = this.afs.collection(this.query.path, ref => {
-      return ref
+      if (this.query.where_left !== '' && this.query.where_right !== '') {
+        return ref
+              .where(this.query.where_left, '==', this.query.where_right)
               .orderBy(this.query.field, this.query.reverse ? 'desc' : 'asc')
               .limit(this.query.limit)
               .startAfter(cursor);
+      } else {
+        return ref
+              .orderBy(this.query.field, this.query.reverse ? 'desc' : 'asc')
+              .limit(this.query.limit)
+              .startAfter(cursor);
+      }
     });
     this.mapAndUpdate(more);
   }
@@ -116,11 +115,7 @@ export class PaginationService {
         });
 
         // If prepending, reverse the batch order
-        if (this.query.field === 'timeStamp') {
-          values = this.query.prepend ? values.reverse().sort(this.compareTime) : values.sort(this.compareTime);
-        } else {
-          values = this.query.prepend ? values.reverse() : values;
-        }
+        values = this.query.prepend ? values.reverse() : values;
 
         // update source with new values, done loading
         this._data.next(values);

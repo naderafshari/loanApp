@@ -35,12 +35,14 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
 }
 
   ngOnInit() {
-    this.page.init('messages', 'timeStamp', 8, 'rid', this.authService.currentUserId, { reverse: true, prepend: false });
-    this.sub = this.afs.collection<Message>('messages', ref => ref.where('rid', '==', this.authService.currentUserId))
+    // this.page.init('messages', 'timeStamp', 8, 'rid', this.authService.currentUserId, { reverse: true, prepend: false });
+    this.sub = this.afs.collection<Message>('messages', ref => ref.where('rid', '==', this.authService.currentUserId)
+    .orderBy('timeStamp').limit(4))
     .valueChanges().subscribe((data) => {
       this.messages = data;
+      this.messages.map(e => new Date(e.timeStamp).toString());
       // Sort with the latest first
-      this.messages.sort(this.compareTime);
+      // no need this.messages.sort(this.compareTime);
       // Grab just the new part of the message
       this.messages.map((e) => e.message = e.message.split('-------------Reply above')[0]);
       this.displayName = this.authService.currentUserDisplayName;
@@ -50,6 +52,14 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
         this.inbox_empty = true;
       }
     });
+  }
+
+  next_page() {
+
+  }
+
+  prev_page() {
+
   }
 
   scrollHandler(e) {
@@ -99,6 +109,7 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
       message.archived = false;
       this.afs.doc<Message>(`messages/${msgid}`).update(message);
       sub.unsubscribe();
+      this.page.refresh();
     });
   }
 
@@ -109,6 +120,7 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
       message.archived = true;
       this.afs.doc<Message>(`messages/${msgid}`).update(message);
       sub.unsubscribe();
+      this.page.refresh();
     });
   }
 

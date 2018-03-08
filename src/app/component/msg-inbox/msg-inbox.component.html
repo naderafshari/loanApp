@@ -15,7 +15,8 @@
 </div>
 
 <div class="scrolling" appScrollable (scrollPosition)="scrollHandler($event)">
-  <mat-card class="general-container" *ngFor="let message of page.data | async" class="example-form animated fadeInUp">
+<!--  <mat-card class="general-container" *ngFor="let message of page.data | async" class="example-form animated fadeInUp"> -->
+  <mat-card class="general-container" *ngFor="let message of messages" class="example-form animated fadeInUp">
     <mat-toolbar class="" color="basic">
       <div class="row">
         <div *ngIf="!message.opened" class="col-xs-3">

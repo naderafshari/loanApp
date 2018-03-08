@@ -82,7 +82,7 @@ export class MsgComposeComponent implements OnInit, OnDestroy {
           }
           this.message = '\n\n' + '-------------Reply above this line-------------\n'
           + `Last Message from: ${this.original_message.sName}\n
-          Received on: ${this.original_message.timeStamp}\n\n`
+          Received on: ${new Date(this.original_message.timeStamp).toString()}\n\n`
           + this.original_message.message;
         });
       }
@@ -136,7 +136,7 @@ export class MsgComposeComponent implements OnInit, OnDestroy {
       rName: this.receiver_name,
       subject: form.value.conversation_subject,
       message: form.value.message,
-      timeStamp: new Date().toString()
+      timeStamp: new Date().valueOf()
     };
     if (this.sender_name === this.receiver_name) {
       this.receiver_valid = false;
