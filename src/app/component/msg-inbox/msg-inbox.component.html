@@ -16,8 +16,8 @@
 <div style="margin-left: 5%; color:aliceblue; font-weight:bold; text-transform:uppercase;font-size:.8em;"
   *ngIf="no_more_newer; else other_content_new">Top of Messages<br> 
 </div>
-<ng-template *ngIf="!inbox_empty" #other_content_new >
-  <div style="margin-left: 5%; color:aliceblue; font-weight:bold; text-transform:uppercase;font-size:.8em;">
+<ng-template  #other_content_new >
+  <div *ngIf="!inbox_empty" style="margin-left: 5%; color:aliceblue; font-weight:bold; text-transform:uppercase;font-size:.8em;">
     <a (click)="loadNewer()">Newer Messages</a>
   </div>
 </ng-template>
@@ -61,7 +61,7 @@
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
-        <div *ngIf="!archived_inbox">
+        <div>
       <!--    <button mat-menu-item (click)="archived_conversation(message.archive_url)">
             <mat-icon>dialpad</mat-icon>
             <span>Archived</span>
@@ -117,8 +117,8 @@
   *ngIf="no_more_older; else other_content">No more Messages! <br> 
   <a (click)="goBack()">Go back</a>
 </div>
-<ng-template *ngIf="!inbox_empty" #other_content >
-  <div style="margin-left: 5%; color:aliceblue; font-weight:bold; text-transform:uppercase;font-size:.8em;">
+<ng-template #other_content >
+  <div *ngIf="!inbox_empty" style="margin-left: 5%; color:aliceblue; font-weight:bold; text-transform:uppercase;font-size:.8em;">
     <a (click)="loadOlder()">Older Messages</a>
   </div>
 </ng-template>

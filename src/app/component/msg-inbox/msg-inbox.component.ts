@@ -25,7 +25,7 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
   next_page_disable: boolean;
   previous_page_disable: boolean;
   show_success_msg = false;
-  inbox_empty = false;
+  inbox_empty = true;
   success_msg: string;
   displayName: string;
   no_more_older = false;
@@ -95,9 +95,7 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
           this.messages.map(e => new Date(e.timeStamp).toString());
           this.messages.map((e) => e.message = e.message.split('-------------Reply above')[0]);
           this.displayName = this.authService.currentUserDisplayName;
-          this.inbox_empty = false;
         } else {
-          this.inbox_empty = true;
           this.sub_older_fired = false;
         }
       });
@@ -143,10 +141,8 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
           this.messages.map(e => new Date(e.timeStamp).toString());
           this.messages.map((e) => e.message = e.message.split('-------------Reply above')[0]);
           this.displayName = this.authService.currentUserDisplayName;
-          this.inbox_empty = false;
         } else {
           this.sub_newer_fired = false;
-          this.inbox_empty = true;
         }
       });
     }

@@ -193,7 +193,7 @@ export class AuthService {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
     userRef.update(authData)
     .then(() => {
-      if (this.userInfo.lastName) {
+      // if (this.userInfo.lastName) {
         // if personal info hasn't been collected yet
         if (this.userInfo.role === 'admin') {
           this.router.navigateByUrl('/user-manage');
@@ -204,10 +204,10 @@ export class AuthService {
         } else {
           this.router.navigateByUrl('/user-function');
         }
-    } else {
+    // } else {
         // if last name is not set it means the signup process was not completed, go back to function
-        this.router.navigateByUrl('/user-function');
-      }
+    //    this.router.navigateByUrl('/user-function');
+    //  }
     })
     .catch(() => {
       userRef.set({
