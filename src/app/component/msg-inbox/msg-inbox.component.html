@@ -106,12 +106,18 @@
   </mat-card>
 </div>
 <div style="margin: 5%; color:aliceblue; font-weight:bold; text-transform:uppercase;font-size:.8em;"
-  *ngIf="page.done | async">No more Messages! <br>
+  *ngIf="no_more; else other_content">No more Messages! <br> 
   <a (click)="goBack()" >Go back</a>
 </div>
+<ng-template #other_content >
+  <a style="margin: 5%; color:aliceblue; font-weight:bold; text-transform:uppercase;font-size:.8em;"
+  (click)="loadMore()"> Load More</a>
+</ng-template>
+
+<!-- *ngIf="page.done | async">No more Messages! <br> 
+
 <app-loading-spinner  *ngIf="page.loading | async"></app-loading-spinner>
-
-
+-->
 
 
 <!-- Pagination section -->

@@ -28,18 +28,32 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
   inbox_empty = false;
   success_msg: string;
   displayName: string;
+  next_msg_count = 0;
+  current_msg_count = 0;
+  no_more = false;
 
   constructor(private afs: AngularFirestore, public dialog: MatDialog,
     public authService: AuthService, private router: Router, public page: PaginationService,
-    private route: ActivatedRoute, private location: Location ) {
-}
+    private route: ActivatedRoute, private location: Location ) { }
 
   ngOnInit() {
+    this.next_msg_count = 4;
+    this.current_msg_count = this.next_msg_count;
+    this.loadMsgs();
     // this.page.init('messages', 'timeStamp', 8, 'rid', this.authService.currentUserId, { reverse: true, prepend: false });
+}
+
+  loadMsgs() {
     this.sub = this.afs.collection<Message>('messages', ref => ref.where('rid', '==', this.authService.currentUserId)
-    .orderBy('timeStamp').limit(4))
-    .valueChanges().subscribe((data) => {
+    .orderBy('timeStamp', 'desc').limit(this.next_msg_count))
+    .valueChanges().take(1).subscribe((data) => {
       this.messages = data;
+      this.next_msg_count = this.messages.length;
+      if (this.next_msg_count >= this.current_msg_count) {
+        this.no_more = false;
+      } else {
+        this.no_more = true;
+      }
       this.messages.map(e => new Date(e.timeStamp).toString());
       // Sort with the latest first
       // no need this.messages.sort(this.compareTime);
@@ -54,21 +68,22 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
     });
   }
 
-  next_page() {
-
-  }
-
-  prev_page() {
-
-  }
-
   scrollHandler(e) {
     if (e === 'bottom') {
-      this.page.more();
+      // this.page.more();
+      this.next_msg_count += 4;
+      this.current_msg_count = this.next_msg_count;
+      this.loadMsgs();
     }
   }
 
-  compareTime(a, b) {
+  loadMore() {
+      this.next_msg_count += 4;
+      this.current_msg_count = this.next_msg_count;
+      this.loadMsgs();
+  }
+
+/*   compareTime(a, b) {
     if (Date.parse(a.timeStamp) < Date.parse(b.timeStamp)) {
       return 1;
     }
@@ -76,7 +91,7 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
       return -1;
     }
     return 0;
-  }
+  } */
 
   ngOnDestroy() {
     if (this.sub) {
@@ -109,7 +124,6 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
       message.archived = false;
       this.afs.doc<Message>(`messages/${msgid}`).update(message);
       sub.unsubscribe();
-      this.page.refresh();
     });
   }
 
@@ -120,7 +134,6 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
       message.archived = true;
       this.afs.doc<Message>(`messages/${msgid}`).update(message);
       sub.unsubscribe();
-      this.page.refresh();
     });
   }
 
