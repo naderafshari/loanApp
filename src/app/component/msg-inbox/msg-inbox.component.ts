@@ -51,17 +51,17 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
     this.sub = this.afs.collection<Message>('messages', ref => ref.where('rid', '==', this.authService.currentUserId)
     .orderBy('timeStamp', 'desc').limit(this.msg_per_page))
     .valueChanges().subscribe((data) => {
-      this.messages = data;
-      this.sub_older_fired = true;
-      this.sub_newer_fired = true;
-      this.no_more_newer = true;
-      this.no_more_older = false;
-      this.current_first_msg_time = this.messages[0].timeStamp;
-      this.current_last_msg_time = this.messages[this.messages.length - 1].timeStamp;
-      this.messages.map(e => new Date(e.timeStamp).toString());
-      this.messages.map((e) => e.message = e.message.split('-------------Reply above')[0]);
-      this.displayName = this.authService.currentUserDisplayName;
-      if (this.messages.length !== 0) {
+      if (data.length) {
+        this.messages = data;
+        this.sub_older_fired = true;
+        this.sub_newer_fired = true;
+        this.no_more_newer = true;
+        this.no_more_older = false;
+        this.current_first_msg_time = this.messages[0].timeStamp;
+        this.current_last_msg_time = this.messages[this.messages.length - 1].timeStamp;
+        this.messages.map(e => new Date(e.timeStamp).toString());
+        this.messages.map((e) => e.message = e.message.split('-------------Reply above')[0]);
+        this.displayName = this.authService.currentUserDisplayName;
         this.inbox_empty = false;
       } else {
         this.inbox_empty = true;
@@ -95,12 +95,9 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
           this.messages.map(e => new Date(e.timeStamp).toString());
           this.messages.map((e) => e.message = e.message.split('-------------Reply above')[0]);
           this.displayName = this.authService.currentUserDisplayName;
-          if (this.messages.length !== 0) {
-            this.inbox_empty = false;
-          } else {
-            this.inbox_empty = true;
-          }
+          this.inbox_empty = false;
         } else {
+          this.inbox_empty = true;
           this.sub_older_fired = false;
         }
       });
@@ -146,13 +143,10 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
           this.messages.map(e => new Date(e.timeStamp).toString());
           this.messages.map((e) => e.message = e.message.split('-------------Reply above')[0]);
           this.displayName = this.authService.currentUserDisplayName;
-          if (this.messages.length !== 0) {
-            this.inbox_empty = false;
-          } else {
-            this.inbox_empty = true;
-          }
+          this.inbox_empty = false;
         } else {
           this.sub_newer_fired = false;
+          this.inbox_empty = true;
         }
       });
     }

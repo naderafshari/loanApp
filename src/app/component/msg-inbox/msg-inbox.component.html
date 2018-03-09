@@ -16,7 +16,7 @@
 <div style="margin-left: 5%; color:aliceblue; font-weight:bold; text-transform:uppercase;font-size:.8em;"
   *ngIf="no_more_newer; else other_content_new">Top of Messages<br> 
 </div>
-<ng-template #other_content_new >
+<ng-template *ngIf="!inbox_empty" #other_content_new >
   <div style="margin-left: 5%; color:aliceblue; font-weight:bold; text-transform:uppercase;font-size:.8em;">
     <a (click)="loadNewer()">Newer Messages</a>
   </div>
@@ -117,7 +117,7 @@
   *ngIf="no_more_older; else other_content">No more Messages! <br> 
   <a (click)="goBack()">Go back</a>
 </div>
-<ng-template #other_content >
+<ng-template *ngIf="!inbox_empty" #other_content >
   <div style="margin-left: 5%; color:aliceblue; font-weight:bold; text-transform:uppercase;font-size:.8em;">
     <a (click)="loadOlder()">Older Messages</a>
   </div>
