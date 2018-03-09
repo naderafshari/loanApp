@@ -28,36 +28,37 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
   inbox_empty = false;
   success_msg: string;
   displayName: string;
-  next_msg_count = 0;
-  current_msg_count = 0;
-  no_more = false;
+  no_more_older = false;
+  no_more_newer = false;
+  first_msg_time = 0;
+  last_msg_time = 0;
+  current_first_msg_time = 0;
+  current_last_msg_time = 0;
+  sub_older_fired = false;
+  sub_newer_fired = false;
+  msg_per_page = 8;
 
   constructor(private afs: AngularFirestore, public dialog: MatDialog,
     public authService: AuthService, private router: Router, public page: PaginationService,
     private route: ActivatedRoute, private location: Location ) { }
 
   ngOnInit() {
-    this.next_msg_count = 4;
-    this.current_msg_count = this.next_msg_count;
     this.loadMsgs();
     // this.page.init('messages', 'timeStamp', 8, 'rid', this.authService.currentUserId, { reverse: true, prepend: false });
 }
 
   loadMsgs() {
     this.sub = this.afs.collection<Message>('messages', ref => ref.where('rid', '==', this.authService.currentUserId)
-    .orderBy('timeStamp', 'desc').limit(this.next_msg_count))
-    .valueChanges().take(1).subscribe((data) => {
+    .orderBy('timeStamp', 'desc').limit(this.msg_per_page))
+    .valueChanges().subscribe((data) => {
       this.messages = data;
-      this.next_msg_count = this.messages.length;
-      if (this.next_msg_count >= this.current_msg_count) {
-        this.no_more = false;
-      } else {
-        this.no_more = true;
-      }
+      this.sub_older_fired = true;
+      this.sub_newer_fired = true;
+      this.no_more_newer = true;
+      this.no_more_older = false;
+      this.current_first_msg_time = this.messages[0].timeStamp;
+      this.current_last_msg_time = this.messages[this.messages.length - 1].timeStamp;
       this.messages.map(e => new Date(e.timeStamp).toString());
-      // Sort with the latest first
-      // no need this.messages.sort(this.compareTime);
-      // Grab just the new part of the message
       this.messages.map((e) => e.message = e.message.split('-------------Reply above')[0]);
       this.displayName = this.authService.currentUserDisplayName;
       if (this.messages.length !== 0) {
@@ -68,30 +69,94 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
     });
   }
 
+  loadOlder() {
+    if (this.sub_older_fired === false) {
+        this.no_more_older = true;
+    } else {
+      this.sub.unsubscribe();
+      this.sub = this.afs.collection<Message>('messages', ref => ref.where('rid', '==', this.authService.currentUserId)
+      .orderBy('timeStamp', 'desc').startAfter(this.current_last_msg_time).limit(this.msg_per_page))
+      .valueChanges().subscribe((data) => {
+        if (data.length) {
+          this.sub_older_fired = true;
+          this.sub_newer_fired = true;
+          this.no_more_newer = false;
+          this.no_more_older = false;
+          this.messages = data;
+          this.first_msg_time = this.messages[0].timeStamp;
+          this.last_msg_time = this.messages[this.messages.length - 1].timeStamp;
+          if (this.current_last_msg_time === this.last_msg_time) {
+            this.no_more_older = true;
+          } else {
+            this.no_more_older = false;
+          }
+          this.current_first_msg_time = this.first_msg_time;
+          this.current_last_msg_time = this.last_msg_time;
+          this.messages.map(e => new Date(e.timeStamp).toString());
+          this.messages.map((e) => e.message = e.message.split('-------------Reply above')[0]);
+          this.displayName = this.authService.currentUserDisplayName;
+          if (this.messages.length !== 0) {
+            this.inbox_empty = false;
+          } else {
+            this.inbox_empty = true;
+          }
+        } else {
+          this.sub_older_fired = false;
+        }
+      });
+    }
+  }
+
   scrollHandler(e) {
+    /* no good experience with this feature because it kees fireing after scroll stops!
     if (e === 'bottom') {
       // this.page.more();
-      this.next_msg_count += 4;
-      this.current_msg_count = this.next_msg_count;
-      this.loadMsgs();
+      this.loadOlder();
     }
+    if (e === 'top') {
+      // this.page.more();
+      this.loadNewer();
+    }
+    */
   }
 
-  loadMore() {
-      this.next_msg_count += 4;
-      this.current_msg_count = this.next_msg_count;
-      this.loadMsgs();
+  loadNewer() {
+    if (this.sub_newer_fired === false) {
+        this.no_more_newer = true;
+    } else {
+      this.sub.unsubscribe();
+      this.sub = this.afs.collection<Message>('messages', ref => ref.where('rid', '==', this.authService.currentUserId)
+      .orderBy('timeStamp', 'asc').startAfter(this.current_first_msg_time).limit(this.msg_per_page))
+      .valueChanges().subscribe((data) => {
+        if (data.length) {
+          this.sub_older_fired = true;
+          this.sub_newer_fired = true;
+          this.no_more_older = false;
+          this.no_more_newer = false;
+          this.messages = data.reverse();
+          this.first_msg_time = this.messages[0].timeStamp;
+          this.last_msg_time = this.messages[this.messages.length - 1].timeStamp;
+          if (this.current_first_msg_time === this.first_msg_time) {
+            this.no_more_newer = true;
+          } else {
+            this.no_more_newer = false;
+          }
+          this.current_first_msg_time = this.first_msg_time;
+          this.current_last_msg_time = this.last_msg_time;
+          this.messages.map(e => new Date(e.timeStamp).toString());
+          this.messages.map((e) => e.message = e.message.split('-------------Reply above')[0]);
+          this.displayName = this.authService.currentUserDisplayName;
+          if (this.messages.length !== 0) {
+            this.inbox_empty = false;
+          } else {
+            this.inbox_empty = true;
+          }
+        } else {
+          this.sub_newer_fired = false;
+        }
+      });
+    }
   }
-
-/*   compareTime(a, b) {
-    if (Date.parse(a.timeStamp) < Date.parse(b.timeStamp)) {
-      return 1;
-    }
-    if (Date.parse(a.timeStamp) > Date.parse(b.timeStamp)) {
-      return -1;
-    }
-    return 0;
-  } */
 
   ngOnDestroy() {
     if (this.sub) {

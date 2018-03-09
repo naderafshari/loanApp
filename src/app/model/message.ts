@@ -8,7 +8,7 @@ export interface Message {
     message?: string;
     opened: boolean;
     archived: boolean;
-    timeStamp: string;
+    timeStamp: any;
 }
 
 export interface QueryConfig {
