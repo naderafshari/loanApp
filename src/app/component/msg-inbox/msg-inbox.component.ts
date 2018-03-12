@@ -20,13 +20,9 @@ import { PaginationService } from '../../provider/pagination.service';
 export class MsgInboxComponent implements OnInit, OnDestroy {
   sub: Subscription;
   messages: Message[];
-  next_page_url: string;
-  previous_page_url: string;
-  next_page_disable: boolean;
-  previous_page_disable: boolean;
-  show_success_msg = false;
   inbox_empty = true;
   success_msg: string;
+  show_success_msg = false;
   displayName: string;
   no_more_older = false;
   no_more_newer = false;
@@ -34,8 +30,6 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
   last_msg_time = 0;
   current_first_msg_time = 0;
   current_last_msg_time = 0;
-  sub_older_fired = false;
-  sub_newer_fired = false;
   msg_per_page = 8;
 
   constructor(private afs: AngularFirestore, public dialog: MatDialog,
@@ -53,8 +47,6 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
     .valueChanges().subscribe((data) => {
       if (data.length) {
         this.messages = data;
-        this.sub_older_fired = true;
-        this.sub_newer_fired = true;
         this.no_more_newer = true;
         this.no_more_older = false;
         this.current_first_msg_time = this.messages[0].timeStamp;
@@ -70,36 +62,30 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
   }
 
   loadOlder() {
-    if (this.sub_older_fired === false) {
-        this.no_more_older = true;
-    } else {
-      this.sub.unsubscribe();
-      this.sub = this.afs.collection<Message>('messages', ref => ref.where('rid', '==', this.authService.currentUserId)
-      .orderBy('timeStamp', 'desc').startAfter(this.current_last_msg_time).limit(this.msg_per_page))
-      .valueChanges().subscribe((data) => {
-        if (data.length) {
-          this.sub_older_fired = true;
-          this.sub_newer_fired = true;
-          this.no_more_newer = false;
-          this.no_more_older = false;
-          this.messages = data;
-          this.first_msg_time = this.messages[0].timeStamp;
-          this.last_msg_time = this.messages[this.messages.length - 1].timeStamp;
-          if (this.current_last_msg_time === this.last_msg_time) {
-            this.no_more_older = true;
-          } else {
-            this.no_more_older = false;
-          }
-          this.current_first_msg_time = this.first_msg_time;
-          this.current_last_msg_time = this.last_msg_time;
-          this.messages.map(e => new Date(e.timeStamp).toString());
-          this.messages.map((e) => e.message = e.message.split('-------------Reply above')[0]);
-          this.displayName = this.authService.currentUserDisplayName;
+    this.sub.unsubscribe();
+    this.sub = this.afs.collection<Message>('messages', ref => ref.where('rid', '==', this.authService.currentUserId)
+    .orderBy('timeStamp', 'desc').startAfter(this.current_last_msg_time).limit(this.msg_per_page))
+    .valueChanges().subscribe((data) => {
+      if (data.length) {
+        this.no_more_newer = false;
+        this.no_more_older = false;
+        this.messages = data;
+        this.first_msg_time = this.messages[0].timeStamp;
+        this.last_msg_time = this.messages[this.messages.length - 1].timeStamp;
+        if (this.current_last_msg_time === this.last_msg_time) {
+          this.no_more_older = true;
         } else {
-          this.sub_older_fired = false;
+          this.no_more_older = false;
         }
-      });
-    }
+        this.current_first_msg_time = this.first_msg_time;
+        this.current_last_msg_time = this.last_msg_time;
+        this.messages.map(e => new Date(e.timeStamp).toString());
+        this.messages.map((e) => e.message = e.message.split('-------------Reply above')[0]);
+        this.displayName = this.authService.currentUserDisplayName;
+      } else {
+        this.no_more_older = true;
+      }
+    });
   }
 
   scrollHandler(e) {
@@ -116,36 +102,30 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
   }
 
   loadNewer() {
-    if (this.sub_newer_fired === false) {
-        this.no_more_newer = true;
-    } else {
-      this.sub.unsubscribe();
-      this.sub = this.afs.collection<Message>('messages', ref => ref.where('rid', '==', this.authService.currentUserId)
-      .orderBy('timeStamp', 'asc').startAfter(this.current_first_msg_time).limit(this.msg_per_page))
-      .valueChanges().subscribe((data) => {
-        if (data.length) {
-          this.sub_older_fired = true;
-          this.sub_newer_fired = true;
-          this.no_more_older = false;
-          this.no_more_newer = false;
-          this.messages = data.reverse();
-          this.first_msg_time = this.messages[0].timeStamp;
-          this.last_msg_time = this.messages[this.messages.length - 1].timeStamp;
-          if (this.current_first_msg_time === this.first_msg_time) {
-            this.no_more_newer = true;
-          } else {
-            this.no_more_newer = false;
-          }
-          this.current_first_msg_time = this.first_msg_time;
-          this.current_last_msg_time = this.last_msg_time;
-          this.messages.map(e => new Date(e.timeStamp).toString());
-          this.messages.map((e) => e.message = e.message.split('-------------Reply above')[0]);
-          this.displayName = this.authService.currentUserDisplayName;
+    this.sub.unsubscribe();
+    this.sub = this.afs.collection<Message>('messages', ref => ref.where('rid', '==', this.authService.currentUserId)
+    .orderBy('timeStamp', 'asc').startAfter(this.current_first_msg_time).limit(this.msg_per_page))
+    .valueChanges().subscribe((data) => {
+      if (data.length) {
+        this.no_more_older = false;
+        this.no_more_newer = false;
+        this.messages = data.reverse();
+        this.first_msg_time = this.messages[0].timeStamp;
+        this.last_msg_time = this.messages[this.messages.length - 1].timeStamp;
+        if (this.current_first_msg_time === this.first_msg_time) {
+          this.no_more_newer = true;
         } else {
-          this.sub_newer_fired = false;
+          this.no_more_newer = false;
         }
-      });
-    }
+        this.current_first_msg_time = this.first_msg_time;
+        this.current_last_msg_time = this.last_msg_time;
+        this.messages.map(e => new Date(e.timeStamp).toString());
+        this.messages.map((e) => e.message = e.message.split('-------------Reply above')[0]);
+        this.displayName = this.authService.currentUserDisplayName;
+      } else {
+        this.no_more_newer = true;
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -168,7 +148,10 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
 
   delete(mid) {
     if (mid) {
-      this.afs.doc<Message>(`messages/${mid}`).delete();
+      this.afs.doc<Message>(`messages/${mid}`).delete().then(() => {
+        this.success_msg = 'Delete Successful';
+        this.show_success_msg = true;
+      });
     }
   }
 
@@ -177,7 +160,10 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
     .subscribe((data) => {
       const message = data;
       message.archived = false;
-      this.afs.doc<Message>(`messages/${msgid}`).update(message);
+      this.afs.doc<Message>(`messages/${msgid}`).update(message).then(() => {
+        this.success_msg = 'Unarchive Successful';
+        this.show_success_msg = true;
+      });
       sub.unsubscribe();
     });
   }
@@ -187,7 +173,10 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
     .subscribe((data) => {
       const message = data;
       message.archived = true;
-      this.afs.doc<Message>(`messages/${msgid}`).update(message);
+      this.afs.doc<Message>(`messages/${msgid}`).update(message).then(() => {
+        this.success_msg = 'Archive Successful';
+        this.show_success_msg = true;
+      });
       sub.unsubscribe();
     });
   }
@@ -210,6 +199,12 @@ export class MsgInboxComponent implements OnInit, OnDestroy {
       this.afs.doc<Message>(`messages/${msgid}`).update(message);
       sub.unsubscribe();
     });
+  }
+
+  close_success_msg () {
+    this.show_success_msg = false;
+    this.success_msg = '';
+    return false;
   }
 
   goBack() {
