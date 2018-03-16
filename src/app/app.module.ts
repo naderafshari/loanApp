@@ -6,10 +6,12 @@ import { AngularFireAuthModule } from 'angularfire2/auth';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { HttpClientModule} from '@angular/common/http';
 import { Routes, RouterModule } from '@angular/router';
 import * as firebase from 'firebase';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
+import {InterceptorModule} from './interceptor.module';
 import { environment } from '../environments/environment';
 import { MaterialModule } from './material/material.module';
 import { AuthService } from './provider/auth.service';
@@ -103,6 +105,8 @@ import { LoadingSpinnerComponent } from './component/loading-spinner/loading-spi
     BrowserAnimationsModule,
     FormsModule,
     HttpModule,
+    HttpClientModule,
+    InterceptorModule,
     RouterModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,

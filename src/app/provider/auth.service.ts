@@ -1,4 +1,6 @@
 import { subscribeOn } from 'rxjs/operator/subscribeOn';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Http, Headers, Response, URLSearchParams } from '@angular/http';
 import { async } from '@angular/core/testing';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
@@ -9,6 +11,7 @@ import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument 
 import { UserInfo } from '../model/user-info';
 import { FormService } from './form.service';
 import { Subscription } from 'rxjs/Subscription';
+import * as _ from 'lodash';
 
 @Injectable()
 export class AuthService {
@@ -17,8 +20,10 @@ export class AuthService {
   userDoc: Observable<{}>;
   userInfo: UserInfo;
 
+  endpoint = 'https://us-central1-carloanapp.cloudfunctions.net/httpEmail';
+
   constructor(private firebaseAuth: AngularFireAuth, private router: Router,
-    private afs: AngularFirestore, private fs: FormService) {
+    private afs: AngularFirestore, private fs: FormService, private http: HttpClient) {
 
     this.user = this.firebaseAuth.authState
     .switchMap(user => {
@@ -145,6 +150,9 @@ export class AuthService {
         if (user.emailVerified) {
           const sub: Subscription = this.afs.doc(`users/${user.uid}`).valueChanges().subscribe((data: UserInfo) => {
             this.userInfo = data;
+
+//            this.sendWelcomeEmail(data);
+
             this.upsert(this.userInfo);
             sub.unsubscribe();
           });
@@ -222,6 +230,8 @@ export class AuthService {
         'purchased': []
       })
       .then( () => {
+        // Send Welcome email
+        this.sendWelcomeEmail(authData);
         this.router.navigateByUrl('/user-function');
       })
       .catch((err) => {
@@ -268,5 +278,56 @@ export class AuthService {
     const provider = new firebase.auth.TwitterAuthProvider();
     return this.socialSignIn(provider);
   }
+
+sendWelcomeEmail(userInfo) { // no workie!
+/* const headers = new HttpHeaders({'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+   const params: URLSearchParams = new URLSearchParams();
+    params.set('to', userInfo.email);
+    params.set('from', 'carloanrefi@gmail.com');
+    params.set('subject', 'Welcome Email');
+    params.set('content', 'Welcome Email');
+*/
+  const httpOptions = {
+    headers: new HttpHeaders({
+    'Content-Type':  'application/json',
+  //    'Authorization': 'my-auth-token',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, GET, OPTIONS'
+    })
+  };
+
+  // httpOptions.headers.append('Content-Type', 'application/json');
+  // httpOptions.headers.append('Access-Control-Allow-Origin', '*');
+
+    const data = {
+      to: userInfo.email,
+      from: 'carloanrefi@gmail.com',
+      subject: 'Welcome Email',
+      content: 'Welcome Email'
+    };
+
+console.log('Sending Welcome Email', data);
+
+    this.http.post(this.endpoint, data, httpOptions)
+    .subscribe(
+      (val) => {
+          console.log('POST call successful value returned in body', val);
+      },
+      response => {
+          console.log('POST call in error', response);
+      },
+      () => {
+          console.log('The POST observable is now completed.');
+      });
+
+    /*
+    .toPromise()
+    .then( res => {
+      console.log(res);
+    })
+    .catch(err => {
+      console.log(err);
+    });*/
+}
 
 }
