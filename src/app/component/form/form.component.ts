@@ -86,7 +86,7 @@ export class FormComponent implements OnInit {
         .filter( fields => fields.charAt(0) === 'f')
         .filter( fields => fields.charAt(1) === 'i')
         .filter( fields => fields.charAt(2) === 'e');
-        this.usedFields = usedFields.map((x) => x.charAt(5) + x.charAt(6));
+        this.usedFields = usedFields.map((x) => x.charAt(5) + x.charAt(6) + x.charAt(7));
         if (this.usedFields.length) {
           this.fields = [];
           this.usedOptions = [];

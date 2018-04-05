@@ -151,7 +151,7 @@ export class AuthService {
           const sub: Subscription = this.afs.doc(`users/${user.uid}`).valueChanges().subscribe((data: UserInfo) => {
             this.userInfo = data;
 
-//            this.sendWelcomeEmail(data);
+            this.sendWelcomeEmail(data);
 
             this.upsert(this.userInfo);
             sub.unsubscribe();
@@ -231,7 +231,7 @@ export class AuthService {
       })
       .then( () => {
         // Send Welcome email
-        this.sendWelcomeEmail(authData);
+//        this.sendWelcomeEmail(authData);
         this.router.navigateByUrl('/user-function');
       })
       .catch((err) => {
@@ -307,8 +307,9 @@ sendWelcomeEmail(userInfo) { // no workie!
     };
 
 console.log('Sending Welcome Email', data);
-
-    this.http.post(this.endpoint, data, httpOptions)
+    this.http.post(this.endpoint, data)
+//    this.http.post('http://jsonplaceholder.typicode.com/posts', data)
+    // this.http.post(this.endpoint, data)
     .subscribe(
       (val) => {
           console.log('POST call successful value returned in body', val);
